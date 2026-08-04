@@ -3,8 +3,8 @@
 本檔為 LLM 的執行指令，不是給人讀的課程大綱。
 課程的實質內容由 `COURSE-CONTRACT.yaml` 承載；本檔規定**如何執行與如何拒絕**。
 
-- 版本：`0.1.0-skeleton`
-- 狀態：骨架。標記 `TODO(codex)` 之處尚未填入課程實質內容，**不得對學生使用**。
+- 版本：`0.1.0-content-filled`
+- 狀態：課程內容已填入；仍須由授課者核定設備未確認項與交接草案後，才可標為 classroom ready。
 
 ---
 
@@ -117,19 +117,33 @@ python3 tools/color/scripts/color_audit.py --pair "#前景" "#背景" --json
 
 各層的實質教學內容：
 
-- 層 1 色彩知覺 — TODO(codex)
-- 層 2 色彩表徵 — TODO(codex)
-- 層 3 色彩意象 — TODO(codex)
-- 層 4 色彩量測 — TODO(codex)
-- 層 5 色彩管理 — TODO(codex)
-- 層 6 虛實輸出 — TODO(codex)
+- 層 1 色彩知覺 — 以視覺系統、色適應、同時對比、連續對比、色覺差異與
+  WCAG SC 1.4.1 人工檢核建立判讀邊界；交件須包含刺激條件、觀察紀錄、
+  色覺差異風險清單與「僅以顏色傳達」檢核表。
+- 層 2 色彩表徵 — 以 CIE XYZ、CIELAB、LCh、RGB、CMYK、OKLCH 與 ICC profile
+  建立可交換色彩資料；交件須包含色彩空間宣告、轉換來源、design token 表、
+  色票版本與不可跨空間直接比較的警示。
+- 層 3 色彩意象 — 以語意差異、情感意象、文化語境與品牌人格建立色彩指定理由；
+  交件須包含意象詞彙證據、受眾與語境說明、色票候選表、排除理由與 AI 使用揭露。
+- 層 4 色彩量測 — 以 i1 Pro 2／i1 Pro 3、標準光源條件、觀察角度、CIEDE2000
+  與量測紀錄建立可追溯色差證據；交件須包含原始量測檔、量測條件、ΔE00 報告、
+  儀器型號與日期。涉及 Judge QC 型號等級或螢光燈管者，須依設備閘門標示待核對。
+- 層 5 色彩管理 — 以 i1Profiler 建立 OS 層顯示器 ICC profile、指定工作色域、
+  軟打樣、色域映射與 profile 版本控管建立跨裝置一致性；不得產生寫入 monitor LUT
+  或經 AQCOLOR Pilot 硬體校色的任務。
+- 層 6 虛實輸出 — 必須走完整鏈：數位設計 → 顯示器校正 → 指定工作色域 →
+  軟打樣 → 媒材/設備描述檔 → 實體輸出 → 標準燈箱觀察 → 儀器量測 → 視覺評估 →
+  修正再輸出。已確認可使用 Mimaki UJF-3042FX 本體、D50/D65 燈箱、i1 Pro 2／3
+  與 BenQ PD2705Q/PD2706QN；依賴未確認媒材、白墨、clear、螢光燈管或授課地點配置者，
+  一律標 `<!-- BLOCKED: 待設備確認 -->`。
 
 **主線約束**：CIE XYZ → CIELAB／LCh → ΔE → ICC。
 Pantone 屬產業溝通與色票指定層，不得作為色彩科學的起點。
 
 **涵蓋範圍約束**：本課涵蓋範圍不得比 iPAS 初級三科更窄
-（色彩學、色彩計畫實務、色彩管理）。產生課程結構時須逐科比對，
-發現缺口即回報，不得默默略過。
+（色彩學、色彩計畫實務、色彩管理）。執行時讀取 `COURSE-CONTRACT.yaml`
+的 `capability_contract.ipas_alignment`，逐科檢查 `capability_refs`、`task_refs`、
+`verification_rule` 與 `gap_note`；若正式簡章推翻任一 `gap_note`，須回報缺口。
 
 ---
 
