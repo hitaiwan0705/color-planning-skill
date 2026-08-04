@@ -206,9 +206,18 @@ handoff_contract:
     rule: 本課只承接上游、只交付下游，不預設同期課程產出
 
   encoding_rule:
-    required_fields: [to_course, artifact_name, format, produced_by_task, consumed_for]
+    required_fields: [to_course, artifact_name, format, produced_by_task, consumed_for, status]
+    status_values: [draft, ratified]
     validation_rule: artifact_name 須為具體檔案或文件，不得為能力描述
     failure_condition: 出現「具備某某能力」形式之交接項 → 該項作廢，重寫為產物
+
+  drafting_authority:
+    # 授課者裁決（2026-08-04）：交接產物由 Codex 提草案，授課者核定。
+    codex_may_draft: true
+    codex_must_set_status: draft
+    ratified_by: instructor_only
+    failure_condition: Codex 產出之交接項 status 非 draft，或自行標為 ratified → 該項作廢
+    note: status 為 draft 者不得寫入其他契約作為前提，也不得據以產生任務
 
   example_entry:
     # 示範粒度，非課程內容。Codex 填入後應刪除。
@@ -217,10 +226,12 @@ handoff_contract:
     format: JSON + Markdown
     produced_by_task: TASK-xx
     consumed_for: 視覺編碼決策時的色彩可區辨性依據
+    status: draft
 
   handoffs:
-    # TODO(codex)：填入具體交接產物。
-    # CONTEXT.md 第 8 節列此為未決事項，Codex 提出草案，由授課者裁決。
+    # TODO(codex)：依 drafting_authority 提出草案，每項 status 必須為 draft。
+    # 下游四門課（資訊視覺化設計、品牌策略與跨媒體整合專題、整合行銷傳播、
+    # 畢業專題）至少各一項。核定前不得被其他契約引用。
     - TODO(codex)
 
 # ── 契約 7｜平台可攜契約 ─────────────────────────────────────────
