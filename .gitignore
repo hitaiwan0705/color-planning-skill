@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 測試產物（CI 以 artifact 上傳，不進版本控制）
+tools/color/tests/test_report.md
+
+# 授課教材與原始資料一律留在 repo 之外。
+# 此處僅為誤放時的第二道防線，真正的防線是 tools/validation/check_no_student_data.py。
+01_Lecture/
+*.pdf
+*.pptx
+*.docx
+*.xlsx
+*.zip
