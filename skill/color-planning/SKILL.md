@@ -48,9 +48,8 @@
 | Judge QC 螢光燈管（CWF／TL84／U30） | ⚠️ 未確認 | **不得假設 TL84 存在**。任何依賴賣場光源的同色異譜活動，一律標 `<!-- BLOCKED: 待設備確認 -->` |
 | Mimaki UJF-3042FX 本體 | ✅ 確認 | 列印範圍 300×420 mm、媒材厚度上限 50 mm 為硬上限 |
 | Mimaki 白墨／clear 是否已安裝 | ⚠️ 未確認 | 依賴白墨或 clear 的活動一律標 `BLOCKED` |
-| BenQ PD2705Q | ✅ 確認 | 100% sRGB／Rec.709，**不支援硬體校色** |
-| BenQ PD2706QN | ✅ 確認 | 支援硬體校色，但需色度計 |
-| 色度計（i1 Display Pro／SpyderX） | ⚠️ 未確認是否備有 | 硬體校色活動一律標 `BLOCKED`。i1 Pro 2/3 為分光儀，未列於 BenQ 建議清單 |
+| BenQ PD2705Q（sRGB／Rec.709）、PD2706QN（P3） | ✅ 確認 | 兩型**皆無硬體校色**。任何寫入 monitor LUT 的活動一律標 `BLOCKED` |
+| 螢幕校色路徑：i1 Pro 2／3 + i1Profiler → OS 層 ICC | ✅ 確認 | 可直接使用。不需色度計，不經 AQCOLOR Pilot |
 | 授課地點 | 未定 | 不得假設任何教室固定配置 |
 
 **閘門失敗條件**：輸出中出現 `CONTEXT.md` 未記載的儀器、型號或媒材，

@@ -66,14 +66,23 @@ task_contract:
 
   equipment_gate:
     # 對應 SKILL.md 第 2 節。狀態為 unverified 者，相關任務必須標 BLOCKED。
-    confirmed: [i1_pro_2, i1_pro_3, mimaki_ujf_3042fx_body, benq_pd2705q, benq_pd2706qn]
+    confirmed:
+      - i1_pro_2
+      - i1_pro_3
+      - mimaki_ujf_3042fx_body
+      - benq_pd2705q
+      - benq_pd2706qn
+      - display_profiling_via_i1profiler  # i1 Pro 2/3 + i1Profiler → OS 層 ICC
+      - light_booth_d50_d65
     unverified:
-      - judge_qc_model            # 實機型號未核對
+      - light_booth_model         # 研判為 Judge QC，須核對機身銘牌
       - judge_qc_fluorescent_lamp # CWF／TL84／U30 未確認，同色異譜活動依賴此項
       - mimaki_white_clear_ink    # 白墨與 clear 是否已安裝未確認
-      - colorimeter_availability  # 無色度計則 PD2706QN 硬體校色無法執行
+    unavailable:
+      # 已查證確定不具備者。標此類之活動一律 BLOCKED，且不得以「待確認」表述。
+      - monitor_hardware_calibration  # PD 系列僅 software calibration，硬體校色限 SW 系列
     undecided: [teaching_venue]
-    rule: 任務之 equipment_required 若含 unverified 或 undecided 項目，必須標 blocked_marker
+    rule: 任務之 equipment_required 若含 unverified、unavailable 或 undecided 項目，必須標 blocked_marker
 
   tasks:
     # TODO(codex)：依六層結構填入任務。
