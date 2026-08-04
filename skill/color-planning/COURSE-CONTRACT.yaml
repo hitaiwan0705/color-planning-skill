@@ -1,8 +1,7 @@
 # COURSE-CONTRACT.yaml — 色彩規劃與傳播應用｜七項契約
 #
 # 七項契約集中於本檔，不拆成多個 schema（CONTEXT.md 第 6 節第 3 條）。
-# 本檔為骨架：欄位結構、必填規則、驗證邏輯、失敗條件已完整；
-# 標 TODO(codex) 之處為課程實質內容，待 Codex 依 CONTEXT.md 填入。
+# 本檔為課程契約：欄位結構、必填規則、驗證邏輯、失敗條件與課程實質內容。
 #
 # 執行指令見 SKILL.md。已定案事實見 CONTEXT.md，衝突時以 CONTEXT.md 為準。
 
@@ -11,9 +10,9 @@ meta:
   institution: 中國文化大學 資訊傳播學系
   level: 大三上
   required: true
-  version: 0.1.0-skeleton
-  status: skeleton          # skeleton | content_filled | classroom_ready
-  classroom_ready: false    # 仍有 TODO(codex) 時必須為 false
+  version: 0.1.0-content-filled
+  status: content_filled    # skeleton | content_filled | classroom_ready
+  classroom_ready: false    # 設備未確認項與交接草案仍須授課者核定
   context_source: CONTEXT.md
   skill_source: skill/color-planning/SKILL.md
 
@@ -26,7 +25,7 @@ global_rules:
   external_fact_rule: 涉及外部事實者必須附可查證連結，查不到即標 UNVERIFIED，不得寫成肯定句
   equipment_rule: 僅得使用 CONTEXT.md 第 2 節已確認之設備；標 ⚠️ 或未定者相關活動標 BLOCKED
   scope_floor: 涵蓋範圍不得窄於 iPAS 初級三科（色彩學／色彩計畫實務／色彩管理）
-  todo_marker: TODO(codex)
+  todo_marker: none
   blocked_marker: "<!-- BLOCKED: 待設備確認 -->"
 
 # ── 契約 1｜能力契約 ─────────────────────────────────────────────
@@ -50,10 +49,49 @@ capability_contract:
     failure_condition: 缺任一交付物、或數值無法追溯、或未載明量測條件 → 未通過，不得以其他項目品質補償
 
   capabilities:
-    # TODO(codex)：依 CONTEXT.md 第 3 節六層結構填入能力條目。
-    # 每層至少一條，格式同 example_entry，id 由 CAP-01 起編。
     # 涉及 ⚠️ 設備者，failure_condition 前加 blocked_marker。
-    - TODO(codex)
+    - id: CAP-01
+      layer: 1
+      input_evidence: 指定色票、前景背景組合、版面截圖、刺激條件、觀察者紀錄、AI 使用揭露
+      observable_behavior: 標出色適應、同時對比、連續對比與色覺差異可能改變判讀的位置，並分開記錄 WCAG 對比與 SC 1.4.1「僅以顏色傳達」檢核
+      deliverable: 色彩知覺風險表、觀察條件紀錄、色覺差異風險清單、SC 1.4.1 人工檢核表
+      validation_rule: 每一筆風險須連到截圖座標或色票 ID；對比數值須可追溯至 color_audit.py；SC 1.4.1 不得以對比數值代替；WCAG 2.2 來源註記 https://www.w3.org/TR/WCAG22/
+      failure_condition: 缺任一交付物、以主觀喜好代替觀察條件、或把對比通過寫成 SC 1.4.1 通過 → 未通過
+    - id: CAP-02
+      layer: 2
+      input_evidence: 色票清單、原始設計檔、色彩空間宣告、ICC profile、工具輸出 JSON、AI 使用揭露
+      observable_behavior: 將同一色票以 CIE XYZ、CIELAB、LCh、RGB、CMYK、OKLCH 中任務指定格式記錄，標明來源 profile 與不可直接比較的跨空間欄位
+      deliverable: design token 表、色彩表徵對照表、色彩空間與 profile 版本紀錄、工具輸出附件
+      validation_rule: 每個 token 須有唯一 ID、色彩空間、數值、來源檔、profile 名稱與版本；跨空間轉換須保留工具輸出或軟體匯出紀錄；不得以 Pantone 作為色彩科學起點
+      failure_condition: token 缺 ID 或 profile、RGB/CMYK/Lab 數值未標來源、或跨色彩空間直接比較未註記限制 → 未通過
+    - id: CAP-03
+      layer: 3
+      input_evidence: 品牌或傳播情境簡報、受眾描述、語意差異量表、文化語境資料、候選色票、AI 使用揭露
+      observable_behavior: 將意象詞彙與品牌人格對應到候選色票，記錄保留與排除理由，並標出文化語境風險
+      deliverable: 色彩意象決策表、語意差異摘要、候選色票取捨紀錄、文化語境風險註記
+      validation_rule: 每個入選色須至少連到一筆意象證據與一筆排除替代色理由；外部文化或標準事實須附來源，查不到須標 UNVERIFIED
+      failure_condition: 只寫情緒形容詞而無證據、未列替代色排除理由、或將未查證文化意義寫成肯定句 → 未通過
+    - id: CAP-04
+      layer: 4
+      input_evidence: 實體樣本、i1 Pro 2 或 i1 Pro 3 量測檔、標準光源紀錄、觀察角度、儀器型號、AI 使用揭露
+      observable_behavior: 在指定光源與觀察條件下量測樣本，使用 CIEDE2000 報告色差，並把視覺觀察與儀器紀錄分欄
+      deliverable: 原始量測檔、量測條件表、ΔE00 報告、視覺觀察紀錄、異常值處理紀錄
+      validation_rule: 每個 ΔE00 數值須可追溯至 i1 Pro 量測檔或 color_audit.py；報告須註明 CIEDE2000 公式版本，不得與 CIE76 混用；D50/D65 燈箱可用但型號等級不得肯定
+      failure_condition: 缺原始量測檔、量測條件未載光源或觀察角度、以目測代替 ΔE00、或宣稱未核對之燈箱等級 → 未通過
+    - id: CAP-05
+      layer: 5
+      input_evidence: 顯示器型號、i1Profiler 校正紀錄、OS 層 ICC profile、工作色域設定、軟打樣截圖、AI 使用揭露
+      observable_behavior: 以 i1 Pro 2 或 i1 Pro 3 搭配 i1Profiler 建立 OS 層顯示器 ICC profile，指定工作色域，記錄軟打樣與色域映射設定
+      deliverable: 顯示器校正紀錄、ICC profile 檔名與版本表、工作色域設定表、軟打樣設定表、色域外色彩清單
+      validation_rule: 顯示器須限 BenQ PD2705Q 或 PD2706QN；校色路徑須為 i1Profiler 到 OS 層 ICC；不得寫入 monitor LUT 或宣稱 AQCOLOR Pilot 硬體校色；BenQ/X-Rite 來源見 CONTEXT.md 第 2 節連結
+      failure_condition: 缺 ICC profile、未載工作色域、將軟體校色寫成硬體校色、或使用 CONTEXT.md 未列顯示器 → 未通過
+    - id: CAP-06
+      layer: 6
+      input_evidence: 原始設計檔、工作色域設定、顯示器 ICC、軟打樣紀錄、Mimaki 輸出設定、媒材/設備描述檔、實體樣本、燈箱觀察紀錄、i1 Pro 量測檔、修正紀錄、AI 使用揭露
+      observable_behavior: 依序完成數位設計、顯示器校正、指定工作色域、軟打樣、媒材/設備描述檔記錄、Mimaki 實體輸出、D50/D65 燈箱觀察、儀器量測、視覺評估、修正再輸出
+      deliverable: 虛實輸出鏈路包、第一次輸出樣本、修正後輸出樣本、ΔE00 前後比較報告、視覺評估表、再輸出修改紀錄
+      validation_rule: 鏈路十步驟不得缺項或改序；Mimaki 輸出不得超過 300×420 mm 與 50 mm 厚度；媒材名稱若未由授課者確認，該媒材指定須標 BLOCKED；白墨、clear 或螢光燈管活動須標 BLOCKED
+      failure_condition: 缺任一鏈路證據、未交修正後樣本、未載媒材/設備描述檔、或使用未確認白墨/clear/TL84 做肯定教學 → 未通過
 
 # ── 契約 2｜任務契約 ─────────────────────────────────────────────
 # 在什麼情境、限制與角色下完成。
@@ -85,8 +123,54 @@ task_contract:
     rule: 任務之 equipment_required 若含 unverified、unavailable 或 undecided 項目，必須標 blocked_marker
 
   tasks:
-    # TODO(codex)：依六層結構填入任務。
-    - TODO(codex)
+    - id: TASK-01
+      capability_refs: [CAP-01]
+      scenario: 檢查資訊圖表或品牌版面中的色彩知覺風險，分別處理色適應、對比、色覺差異與 WCAG SC 1.4.1
+      role: 色彩規劃稽核者
+      constraints: 不得以個人偏好作為判斷；對比數值須由 color_audit.py 產生；SC 1.4.1 以人工檢核表記錄
+      equipment_required: []
+      duration: 1-2 週
+      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+    - id: TASK-02
+      capability_refs: [CAP-02]
+      scenario: 將傳播設計色票轉成可交換的色彩資料與 design token，標明色彩空間、profile 與版本
+      role: 色彩資料建檔者
+      constraints: 主線須從 CIE XYZ 到 CIELAB/LCh 到 ΔE 到 ICC；Pantone 只能作為產業溝通或色票指定欄位
+      equipment_required: []
+      duration: 1-2 週
+      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+    - id: TASK-03
+      capability_refs: [CAP-03]
+      scenario: 為品牌或傳播情境建立色彩意象決策表，將語意差異、文化語境與候選色票連成證據鏈
+      role: 色彩計畫提案者
+      constraints: 外部文化、標準或產業事實須附連結；查不到須標 UNVERIFIED；不得把 AI 產生內容寫成事實來源
+      equipment_required: []
+      duration: 2 週
+      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+    - id: TASK-04
+      capability_refs: [CAP-04]
+      scenario: 以 i1 Pro 2 或 i1 Pro 3 量測實體樣本，在 D50/D65 標準燈箱下記錄視覺觀察，產出 ΔE00 報告
+      role: 色彩量測記錄者
+      constraints: 燈箱可使用 D50/D65；型號與等級須寫「待核對」；不得假設 TL84、CWF 或 U30 存在
+      equipment_required: [i1_pro_2, i1_pro_3, light_booth_d50_d65]
+      duration: 2 週
+      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+    - id: TASK-05
+      capability_refs: [CAP-05]
+      scenario: 對 BenQ PD2705Q 或 PD2706QN 走 i1Profiler 到 OS 層 ICC 的顯示器校正與軟打樣設定
+      role: 色彩管理操作者
+      constraints: 只允許 software calibration；不得寫入 monitor LUT；不得使用 AQCOLOR Pilot 作為本課校色路徑
+      equipment_required: [benq_pd2705q, benq_pd2706qn, display_profiling_via_i1profiler, i1_pro_2, i1_pro_3]
+      duration: 2 週
+      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+    - id: TASK-06
+      capability_refs: [CAP-06]
+      scenario: 完成虛實輸出完整鏈：數位設計 → 顯示器校正 → 指定工作色域 → 軟打樣 → 媒材/設備描述檔 → 實體輸出 → 標準燈箱觀察 → 儀器量測 → 視覺評估 → 修正再輸出
+      role: 虛實輸出品質記錄者
+      constraints: "Mimaki UJF-3042FX 輸出不得超過 300×420 mm 與 50 mm 厚度；不得指定 CONTEXT.md 未確認媒材；白墨、clear、螢光燈管與固定教室配置相關活動一律標 <!-- BLOCKED: 待設備確認 -->"
+      equipment_required: [mimaki_ujf_3042fx_body, light_booth_d50_d65, i1_pro_2, i1_pro_3, benq_pd2705q, benq_pd2706qn, display_profiling_via_i1profiler]
+      duration: 3-4 週
+      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
 
   schedule_constraint:
     # 由 CONTEXT.md 第 4 節導出，非課程內容，Codex 不得更動。
@@ -100,9 +184,27 @@ task_contract:
 assessment_contract:
   principle: skill 輸出證據落差清單；分數由授課者裁決（SKILL.md 第 1 節）
   levels:
-    # TODO(codex)：定義能力層級的可觀察區辨標準。
     # 禁止以「優／良／可」等無操作定義之詞彙作為層級名稱。
-    - TODO(codex)
+    - id: LEVEL-01
+      name: evidence_missing
+      observable_standard: 缺 required_artifacts.always 任一項，或缺對應任務交付物
+      output_rule: gap_entry code 使用 unsupported_claim、partial_input、disclosure_missing 或 blocked_by_equipment
+      failure_condition: 不得輸出分數、等第或總評語
+    - id: LEVEL-02
+      name: evidence_present_not_traceable
+      observable_standard: 交付物存在，但數值、profile、量測條件或視覺評估無法追溯到工具輸出、ICC 檔、儀器檔或截圖位置
+      output_rule: gap_entry traceable_to 填 null，並列 evidence_expected 與 evidence_found
+      failure_condition: 不得以文字說明補足缺少的原始檔或工具輸出
+    - id: LEVEL-03
+      name: traceable_with_gaps
+      observable_standard: 主要證據可追溯，但仍有設備狀態、AI 使用揭露、SC 1.4.1 人工檢核或修正紀錄缺口
+      output_rule: 逐項列出 gap code，不合併成單一總評
+      failure_condition: 不得把未確認設備活動標為已完成
+    - id: LEVEL-04
+      name: traceable_complete
+      observable_standard: 必要證據齊全、數值可追溯、設備閘門通過、AI 使用揭露存在，且未對研究等級或設備等級作超出 CONTEXT.md 的宣稱
+      output_rule: gaps 可為空陣列，但仍須列 checks 與 disclosure_status
+      failure_condition: 輸出任何分數或推定研究成效即作廢
 
   output_format:
     required_fields: [artifact_id, checks, gaps, unsupported_claims, disclosure_status]
@@ -117,8 +219,7 @@ assessment_contract:
     failure_condition: 輸出含分數、等第或總評語 → 違反 principle，該輸出作廢
 
   rubric_dimensions:
-    # TODO(codex)：維度與權重尚未決定（CONTEXT.md 第 8 節），
-    # 填入前須先取得授課者裁決，Codex 不得自行決定權重。
+    # 維度與權重尚未決定（CONTEXT.md 第 8 節），填入前須先取得授課者裁決。
     status: undecided_by_instructor
 
 # ── 契約 4｜證據契約 ─────────────────────────────────────────────
@@ -137,8 +238,18 @@ evidence_contract:
       - assessment_evidence
       - ai_usage_disclosure
     per_task:
-      # TODO(codex)：各任務額外要求的交付物。
-      - TODO(codex)
+      - task_id: TASK-01
+        artifacts: [版面截圖, 色彩知覺風險表, 色覺差異風險清單, SC_1_4_1_人工檢核表, color_audit_json]
+      - task_id: TASK-02
+        artifacts: [design_token_table, 色彩表徵對照表, ICC_profile_version_record, 色票版本紀錄, color_audit_json]
+      - task_id: TASK-03
+        artifacts: [色彩意象決策表, 語意差異摘要, 候選色票取捨紀錄, 文化語境來源清單, AI_usage_disclosure]
+      - task_id: TASK-04
+        artifacts: [i1_pro_measurement_file, 量測條件表, DeltaE00_report, 燈箱觀察紀錄, 異常值處理紀錄]
+      - task_id: TASK-05
+        artifacts: [i1Profiler_calibration_record, OS_ICC_profile_record, working_space_setting, soft_proof_setting, out_of_gamut_color_list]
+      - task_id: TASK-06
+        artifacts: [原始設計檔, 顯示器校正紀錄, working_space_setting, soft_proof_record, media_device_profile_record, first_physical_sample, revised_physical_sample, D50_D65_light_booth_observation, i1_pro_measurement_file, DeltaE00_before_after_report, visual_evaluation_form, revision_output_log]
 
   traceability_rule:
     statement: 每個數值主張須追溯至 color_audit.py 輸出或儀器量測檔
@@ -229,10 +340,32 @@ handoff_contract:
     status: draft
 
   handoffs:
-    # TODO(codex)：依 drafting_authority 提出草案，每項 status 必須為 draft。
     # 下游四門課（資訊視覺化設計、品牌策略與跨媒體整合專題、整合行銷傳播、
     # 畢業專題）至少各一項。核定前不得被其他契約引用。
-    - TODO(codex)
+    - to_course: 資訊視覺化設計（大三下）
+      artifact_name: design_token_table.json + DeltaE00_audit_report.md + SC_1_4_1_checklist.md
+      format: JSON + Markdown
+      produced_by_task: TASK-02/TASK-04/TASK-06
+      consumed_for: 資訊視覺化設計讀取 token ID、色彩空間、對比結果、CIEDE2000 色差與色覺差異風險後，用於類別色、序列色、警示色與前景背景組合的視覺編碼決策
+      status: draft
+    - to_course: 品牌策略與跨媒體整合專題（大三下，就業學程）
+      artifact_name: brand_color_decision_table.md + color_intent_source_list.md + profile_version_log.csv
+      format: Markdown + CSV
+      produced_by_task: TASK-03/TASK-05
+      consumed_for: 品牌策略課讀取意象詞彙、受眾語境、候選色排除理由與 profile 版本後，用於品牌識別規範、跨媒體素材色彩指定與供應商溝通檔案
+      status: draft
+    - to_course: 整合行銷傳播（大四上）
+      artifact_name: campaign_color_qc_packet.zip
+      format: ZIP containing Markdown, JSON, ICC profile record, measurement files
+      produced_by_task: TASK-01/TASK-04/TASK-06
+      consumed_for: 整合行銷傳播課讀取色彩風險表、輸出鏈路、燈箱觀察與 ΔE00 前後比較後，用於多接觸點素材的輸出驗收、供應商回報與修正決策
+      status: draft
+    - to_course: 畢業專題（大四上）
+      artifact_name: final_project_color_reproducibility_dossier.zip
+      format: ZIP containing source file index, design tokens, ICC/profile log, soft proof record, measurement files, revision log
+      produced_by_task: TASK-02/TASK-05/TASK-06
+      consumed_for: 畢業專題讀取來源檔索引、token 表、ICC/profile 紀錄、軟打樣設定、實體輸出樣本紀錄與修正再輸出紀錄後，用於專題展覽輸出、口試展示檔與製作廠商交付規格
+      status: draft
 
 # ── 契約 7｜平台可攜契約 ─────────────────────────────────────────
 # 在不同 LLM 上如何維持最低一致性。降級但不偽裝。
