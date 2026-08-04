@@ -22,10 +22,11 @@ global_rules:
     # 能力描述不得使用下列詞彙，須編譯為五段式
     forbidden: [understand, apply, integrate, 理解, 應用, 整合, 熟悉, 掌握]
     replacement_form: [input_evidence, observable_behavior, deliverable, validation_rule, failure_condition]
+    scope: 僅適用於 capability_contract.capabilities 之 input_evidence、observable_behavior、deliverable、validation_rule、failure_condition 欄位；課程名稱、專有名詞不適用
   external_fact_rule: 涉及外部事實者必須附可查證連結，查不到即標 UNVERIFIED，不得寫成肯定句
   equipment_rule: 僅得使用 CONTEXT.md 第 2 節已確認之設備；標 ⚠️ 或未定者相關活動標 BLOCKED
   scope_floor: 涵蓋範圍不得窄於 iPAS 初級三科（色彩學／色彩計畫實務／色彩管理）
-  todo_marker: none
+  todo_marker: TODO(codex)
   blocked_marker: "<!-- BLOCKED: 待設備確認 -->"
 
 # ── 契約 1｜能力契約 ─────────────────────────────────────────────
@@ -36,6 +37,31 @@ capability_contract:
     id_pattern: "CAP-[0-9]{2}"
     layer_range: [1, 6]
     failure_condition: 任一必填欄位缺漏、為空、或使用 global_rules.abstract_verbs_forbidden 所列詞彙
+
+  ipas_alignment:
+    source: CONTEXT.md 第 4 節
+    source_url: https://ipd.nat.gov.tw/ipas/certification/CPM/exam-info
+    rule: 每一科至少須對應一個 CAP 與一個 TASK；任一科無對應即觸發 E-SCOPE
+    subjects:
+      - subject: 科目一 色彩學
+        capability_refs: [CAP-01, CAP-02, CAP-04]
+        task_refs: [TASK-01, TASK-02, TASK-04]
+        coverage_basis: 色彩知覺、色彩表徵、標準光源、觀察條件與 CIEDE2000 色差證據
+        verification_rule: CAP/TASK 產物須含知覺風險表、色彩表徵對照表、量測條件表與 ΔE00 報告
+        gap_note: 若 iPAS 115 年度正式簡章列出本表未含之色彩學細目，須補列；目前僅依 CONTEXT.md 已查證三科名稱比對
+      - subject: 科目二 色彩計畫實務
+        capability_refs: [CAP-02, CAP-03, CAP-06]
+        task_refs: [TASK-02, TASK-03, TASK-06]
+        coverage_basis: design token、色彩意象決策、候選色票取捨、媒介輸出限制與修正再輸出紀錄
+        verification_rule: CAP/TASK 產物須含 design_token_table、色彩意象決策表、候選色票取捨紀錄與虛實輸出鏈路包
+        gap_note: "<!-- UNVERIFIED: 科目二作答方式與是否配發實體色票須以 115 年正式簡章條文核對 -->"
+      - subject: 科目三 色彩管理
+        capability_refs: [CAP-04, CAP-05, CAP-06]
+        task_refs: [TASK-04, TASK-05, TASK-06]
+        coverage_basis: i1 Pro 量測、顯示器 OS 層 ICC、指定工作色域、軟打樣、媒材/設備描述檔與輸出後量測
+        verification_rule: CAP/TASK 產物須含 i1_pro_measurement_file、i1Profiler_calibration_record、OS_ICC_profile_record、soft_proof_record 與 DeltaE00_before_after_report
+        gap_note: 若 iPAS 115 年度正式簡章列出本表未含之色彩管理細目，須補列；目前僅依 CONTEXT.md 已查證三科名稱比對
+    failure_condition: 任一 subject 缺 capability_refs、task_refs、verification_rule，或把 UNVERIFIED 項寫成肯定句 → E-SCOPE
 
   # 範例條目：示範五段式的寫法與粒度，不是課程內容。
   # Codex 填入真實條目後應刪除本例。
@@ -176,6 +202,20 @@ task_contract:
     # 由 CONTEXT.md 第 4 節導出，非課程內容，Codex 不得更動。
     exam_date: 2026-11-14
     rule: iPAS 考科對應內容須於 2026-11-14 前授畢
+    coverage_before_exam:
+      required_for_ipas_subjects:
+        - subject: 科目一 色彩學
+          task_refs: [TASK-01, TASK-02, TASK-04]
+        - subject: 科目二 色彩計畫實務
+          task_refs: [TASK-02, TASK-03]
+          post_exam_reinforcement: TASK-06
+          unverified_note: "<!-- UNVERIFIED: 科目二作答方式與是否須完整實體輸出鏈，須以 115 年正式簡章條文核對 -->"
+        - subject: 科目三 色彩管理
+          task_refs: [TASK-04, TASK-05]
+          post_exam_reinforcement: TASK-06
+      post_exam_reinforcement_tasks: [TASK-06]
+      feasibility_status: requires_instructor_scheduling
+      failure_condition: 若 TASK-01 至 TASK-05 無法於 2026-11-14 前授畢，須標需授課者裁決；不得宣稱已滿足考前涵蓋
     registration_note: 報名極可能於開學一至兩週內截止，報考決定須於第 1 週處理
     unverified_note: 報名期間與團體報名截止日須以 115 年度初級簡章條文為準
 
