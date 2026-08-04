@@ -141,8 +141,9 @@ python3 tools/color/scripts/color_audit.py --pair "#前景" "#背景" --json
 Pantone 屬產業溝通與色票指定層，不得作為色彩科學的起點。
 
 **涵蓋範圍約束**：本課涵蓋範圍不得比 iPAS 初級三科更窄
-（色彩學、色彩計畫實務、色彩管理）。產生課程結構時須逐科比對，
-發現缺口即回報，不得默默略過。
+（色彩學、色彩計畫實務、色彩管理）。執行時讀取 `COURSE-CONTRACT.yaml`
+的 `capability_contract.ipas_alignment`，逐科檢查 `capability_refs`、`task_refs`、
+`verification_rule` 與 `gap_note`；若正式簡章推翻任一 `gap_note`，須回報缺口。
 
 ---
 

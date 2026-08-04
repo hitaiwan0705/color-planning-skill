@@ -63,17 +63,6 @@ capability_contract:
         gap_note: 若 iPAS 115 年度正式簡章列出本表未含之色彩管理細目，須補列；目前僅依 CONTEXT.md 已查證三科名稱比對
     failure_condition: 任一 subject 缺 capability_refs、task_refs、verification_rule，或把 UNVERIFIED 項寫成肯定句 → E-SCOPE
 
-  # 範例條目：示範五段式的寫法與粒度，不是課程內容。
-  # Codex 填入真實條目後應刪除本例。
-  example_entry:
-    id: CAP-00
-    layer: 6
-    input_evidence: 學生提交之原始設計檔、輸出檔、實體樣本、量測紀錄
-    observable_behavior: 於標準光源下量測實體樣本並與數位原稿比對，記錄差異來源
-    deliverable: ΔE00 報告（含量測條件）、修改紀錄、再輸出樣本
-    validation_rule: 報告中每個 ΔE 數值可追溯至 color_audit.py 輸出或 i1 Pro 量測檔；量測條件須載明光源與觀察角度
-    failure_condition: 缺任一交付物、或數值無法追溯、或未載明量測條件 → 未通過，不得以其他項目品質補償
-
   capabilities:
     # 涉及 ⚠️ 設備者，failure_condition 前加 blocked_marker。
     - id: CAP-01
@@ -369,15 +358,6 @@ handoff_contract:
     ratified_by: instructor_only
     failure_condition: Codex 產出之交接項 status 非 draft，或自行標為 ratified → 該項作廢
     note: status 為 draft 者不得寫入其他契約作為前提，也不得據以產生任務
-
-  example_entry:
-    # 示範粒度，非課程內容。Codex 填入後應刪除。
-    to_course: 資訊視覺化設計（大三下）
-    artifact_name: design_token 表 + ΔE00 稽核報告
-    format: JSON + Markdown
-    produced_by_task: TASK-xx
-    consumed_for: 視覺編碼決策時的色彩可區辨性依據
-    status: draft
 
   handoffs:
     # 下游四門課（資訊視覺化設計、品牌策略與跨媒體整合專題、整合行銷傳播、
