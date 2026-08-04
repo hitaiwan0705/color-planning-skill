@@ -34,9 +34,9 @@ Claude 與 Codex 每輪開始前都讀本檔，取代重述背景。
 ## 2. 可用設備（進入課程流程者）
 
 - X-Rite i1 Pro 2、X-Rite i1 Pro 3
-- 標準燈箱：X-Rite Macbeth Judge QC，Dual Daylight 版（D50 與 D65 皆具備）
-  <!-- UNVERIFIED: 授課者未能確認實機型號，僅比對代理商頁面判定。
-       須以機身銘牌與燈管標示核對；Judge QC 為 Class B，非 Class A。
+- 標準燈箱：D50 與 D65 皆具備（✅ 授課者確認）。型號研判為 X-Rite Macbeth Judge QC
+  <!-- UNVERIFIED: 型號僅比對代理商頁面判定，授課者未能確認。須以機身銘牌核對。
+       若確為 Judge QC，其等級為 Class B，非 Class A，不得宣稱最嚴格視覺評估等級。
        https://www.xrite.com/categories/light-booths/judge-qc -->
   - 螢光燈管為選配，出廠可為 CWF／TL84／U30 其一，**不可假設 TL84 存在**
     <!-- UNVERIFIED: 須抽出燈管讀標示才能確定。同色異譜演示依賴此項。 -->
@@ -46,15 +46,18 @@ Claude 與 Codex 每輪開始前都讀本檔，取代重述背景。
        https://mimaki.com/product/inkjet/i-flat/ujf-3042fx/ -->
   <!-- 待填：本機實際安裝的墨水組（是否已裝白墨與 clear）、可用媒材清單 -->
 - 學生機 RTX 3060 約 40 台；教師機 RTX 4080
-- 顯示器：BenQ PD2705Q 與 PD2706QN（皆 27" QHD，出廠校色，標稱 ΔE ≤ 3）
-  - PD2705Q：100% sRGB／Rec.709，**不支援硬體校色**
-    <!-- https://www.benq.com/zh-tw/monitor/creative-pro/pd2705q.html -->
-  - PD2706QN：標稱涵蓋 P3，**支援硬體校色**（AQCOLOR Pilot，需色度計）
-    <!-- https://www.benq.com/zh-tw/monitor/creative-pro/pd2706qn.html -->
+- 顯示器：BenQ PD2705Q（100% sRGB／Rec.709）與 PD2706QN（標稱涵蓋 P3），
+  皆 27" QHD、出廠校色、標稱 ΔE ≤ 3
+  - 兩型**皆無硬體校色**（monitor LUT），僅 software calibration
+    <!-- ❌ 更正：原記 PD2706QN「支援硬體校色」為誤。AQCOLOR Pilot 規格頁將
+         PD2706QN 列於 Basic Color Calibration (software calibration)；
+         硬體校色與 i1 Pro 支援皆僅限 SW 系列。
+         https://www.benq.com/en-us/monitor/software/aqcolor-pilot/spec.html -->
+  - **校色路徑（✅ 已定案）**：i1 Pro 2／i1 Pro 3 搭配 i1Profiler 建立 OS 層
+    ICC profile，不經 AQCOLOR Pilot。故**不需另購色度計**。
+    <!-- i1Profiler 支援以 i1Pro 系列校正與描述顯示器
+         https://www.xrite.com/blog/i1profiler-calibration-icc-profiling -->
   <!-- 待填：兩型各有幾台、放在哪個空間 -->
-  <!-- 待填：是否備有色度計（i1 Display Pro／SpyderX）。BenQ 頁面列出的建議校色器
-       僅含色度計，未列 i1 Pro 2/3 分光儀；能否以分光儀替代須向 BenQ 查證。
-       若不能替代且無色度計，PD2706QN 的硬體校色無法執行。 -->
 - <!-- 未定：授課地點。授課者表示應不會在電腦教室上課，教室設備配置未定。 -->
 
 ## 3. 課程六層結構（✅ 已定案）
