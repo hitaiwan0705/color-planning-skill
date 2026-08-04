@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # 第一道：學生資料與機密不得進入 repo（失敗即擋 merge）
+      - name: 學生資料外洩檢查
+        run: python3 tools/validation/check_no_student_data.py
+
+      # 第二道：決定性工具必須通過驗證，否則其輸出不得用於評分或研究
+      - name: CIEDE2000 驗證套件
+        run: |
+          cd tools/color/tests
+          python3 test_ciede2000.py --report test_report.md
+
+      - name: 上傳測試報告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ciede2000-test-report
+          path: tools/color/tests/test_report.md
