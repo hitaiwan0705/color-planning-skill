@@ -5,7 +5,7 @@
 #
 # 相對官方範例，本檔增加一項改動：**發話者身分閘門**。
 # 理由：本 repo 為 public，官方範例的觸發條件不限制發話者，
-# 任何人在 issue 或 PR 留言 @claude 都會啟動並消耗 ANTHROPIC_API_KEY 額度。
+# 任何人在 issue 或 PR 留言 @claude 都會啟動並消耗授課者的訂閱用量。
 #
 # 注意實作細節：每個事件的身分檢查必須綁在「發出該次觸發的物件」上。
 # issue_comment 事件中 github.event.issue.author_association 是**開票者**的身分，
@@ -56,4 +56,6 @@ jobs:
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # 走 Pro/Max 訂閱的 OAuth token，非 API 額度計費。
+          # token 由本機 `claude setup-token` 產生後存入 GitHub Secrets。
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
