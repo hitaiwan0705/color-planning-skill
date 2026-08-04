@@ -1,0 +1,292 @@
+# COURSE-CONTRACT.yaml — 色彩規劃與傳播應用｜七項契約
+#
+# 七項契約集中於本檔，不拆成多個 schema（CONTEXT.md 第 6 節第 3 條）。
+# 本檔為骨架：欄位結構、必填規則、驗證邏輯、失敗條件已完整；
+# 標 TODO(codex) 之處為課程實質內容，待 Codex 依 CONTEXT.md 填入。
+#
+# 執行指令見 SKILL.md。已定案事實見 CONTEXT.md，衝突時以 CONTEXT.md 為準。
+
+meta:
+  course_name: 色彩規劃與傳播應用
+  institution: 中國文化大學 資訊傳播學系
+  level: 大三上
+  required: true
+  version: 0.1.0-skeleton
+  status: skeleton          # skeleton | content_filled | classroom_ready
+  classroom_ready: false    # 仍有 TODO(codex) 時必須為 false
+  context_source: CONTEXT.md
+  skill_source: skill/color-planning/SKILL.md
+
+# 全域必填規則：任一違反即本檔無效
+global_rules:
+  abstract_verbs_forbidden:
+    # 能力描述不得使用下列詞彙，須編譯為五段式
+    forbidden: [understand, apply, integrate, 理解, 應用, 整合, 熟悉, 掌握]
+    replacement_form: [input_evidence, observable_behavior, deliverable, validation_rule, failure_condition]
+  external_fact_rule: 涉及外部事實者必須附可查證連結，查不到即標 UNVERIFIED，不得寫成肯定句
+  equipment_rule: 僅得使用 CONTEXT.md 第 2 節已確認之設備；標 ⚠️ 或未定者相關活動標 BLOCKED
+  scope_floor: 涵蓋範圍不得窄於 iPAS 初級三科（色彩學／色彩計畫實務／色彩管理）
+  todo_marker: TODO(codex)
+  blocked_marker: "<!-- BLOCKED: 待設備確認 -->"
+
+# ── 契約 1｜能力契約 ─────────────────────────────────────────────
+# 學生最後能獨立完成什麼。每條能力必須五段式，缺任一段即該條無效。
+capability_contract:
+  encoding_rule:
+    required_fields: [id, layer, input_evidence, observable_behavior, deliverable, validation_rule, failure_condition]
+    id_pattern: "CAP-[0-9]{2}"
+    layer_range: [1, 6]
+    failure_condition: 任一必填欄位缺漏、為空、或使用 global_rules.abstract_verbs_forbidden 所列詞彙
+
+  # 範例條目：示範五段式的寫法與粒度，不是課程內容。
+  # Codex 填入真實條目後應刪除本例。
+  example_entry:
+    id: CAP-00
+    layer: 6
+    input_evidence: 學生提交之原始設計檔、輸出檔、實體樣本、量測紀錄
+    observable_behavior: 於標準光源下量測實體樣本並與數位原稿比對，記錄差異來源
+    deliverable: ΔE00 報告（含量測條件）、修改紀錄、再輸出樣本
+    validation_rule: 報告中每個 ΔE 數值可追溯至 color_audit.py 輸出或 i1 Pro 量測檔；量測條件須載明光源與觀察角度
+    failure_condition: 缺任一交付物、或數值無法追溯、或未載明量測條件 → 未通過，不得以其他項目品質補償
+
+  capabilities:
+    # TODO(codex)：依 CONTEXT.md 第 3 節六層結構填入能力條目。
+    # 每層至少一條，格式同 example_entry，id 由 CAP-01 起編。
+    # 涉及 ⚠️ 設備者，failure_condition 前加 blocked_marker。
+    - TODO(codex)
+
+# ── 契約 2｜任務契約 ─────────────────────────────────────────────
+# 在什麼情境、限制與角色下完成。
+task_contract:
+  encoding_rule:
+    required_fields: [id, capability_refs, scenario, role, constraints, equipment_required, duration, submission_channel]
+    id_pattern: "TASK-[0-9]{2}"
+    validation_rule: capability_refs 必須指向存在的 CAP id；equipment_required 每項須在 CONTEXT.md 第 2 節出現
+    failure_condition: 參照不存在的能力、或要求 CONTEXT.md 未記載之設備 → 該任務作廢
+
+  equipment_gate:
+    # 對應 SKILL.md 第 2 節。狀態為 unverified 者，相關任務必須標 BLOCKED。
+    confirmed:
+      - i1_pro_2
+      - i1_pro_3
+      - mimaki_ujf_3042fx_body
+      - benq_pd2705q
+      - benq_pd2706qn
+      - display_profiling_via_i1profiler  # i1 Pro 2/3 + i1Profiler → OS 層 ICC
+      - light_booth_d50_d65
+    unverified:
+      - light_booth_model         # 研判為 Judge QC，須核對機身銘牌
+      - judge_qc_fluorescent_lamp # CWF／TL84／U30 未確認，同色異譜活動依賴此項
+      - mimaki_white_clear_ink    # 白墨與 clear 是否已安裝未確認
+    unavailable:
+      # 已查證確定不具備者。標此類之活動一律 BLOCKED，且不得以「待確認」表述。
+      - monitor_hardware_calibration  # PD 系列僅 software calibration，硬體校色限 SW 系列
+    undecided: [teaching_venue]
+    rule: 任務之 equipment_required 若含 unverified、unavailable 或 undecided 項目，必須標 blocked_marker
+
+  tasks:
+    # TODO(codex)：依六層結構填入任務。
+    - TODO(codex)
+
+  schedule_constraint:
+    # 由 CONTEXT.md 第 4 節導出，非課程內容，Codex 不得更動。
+    exam_date: 2026-11-14
+    rule: iPAS 考科對應內容須於 2026-11-14 前授畢
+    registration_note: 報名極可能於開學一至兩週內截止，報考決定須於第 1 週處理
+    unverified_note: 報名期間與團體報名截止日須以 115 年度初級簡章條文為準
+
+# ── 契約 3｜評量契約 ─────────────────────────────────────────────
+# 如何判斷品質與能力層級。本 skill 產生落差清單，不產生分數。
+assessment_contract:
+  principle: skill 輸出證據落差清單；分數由授課者裁決（SKILL.md 第 1 節）
+  levels:
+    # TODO(codex)：定義能力層級的可觀察區辨標準。
+    # 禁止以「優／良／可」等無操作定義之詞彙作為層級名稱。
+    - TODO(codex)
+
+  output_format:
+    required_fields: [artifact_id, checks, gaps, unsupported_claims, disclosure_status]
+    gap_entry_fields: [code, evidence_expected, evidence_found, traceable_to]
+    allowed_codes:
+      - unsupported_claim      # 數值主張無法追溯
+      - contradicted_by_tool   # 與工具複算結果不一致
+      - disclosure_missing     # 未揭露 AI 使用
+      - not_assessable_without_visual
+      - partial_input
+      - blocked_by_equipment
+    failure_condition: 輸出含分數、等第或總評語 → 違反 principle，該輸出作廢
+
+  rubric_dimensions:
+    # TODO(codex)：維度與權重尚未決定（CONTEXT.md 第 8 節），
+    # 填入前須先取得授課者裁決，Codex 不得自行決定權重。
+    status: undecided_by_instructor
+
+# ── 契約 4｜證據契約 ─────────────────────────────────────────────
+# 每個主張需要什麼證據。缺項即未通過，不得補償。
+evidence_contract:
+  required_artifacts:
+    # 不論是否啟用研究層皆須保留（CONTEXT.md 第 6 節、SKILL.md 第 7 節）
+    always:
+      - task_version
+      - color_space_declared
+      - device_and_calibration_state
+      - icc_profile
+      - measurement_conditions   # 光源、觀察角度、儀器型號
+      - output_result
+      - revision_rationale
+      - assessment_evidence
+      - ai_usage_disclosure
+    per_task:
+      # TODO(codex)：各任務額外要求的交付物。
+      - TODO(codex)
+
+  traceability_rule:
+    statement: 每個數值主張須追溯至 color_audit.py 輸出或儀器量測檔
+    accepted_sources: [color_audit_json, i1_pro_measurement_file, instructor_reference_sample]
+    failure_condition: 無法追溯 → 標 unsupported_claim，不得以「經驗判斷」代替
+
+  completeness_rule:
+    statement: required_artifacts.always 缺任一項即未通過
+    compensation_allowed: false
+
+# ── 契約 5｜工具契約 ─────────────────────────────────────────────
+# 哪些判斷必須由程式或儀器完成。
+tool_contract:
+  principle: 決定性計算交由工具；LLM 負責解讀、教學與批判（CONTEXT.md 第 6 節第 8 條）
+
+  must_use_tool_for:
+    - 兩色是否可區辨或視為同色
+    - 前景背景對比是否符合 WCAG
+    - 色票在色覺差異下是否混淆
+    - 任何寫入評量、報告或研究的數值
+
+  tools:
+    color_audit:
+      path: tools/color/scripts/color_audit.py
+      invocations:
+        palette: python3 tools/color/scripts/color_audit.py --palette "#RRGGBB,..." --json
+        pair: python3 tools/color/scripts/color_audit.py --pair "#前景" "#背景" --json
+      output_keys_pair: [foreground, background, wcag.ratio, wcag.AA_normal_text_4.5, wcag.AA_large_text_3.0, wcag.AA_non_text_3.0, wcag.AAA_normal_text_7.0, wcag.AAA_large_text_4.5, cvd_contrast.protan, cvd_contrast.deutan, cvd_contrast.tritan, cvd_contrast.grayscale]
+      output_keys_palette: [palette, min_delta_e_threshold, scenarios.worst_pair.delta_e00, scenarios.worst_pair.confusable, scenarios.confusable_count]
+      validation_status:
+        reference_tests: 7/34
+        property_tests: 8/8
+        research_grade_use: not_approved
+        classroom_demo_use: conditionally_approved
+        rule: 不得宣稱完整驗證；不得用於研究等級主張
+
+  not_covered_by_tool:
+    # 工具不檢測者，須另以人工檢核，且不得以工具輸出宣稱已滿足
+    - wcag_sc_1_4_1_color_alone
+    - 實體樣本外觀與材質觀感
+    - 版面與圖形語意
+
+  instrument_use:
+    i1_pro:
+      models: [i1 Pro 2, i1 Pro 3]
+      required_record: [光源, 觀察角度, 儀器型號, 量測日期]
+      failure_condition: 量測紀錄缺任一必填欄位 → 該量測結果不得引用
+
+  delta_e_rule:
+    formula: CIEDE2000
+    citation_required: true
+    forbidden: 與 CIE76 混用
+
+# ── 契約 6｜課程交接契約 ─────────────────────────────────────────
+# 前後課程交換哪些具體產物。寫產物，不寫能力描述。
+handoff_contract:
+  position:
+    # 依 CONTEXT.md 第 1 節：上游皆早於本課，下游皆晚於本課
+    upstream: [認知心理學（大一上）, 人機互動（大二上）]
+    downstream:
+      - 資訊視覺化設計（大三下）
+      - 品牌策略與跨媒體整合專題（大三下，就業學程）
+      - 整合行銷傳播（大四上）
+      - 畢業專題（大四上）
+    rule: 本課只承接上游、只交付下游，不預設同期課程產出
+
+  encoding_rule:
+    required_fields: [to_course, artifact_name, format, produced_by_task, consumed_for, status]
+    status_values: [draft, ratified]
+    validation_rule: artifact_name 須為具體檔案或文件，不得為能力描述
+    failure_condition: 出現「具備某某能力」形式之交接項 → 該項作廢，重寫為產物
+
+  drafting_authority:
+    # 授課者裁決（2026-08-04）：交接產物由 Codex 提草案，授課者核定。
+    codex_may_draft: true
+    codex_must_set_status: draft
+    ratified_by: instructor_only
+    failure_condition: Codex 產出之交接項 status 非 draft，或自行標為 ratified → 該項作廢
+    note: status 為 draft 者不得寫入其他契約作為前提，也不得據以產生任務
+
+  example_entry:
+    # 示範粒度，非課程內容。Codex 填入後應刪除。
+    to_course: 資訊視覺化設計（大三下）
+    artifact_name: design_token 表 + ΔE00 稽核報告
+    format: JSON + Markdown
+    produced_by_task: TASK-xx
+    consumed_for: 視覺編碼決策時的色彩可區辨性依據
+    status: draft
+
+  handoffs:
+    # TODO(codex)：依 drafting_authority 提出草案，每項 status 必須為 draft。
+    # 下游四門課（資訊視覺化設計、品牌策略與跨媒體整合專題、整合行銷傳播、
+    # 畢業專題）至少各一項。核定前不得被其他契約引用。
+    - TODO(codex)
+
+# ── 契約 7｜平台可攜契約 ─────────────────────────────────────────
+# 在不同 LLM 上如何維持最低一致性。降級但不偽裝。
+portability_contract:
+  principle: 能力受限時降低宣稱強度，不得以估算冒充計算（SKILL.md 第 6 節）
+
+  degradation_rules:
+    no_code_execution:
+      trigger: 環境無法執行 Python
+      must_not: [計算研究等級指標, 提供未標記之數值結果]
+      must_do:
+        - 提供可重現之公式或可直接複製之腳本呼叫指令
+        - 所有數值結果標記 unverified
+      required_statement: 本環境無法執行量化稽核，以下僅為方向性判斷，不得作為評分或研究依據。
+
+    no_visual_input:
+      trigger: 環境無法接收影像
+      must_not: [宣稱已目視檢查, 以文字描述替代數值色彩資料]
+      must_do:
+        - 要求提供 hex／Lab／量測檔等數值色彩資料
+        - 涉及外觀之判斷標記 not_assessable_without_visual
+
+    no_file_access:
+      trigger: 環境無法讀取 repo 檔案
+      must_not: [宣稱已審閱完整檔案]
+      must_do:
+        - 只索取完成當前判斷所需之最小必要片段，並說明理由
+        - 輸出標記 partial_input 並列出未讀取部分
+
+  common_rules:
+    statement_position: 降級聲明置於輸出最前，不得置於結尾或註腳
+    failure_condition: 降級但未輸出聲明 → E-DEGRADE，補上聲明並重新標記結果
+    no_relaxation: 不得因降級而省略失敗條件判定；證據不足即為未通過，不是待補
+
+  minimum_consistency:
+    # 任何平台皆須維持
+    - 設備閘門（SKILL.md 第 2 節）
+    - 證據完整性檢查（evidence_contract.completeness_rule）
+    - 失敗條件總表（SKILL.md 第 9 節）
+
+# ── 研究層 overlay（可插拔，預設關閉）────────────────────────────
+research_overlay:
+  enabled: false
+  note: 本 skill 不得自行開啟，也不得建議特定研究問題（SKILL.md 第 7 節）
+  blocked_until: [研究問題確定, primary_outcome 確定, 倫理程序完成]
+  additional_fields_when_enabled:
+    - group_assignment
+    - primary_outcome
+    - pre_post_measures
+    - consent_status
+    - anonymous_id
+  undecided_by_instructor:
+    # 對應 CONTEXT.md 第 8 節
+    - 研究問題與 primary outcome
+    - IRB 送件時程
+    - 評分規準的維度與權重
+    - 前後課程的具體交接物
