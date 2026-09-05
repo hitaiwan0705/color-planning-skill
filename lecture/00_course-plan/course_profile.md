@@ -1,6 +1,6 @@
 ---
 status: draft
-version: v0.1
+version: v0.2
 updated: 2026-09-06
 supersedes: none
 authoritative_outline: 18_week_authoritative_outline_v1.md
@@ -8,11 +8,13 @@ authoritative_outline: 18_week_authoritative_outline_v1.md
 
 # 課程 profile：色彩規劃與傳播應用
 
-## 待老師確認的基本資料
+## 基本資料與待確認項
 
-- 學期：暫按 115-1 建置。
-- 開課單位：UJUIC 資訊傳播學系（依上層教材系統推定）。
-- 年級、學分、每週時數、班級人數、教室設備：待確認。
+- 學期：115-1（依老師目前指定的課程路徑建置）。
+- 開課單位：中國文化大學資訊傳播學系（依 repo `CONTEXT.md` 已確認事實）。
+- 年級與性質：大三上必修（依 repo `CONTEXT.md` 已確認事實）。
+- 學分、每週時數、班級人數、實際授課場地：待確認。
+- 設備：僅使用 repo `CONTEXT.md` 已確認項；燈箱型號／等級、螢光燈管、Mimaki 白墨／clear 狀態仍待核對。
 - 學期結構：16 週授課 + W17-W18 自主學習，不到校上課。
 
 ## 課程主體
@@ -37,7 +39,7 @@ authoritative_outline: 18_week_authoritative_outline_v1.md
 
 ## 評量 profile
 
-總成績固定為期中 30%、期末 30%、平時 30%、參與 10%。平時暫規劃 4 份報告各 7.5%。每份作業均採共同專業能力 70% + 差異化反思 30%，作業說明與 rubric 同時發布。任何研究問卷、自願訪談、作品公開授權均不計分且不影響成績。
+依老師於 2026-08-12 確認、記載在 Dropbox `Lecture/AGENTS.md` 的校內規定，總成績固定為期中 30%、期末 30%、平時 30%、參與 10%。平時暫規劃 4 份報告各 7.5%；repo 既有八項 TASK 如何映射到四類成績仍待老師裁示。每份作業均採共同專業能力 70% + 差異化反思 30%，作業說明與 rubric 同時發布。任何研究問卷、自願訪談、作品公開授權均不計分且不影響成績。
 
 ## 研究角色
 
