@@ -18,7 +18,7 @@ authoritative_outline: ../00_course-plan/18_week_authoritative_outline_v1.md
 | FIX-02 | 建立第一批 source map | 已完成 | 僅將實際讀取範圍標為已讀 |
 | FIX-03 | 建立 draft course profile 與 18 週大綱 | 已完成 | 等 Claude 與老師覆核，不宣稱 authoritative |
 | REVIEW-01 | Claude R1 獨立審查 | 待處理 | 老師更正協作入口為 GitHub comparison 分支；CLI 登入不再是阻斷 |
-| SYNC-01 | 匯入 Codex `lecture/` 至 Claude comparison 分支 | 進行中 | clone 與複製已完成；待驗證、commit、push |
+| SYNC-01 | 匯入 Codex `lecture/` 至 Claude comparison 分支 | 已完成 | `0fb5da5` 已 push；保留 Claude `14c7053` W01-W05，未 force push |
 | SKILL-01 | 建立課程子 skill | 已完成 | `course-color-communication` v0.1.0；validator：`Skill is valid!` |
 
 ## Claude R1 原始意見

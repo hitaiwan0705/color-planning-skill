@@ -18,6 +18,7 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 - 已建立初步來源地圖、課程 profile、18 週大綱、外部審查追蹤與 Claude R1 prompt。
 - 已建立中央課程子 skill：`/Users/slchu/.codex/skills/course-color-communication/`，`quick_validate.py` 驗證通過。
 - 2026-09-06 老師更正：Claude 的既有課程資料與審查工作位於 GitHub repo `hitaiwan0705/color-planning-skill` 的 `claude/skill-comparison-color-course-npvyrl` 分支；先前以本機 CLI 登入作為唯一協作入口的判斷已撤回。
+- Codex `lecture/` 已推送至該分支 commit `0fb5da5`；其前一個 commit `14c7053` 為 Claude 已完成的 W01-W05 講義，兩條工作均已保留。
 - 在大綱升為 authoritative 前，不產週講義、作業 rubric 或 PPTX。
 
 ## 2. 下一步（明確指派）
@@ -41,12 +42,16 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 | SKILL-01 | 建立 `course-color-communication` 子 skill | Codex | 已完成 | 中央單一真實來源；validator 通過 |
 | PLAN-01 | 課程 profile v0.1 | Codex | 已完成 | draft |
 | PLAN-02 | 18 週大綱 v0.1 | Codex | 已完成 | draft；待 Claude 與老師覆核 |
-| SYNC-01 | clone GitHub repo、切換 comparison 分支並匯入 `lecture/` | Codex | 進行中 | 待 commit／push |
+| SYNC-01 | clone GitHub repo、切換 comparison 分支並匯入 `lecture/` | Codex | 已完成 | commit `0fb5da5` 已 push；未 force push |
 | REVIEW-01 | Claude R1 課程定位與週次審查 | Claude Code | 待處理 | 改由 GitHub comparison 分支進行 |
 | PLAN-03 | 老師確認必備輸入並升級 authoritative | 老師／Codex | 待處理 | 學期、年級、時數、設備、研究角色 |
 | HANDOUT-01 | W01 整合講義 | Codex 起稿／Claude 審查 | 待處理 | PLAN-03 完成後才可開始 |
 
 ## 4. 交接紀錄（時間倒序）
+
+### 2026-09-06｜Codex｜GitHub comparison 分支同步完成｜下一步：Claude 比較兩條內容線
+
+第一次 push 因 Claude 同時新增 W01-W05（remote `14c7053`）而被 non-fast-forward 拒絕。Codex 先 fetch、檢查路徑無衝突，再 rebase 本次 `lecture/` commit，未使用 force push；最終 `0fb5da5` 已成功推送。staged 學生資料／機密檢查通過、`git diff --check` 無錯、CIEDE2000 測試 15/15 通過（參照涵蓋率仍為 7/34）。全 repo 的非 staged 外洩掃描會命中既有負向測試字串 `tools/materials/tests/test_check_materials.py:163`，本輪未修改該既有驗證契約。
 
 ### 2026-09-06｜Codex｜更正 Claude 協作入口並準備 GitHub 同步｜下一步：完成 commit／push
 
