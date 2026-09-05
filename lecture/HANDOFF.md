@@ -57,7 +57,8 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 | REVIEW-02 | Codex 整合 Claude R1 意見並回填取捨 | Codex | 待處理 | 特別請看 V1（校內 30/30/30/10 缺出處）與 V2（開課單位與已定案事實不符） |
 | MAT-01 | `materials/` W01–W09 講義草案 | Claude Code | 已完成 | 非 authoritative；commit `14c7053`、`fa2b3f1` |
 | MAT-02 | `materials/` W10–W18 講義草案 | Claude Code ＋ Codex | **已完成** | 兩邊各自寫了一版，已合併為單一版本 |
-| MERGE-01 | 合併 W08–W13 的雙寫講義 | Claude Code | **已完成** | 六週合併為單一版本；請 Codex 覆核是否有段落失真 |
+| MERGE-01 | 合併 W08–W13 的雙寫講義 | Claude Code | **已完成** | 六週合併為單一版本 |
+| MERGE-02 | 合併 W14–W18 的雙寫講義 | Claude Code | **已完成** | 18 週全部收斂為單一版本；請 Codex 覆核是否有段落失真 |
 | TOOL-02 | 修正 `check_materials.py` 重複週次靜默覆蓋 | Claude Code | **已完成** | 新增 `E-MAT-DUP`；由本次雙寫暴露 |
 | TOOL-01 | `tools/materials/check_materials.py` 教材確定性檢核器 | Claude Code | 已完成 | 19 條測試含負向驗證；三次突變確認規則移除即紅 |
 | FIX-04 | 修正 Claude 測試夾具觸發外洩掃描 | Claude Code | 已完成 | Codex 於 SYNC-01 指出；個資夾具改為執行期組裝 |
@@ -66,6 +67,36 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 | QA-01 | W01–W18 確定性檢核與負向測試 | Codex | **已完成** | 新增重複週次檢查；20/20 tests pass |
 
 ## 4. 交接紀錄（時間倒序）
+
+### 2026-09-06｜Claude Code｜第二輪合併完成，18 週收斂為單一版本｜下一步：Codex 覆核，老師裁示 D1–D6
+
+雙寫在第二輪擴大到 W14–W18。原因記錄在案，因為它會再發生：
+
+**Codex 的紀錄寫「Claude 的 GitHub workflow 在 W10–W13 指派再次失敗，沒有產生檔案」，
+這與事實不符**——Claude 的 W10–W18 已於 commit `6981363` 完成並推送，Codex 當時尚未
+fetch 到。這不是爭功：若記成「Claude 失敗、Codex 備援」，下一輪會以為 Claude 這條線
+不可用而再次接手，於是再產生一次雙寫。已在該則紀錄下方加註更正。
+
+本輪合併結果：
+
+| 週次 | 併入了 Codex 的什麼 |
+|---|---|
+| W14 | 文字對比／非文字對比／顏色使用三張分開的檢核表；四條失敗條件 |
+| W15 | 觀察者紀錄不得含姓名學號；「只因人眼與儀器不一致就刪除其中一條證據」列為未通過 |
+| W16 | 九站證據索引與缺檔清單；「用後站結果反推補寫前站條件」列為未完成 |
+| W17 | 八段報告骨架（我原本只有五段，缺情境、解釋、設計後果、附件索引） |
+| W18 | 最終包目錄結構、提交前四次核對、來源／AI／權利三份分開揭露 |
+
+**檢核器的兩條重複規則已收斂為一條。** Codex 定義 `E-MAT-DUPLICATE`，Claude 把週次
+目錄改存 list——只報「有重複」而不檢查內容等於換一種漏法，兩者缺一不可，
+所以保留 Codex 的錯誤碼與訊息，保留 Claude 的實作，測試同步改為單一錯誤碼。
+
+Codex 的原始版本全部保留在 git 歷史（`203500e`、`80ce801`）。
+**請 Codex 覆核**：若有任何段落在合併中失真或被誤刪，直接指出，我改。
+
+最終驗證：`check_materials.py` 18 週全過｜測試 22 條全過（含重複週次的負向驗證，
+突變確認規則移除後會紅）｜CIEDE2000 15/15｜外洩掃描通過。
+
 
 ### 2026-09-06｜Codex｜W01–W18 講義草案完成與全課驗證｜下一步：Claude 跨模型審查
 

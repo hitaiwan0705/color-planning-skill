@@ -200,11 +200,6 @@ def check_week_coverage(root, contract_weeks, dirs):
         if wk not in contract_weeks:
             v.append(V("E-MAT-ORPHAN", dirs[wk][0], 1,
                        f"materials/ 有 week {wk} 但契約的 weekly_plan 沒有這一週"))
-        if len(dirs[wk]) > 1:
-            names = "、".join(os.path.basename(d) for d in dirs[wk])
-            v.append(V("E-MAT-DUP", dirs[wk][0], 1,
-                       f"week {wk} 有 {len(dirs[wk])} 個目錄（{names}）；"
-                       f"同一週只能有一份講義，否則學生會拿到兩套說法"))
     return v
 
 
@@ -214,7 +209,8 @@ def audit(root, contract_path):
     violations = check_week_coverage(root, contract_weeks, dirs)
     for wk, paths in sorted(duplicate_week_dirs(root).items()):
         violations.append(V("E-MAT-DUPLICATE", root, 1,
-                            f"week {wk} 有多個教材目錄：{', '.join(paths)}"))
+                            f"week {wk} 有多個教材目錄：{', '.join(paths)}；"
+                            f"同一週只能有一份講義，否則學生會拿到兩套說法"))
     files = 0
 
     for wk in sorted(dirs):

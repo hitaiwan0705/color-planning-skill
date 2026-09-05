@@ -177,10 +177,11 @@ class TestNegativePII(unittest.TestCase):
 
 
 class TestNegativeDuplicateWeek(unittest.TestCase):
-    """同一週兩個目錄必須被抓出來。
+    """同一週兩個目錄必須被抓出來，而且兩份都要被內容檢查。
 
-    這是真實事故：2026-09-06 Codex 與 Claude 同時寫 materials/，
-    W08–W13 各產生兩個目錄。早期版本用 dict 存單一路徑，後者靜默覆蓋前者。"""
+    真實事故：2026-09-06 Codex 與 Claude 同時寫 materials/，W08–W18 多週各產生
+    兩個目錄。錯誤碼 E-MAT-DUPLICATE 由 Codex 定義，週次目錄改存 list 由 Claude 修
+    ——只報「有重複」而不檢查內容，等於換一種漏法。"""
 
     def test_two_directories_for_one_week_fails(self):
         fx = Fixture()
@@ -189,7 +190,7 @@ class TestNegativeDuplicateWeek(unittest.TestCase):
             os.makedirs(second)
             with open(os.path.join(second, "講義.md"), "w", encoding="utf-8") as f:
                 f.write(GOOD_LECTURE)
-            self.assertIn("E-MAT-DUP", fx.codes())
+            self.assertIn("E-MAT-DUPLICATE", fx.codes())
         finally:
             fx.cleanup()
 
@@ -202,7 +203,7 @@ class TestNegativeDuplicateWeek(unittest.TestCase):
             with open(os.path.join(second, "講義.md"), "w", encoding="utf-8") as f:
                 f.write(GOOD_LECTURE.replace("## 失敗條件", "## 其他"))
             found = fx.codes()
-            self.assertIn("E-MAT-DUP", found)
+            self.assertIn("E-MAT-DUPLICATE", found)
             self.assertIn("E-MAT-SECTION", found)
         finally:
             fx.cleanup()
