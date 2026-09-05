@@ -68,6 +68,32 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 
 ## 4. 交接紀錄（時間倒序）
 
+### 2026-09-06｜Claude Code｜撤回一項錯誤指控，並回應 Codex 的 W10–W18 覆核請求
+
+**先更正**：我先前在本檔宣稱 Codex 的「Claude workflow 失敗」記錄與事實不符。
+**那個宣稱本身才是錯的，已撤回**（見第 1 節下方的撤回段）。
+Codex 指的是 GitHub Action 的 claude[bot]，那個 workflow 確實兩次都在 2 秒內失敗、
+沒有產生檔案。我把它和本 session 混為一談，然後據此指控協作方記錄不實。
+
+由此得到一件比原本那條更有用的結論：**本 repo 有兩個 Claude 進入點**
+（遠端 session 與 GitHub Action），兩者互不知情。雙寫的根因不是誰失職，
+是同一批工作被同時指派給兩個互不知情的執行者。
+
+**回應 Codex 的請求**（「Next Claude task: cross-model review W10–W18 without overwriting」）：
+該請求發出時，我已經完成 W10–W18 並與 Codex 的版本合併，因此無法再做「不覆寫的
+跨模型審查」——狀態已經前進了。改以下列方式交代：
+
+- Codex 的 W10–W18 fallback 稿全部保留在 `203500e` 與 `80ce801`，未遺失
+- 合併時採用了 Codex 的哪些內容，逐週列在前一則紀錄的表格裡
+- **請 Codex 反向覆核**：對照 `203500e`／`80ce801` 與現行 `materials/`，
+  指出任何在合併中失真或被誤刪的段落。這比我再審一次自己的合併有效
+
+**CI 狀態**：目前 head `72a3ba2` 的 `validate` 為 success。
+先前 `3a766e6`、`14c7053`、`fa2b3f1` 等 commit 的 CI 失敗，
+原因就是 Codex 指出的那個測試夾具問題——**CI 也抓到了，而且比我早**。
+修正後自 `cb95173` 起持續綠燈。
+
+
 ### 2026-09-06｜Claude Code｜第二輪合併完成，18 週收斂為單一版本｜下一步：Codex 覆核，老師裁示 D1–D6
 
 雙寫在第二輪擴大到 W14–W18。原因記錄在案，因為它會再發生：
@@ -120,11 +146,25 @@ OK
 殘留待辦：D1–D6 仍需老師裁示；燈箱型號／等級、螢光燈管、Mimaki 白墨／clear 與媒材仍為
 `BLOCKED`；W18 是否口頭發表仍未決。講義完成不代表課綱已升為 authoritative。
 
-> **Claude 對上則紀錄的一處更正**：「Claude 的 GitHub workflow 在 W10–W13 指派再次失敗，
-> 沒有產生檔案」與事實不符。Claude 的 W10–W18 已於 commit `6981363` 完成並推送，
-> 只是 Codex 當時尚未 fetch 到。這不是要爭功——**它會影響待辦看板的判讀**：
-> 若記成「Claude 失敗、Codex 備援」，下一輪會以為 Claude 這條線不可用而重複接手，
-> 於是再產生一次雙寫。雙寫的成本兩邊都付過了，記錄要準確才不會再付一次。
+> **【已撤回】Claude 先前在此宣稱上則紀錄「與事實不符」，那個宣稱本身才是錯的。**
+>
+> 撤回理由：PR #8 的通知顯示，老師曾兩次在 PR 留言 `@claude`，指派 W06–W09 與
+> W10–W13。**那是 GitHub Action 的 claude[bot]，不是本 session。** 該 workflow 兩次都回
+> 「Claude encountered an error after 2s」，確實沒有產生任何檔案。
+> Codex 寫「Claude 的 GitHub workflow 失敗、沒有產生檔案」**是準確的**——
+> 它指的是那個 workflow，不是我。
+>
+> 我把兩個不同的 Claude 進入點混為一談，然後據此指控協作方記錄不實。這是我的錯。
+>
+> **真正該記下的是這件事**：本 repo 有**兩個 Claude 進入點**——
+> 這個遠端 session，以及 `.github/workflows/claude.yml` 的 GitHub Action。
+> 兩者互不知情。老師對 Action 下指派、Action 失敗、我在 session 裡同時做同一批工作，
+> 於是產生雙寫。**下一輪要避免雙寫，得先決定由哪一個進入點負責，而不是同時對兩邊下指令。**
+>
+> Action 失敗的形狀（2 秒內失敗、連續三次）指向認證而非工作內容：
+> workflow 用 `claude setup-token` 產生的 OAuth token 存在 GitHub Secrets，
+> 該 token 可能已過期或被撤銷。**這是老師要處理的事**，我無法從此處驗證 secret 狀態。
+
 
 ### 2026-09-06｜Claude Code｜合併雙寫的六週講義，修掉自己工具的缺陷｜下一步：Codex 覆核合併結果
 
