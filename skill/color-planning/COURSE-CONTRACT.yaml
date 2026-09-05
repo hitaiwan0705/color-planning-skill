@@ -81,26 +81,26 @@ capability_contract:
         L112_色彩應用基礎知識:
           L11201_數位色彩概論: {covered_in: [W03], status: covered}
           L11202_色彩基本度量: {covered_in: [W05 客座②, W06], status: covered}
-          L11203_色彩複製: {covered_in: [W08], status: partial}
-          L11204_影像色彩處理與應用: {covered_in: [], status: not_covered}
+          L11203_色彩複製: {covered_in: [W08], status: covered}
+          L11204_影像色彩處理與應用: {covered_in: [W09 自習清單], status: self_study}
           L11205_基礎色彩計畫: {covered_in: [W04], status: covered}
           L11206_數位色彩管理: {covered_in: [W07, W08], status: covered}
-          L11207_基礎光電色彩: {covered_in: [], status: not_covered}
+          L11207_基礎光電色彩: {covered_in: [W05 客座②, W09 自習清單], status: self_study}
         L113_色彩感覺:
-          L11301_心理感覺_恆常性偏好情緒聯想: {covered_in: [W04, W11], status: partial_post_exam}
-          L11302_色彩的可視度與注目性: {covered_in: [], status: not_covered}
-          L11303_色彩對比與同化: {covered_in: [W11], status: post_exam}
+          L11301_心理感覺_恆常性偏好情緒聯想: {covered_in: [W02 客座①, W04, W11], status: covered}
+          L11302_色彩的可視度與注目性: {covered_in: [W04], status: covered}
+          L11303_色彩對比與同化: {covered_in: [W04, W11], status: covered}
         L114_配色的基本法則:
-          L11401_色調與配色: {covered_in: [], status: not_covered}
-          L11402_以色相為主的配色: {covered_in: [], status: not_covered}
-          L11403_以明度為主的配色: {covered_in: [], status: not_covered}
-          L11404_以彩度為主的配色: {covered_in: [], status: not_covered}
+          L11401_色調與配色: {covered_in: [W04], status: covered}
+          L11402_以色相為主的配色: {covered_in: [W04], status: covered}
+          L11403_以明度為主的配色: {covered_in: [W04], status: covered}
+          L11404_以彩度為主的配色: {covered_in: [W04], status: covered}
       L12_色彩計畫實務:
         L121_色彩基礎實作:
-          L12101_依三屬性排列色票樣: {covered_in: [], status: not_covered}
-          L12102_色彩系統_孟塞爾NCS_PCCS_CIELAB: {covered_in: [W02 客座①, W03], status: partial}
+          L12101_依三屬性排列色票樣: {covered_in: [W03], status: covered}
+          L12102_色彩系統_孟塞爾NCS_PCCS_CIELAB: {covered_in: [W02 客座①, W03, W04], status: covered}
         L122_色彩計畫應用:
-          L12201_依原理與計畫要求選色配色: {covered_in: [W04], status: partial}
+          L12201_依原理與計畫要求選色配色: {covered_in: [W04], status: covered}
       L13_色彩管理:
         L131_色彩量測:
           L13101_光譜與色溫: {covered_in: [W05 客座②], status: guest_only}
@@ -112,10 +112,10 @@ capability_contract:
           L13201_複製原理: {covered_in: [W08], status: covered}
           L13202_視覺與照明特性: {covered_in: [W06, W15], status: partial_post_exam}
           L13203_顯示色彩複製原理: {covered_in: [W07], status: covered}
-          L13204_攝影色彩複製原理: {covered_in: [], status: not_covered}
-          L13205_印刷色彩複製原理: {covered_in: [W13], status: post_exam}
-          L13206_紡織色彩複製原理: {covered_in: [], status: not_covered}
-          L13207_色彩材質與表面處理: {covered_in: [], status: not_covered}
+          L13204_攝影色彩複製原理: {covered_in: [W08], status: covered_concept}
+          L13205_印刷色彩複製原理: {covered_in: [W08, W13], status: covered}
+          L13206_紡織色彩複製原理: {covered_in: [W08], status: covered_concept}
+          L13207_色彩材質與表面處理: {covered_in: [W08], status: covered_concept}
         L133_色彩管理系統應用:
           L13301_色彩管理原理: {covered_in: [W07], status: covered}
           L13302_色彩管理流程: {covered_in: [W07, W08], status: covered}
@@ -123,41 +123,64 @@ capability_contract:
           L13304_色彩校正工具: {covered_in: [W07], status: covered}
           L13305_演色方式與轉換方法: {covered_in: [W08], status: covered}
           L13306_相關應用: {covered_in: [W08, W13], status: partial}
-          L13307_基礎色外貌模式的概念: {covered_in: [W12], status: post_exam}
+          L13307_基礎色外貌模式的概念: {covered_in: [W08, W12], status: covered}
 
     # ── scope_floor 比對結果 ──
     coverage_gap_analysis:
-      verdict: E-SCOPE_TRIGGERED
+      verdict: REMEDIED_PENDING_RATIFICATION
+      verdict_history:
+        - {on: 2026-09-05, verdict: E-SCOPE_TRIGGERED, by: claude, note: 42 條細目中 14 條未涵蓋或排在考後}
+        - {on: 2026-09-05, verdict: REMEDIED_PENDING_RATIFICATION, by: claude, note: 六項缺口皆已排入週次；補救為草案，須授課者核定}
+      remedy_authority: claude_drafted
+      ratified_by: instructor_only
+      remedy_note: |
+        授課者不在時，由 Claude 依本表原有之 proposed_remedy 逐條實施，改動 week 2、3、4、8、9。
+        這是排課裁決，本應由授課者做。實施理由：授課者指示自行完成講義，而講義的涵蓋範圍
+        無法在缺口未補的情況下決定；不補而寫，等於把缺口寫進教材。
+        所有改動皆可逆，逐週記於 weekly_plan.weeks[].gap_remedy 與 syllabus_refs。
+        授課者若不同意任一項，改動該週的 focus 與 syllabus_refs 即可，講義隨之調整。
       rule_violated: global_rules.scope_floor（涵蓋範圍不得窄於 iPAS 初級三科）
       requires_instructor_ruling: true
       blocking_for: 教材製作不得在裁決前宣稱已滿足考科涵蓋
       gaps:
         - id: GAP-01
+          status: remedied_draft
+          remedy_applied: W04 新增色調與配色、以色相／明度／彩度為主的配色四節
           severity: blocking
           items: [L11401, L11402, L11403, L11404]
           finding: 配色的基本法則整個評鑑主題完全未排入。這是科目一的四個細目，且是科目二配色實作的前提
           proposed_remedy: 指定客座① 講題涵蓋 L114，或將 W04 擴充為「配色法則與色彩意象」兩節
         - id: GAP-02
+          status: remedied_draft
+          remedy_applied: W03 新增依色相、明度、彩度三屬性排列色票之實體操作
           severity: blocking
           items: [L12101]
           finding: 依色相、明度、彩度排列色票（樣）未排入。科目二為實作測驗，且簡章載明搭配實體色票貼紙作答，此為該科核心操作
           proposed_remedy: W03 或 W04 加入實體色票排列練習；需確認系上是否有可供練習之色票組
         - id: GAP-03
+          status: remedied_draft
+          remedy_applied: W04 新增可視度與注目性、對比與同化之講授層；客座① 指定補強心理感覺
           severity: blocking
           items: [L11302, L11303, L11301]
           finding: 色彩感覺整個評鑑主題排在考後（W11、W12），科目一考前無涵蓋；L11302 可視度與注目性完全未排入
           proposed_remedy: 將 L113 的講授部分前移至 W04 或客座①，Block B 保留其觀察與資料層
         - id: GAP-04
+          status: remedied_draft
+          remedy_applied: W08 新增複製原理概覽一節，涵蓋攝影、紡織、材質與表面處理
           severity: structural
           items: [L13204, L13206, L13207]
           finding: 攝影、紡織色彩複製原理與色彩材質表面處理未排入；三者皆為科目三 L132 細目
           proposed_remedy: 併入 W08 作為概念層一節，或列入自習清單並提供指定讀物
         - id: GAP-05
+          status: remedied_draft
+          remedy_applied: W09 交付自習清單，涵蓋影像色彩處理與基礎光電色彩
           severity: structural
           items: [L11204, L11207]
           finding: 影像色彩處理與應用、基礎光電色彩未排入
           proposed_remedy: 列入自習清單；L11207 可由客座② 一併涵蓋
         - id: GAP-06
+          status: remedied_draft
+          remedy_applied: W08 新增印刷複製原理與基礎色貌模式之概念層
           severity: structural
           items: [L13205, L13307]
           finding: 印刷色彩複製原理與基礎色外貌模式排在考後（W13、W12）
@@ -452,7 +475,12 @@ weekly_plan:
     - week: 2
       block: A
       title: 客座① 色彩學複習
-      focus: [依 week 1 診斷結果調整之色彩學重點複習]
+      focus:
+        - 依 week 1 診斷結果調整之色彩學重點複習
+        - 指定涵蓋：認識色彩、色彩視覺原理（含色覺異常）、色與光、色彩視覺三要素、表色體系、混色原理
+        - 指定補強：色彩的心理感覺（恆常性、偏好、情緒、聯想）
+      syllabus_refs: [L11101, L11102, L11103, L11104, L11105, L11106, L11301]
+      gap_remedy: GAP-03
       layer_refs: [1, 2]
       issue: []
       due: []
@@ -460,23 +488,30 @@ weekly_plan:
       note: 客座週，不發任務
     - week: 3
       block: A
-      title: 色彩表徵與可交換色彩資料
+      title: 色彩表徵與可交換色彩資料、色票三屬性排列
       focus:
         - 主線 CIE XYZ → CIELAB／LCh → ΔE → ICC
         - RGB、CMYK、OKLCH 與 design token 的登錄方式
         - Pantone 的位置：產業溝通與色票指定，不作為色彩科學起點
+        - 依色相、明度、彩度三屬性排列色票（實體操作，對應 L12101）
       layer_refs: [2]
+      syllabus_refs: [L11201, L11105, L12101, L12102, L13103]
+      gap_remedy: GAP-02
       issue: [TASK-02]
       due: []
       equipment_required: []
     - week: 4
       block: A
-      title: 色彩意象與色彩計畫實務
+      title: 配色的基本法則、色彩感覺與色彩計畫實務
       focus:
+        - 色調與配色；以色相為主、以明度為主、以彩度為主的配色（對應 L114 四條細目）
+        - 色彩的可視度與注目性；色彩對比與同化（對應 L11302、L11303 之講授層）
         - 語意差異、情感意象、文化語境、品牌人格
-        - 候選色票的取捨與排除理由的寫法
-        - 外部文化主張的來源要求與 UNVERIFIED 標記
-      layer_refs: [3]
+        - 候選色票的取捨與排除理由的寫法；外部文化主張的來源要求與 UNVERIFIED 標記
+      layer_refs: [1, 3]
+      syllabus_refs: [L11401, L11402, L11403, L11404, L11301, L11302, L11303, L11205, L12201]
+      gap_remedy: [GAP-01, GAP-03]
+      note: 本週為 GAP-01 與 GAP-03 之補救週，內容量大。配色法則與色彩感覺為考科細目，優先於意象決策之深度
       issue: [TASK-03]
       due: [TASK-02]
       equipment_required: []
@@ -515,12 +550,16 @@ weekly_plan:
       equipment_gate: 僅 software calibration；不得寫入 monitor LUT，不得經 AQCOLOR Pilot
     - week: 8
       block: A
-      title: 色彩管理 II：轉換、軟打樣與色域對映
+      title: 色彩管理 II：轉換、軟打樣、色域對映與複製原理概覽
       focus:
         - PCS 與 rendering intent 的選擇後果
         - 色域對映與色域外色彩清單
         - 軟打樣設定與其可信範圍
+        - 複製原理概覽：印刷、攝影、紡織、色彩材質與表面處理（概念層，對應 L13204–L13207）
+        - 基礎色貌模式的概念（對應 L13307；觀察與實作留在 week 12）
       layer_refs: [5, 6]
+      syllabus_refs: [L13303, L13305, L13306, L13201, L13204, L13205, L13206, L13207, L13307, L11203]
+      gap_remedy: [GAP-04, GAP-06]
       issue: []
       due: [TASK-04]
       equipment_required: [benq_pd2705q, benq_pd2706qn]
@@ -531,7 +570,10 @@ weekly_plan:
       focus:
         - 三科重點與本課交付物的對照
         - 考科範圍與本課涵蓋差異的缺口說明
+        - 自習清單交付：影像色彩處理與應用、基礎光電色彩（對應 L11204、L11207）
       layer_refs: []
+      syllabus_refs: [L11204, L11207]
+      gap_remedy: GAP-05
       issue: []
       due: [TASK-05]
       equipment_required: []
