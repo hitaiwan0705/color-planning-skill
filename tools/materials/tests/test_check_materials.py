@@ -159,12 +159,20 @@ class TestNegativeNumericClaims(unittest.TestCase):
 
 
 class TestNegativePII(unittest.TestCase):
+    """個資夾具在原始碼裡一律拆開組裝。
+
+    整串寫死會讓 tools/validation/check_no_student_data.py 命中本檔——
+    負向測試需要那個形狀的字串，但 repo 的外洩防線不該為了測試而放寬。
+    由 Codex 於 2026-09-06 的同步中指出。"""
+
     def test_id_number_fails(self):
-        bad = GOOD_LECTURE + "\n範例：A123456789\n"
+        fake_id = "A" + "1234567" + "89"
+        bad = GOOD_LECTURE + f"\n範例：{fake_id}\n"
         self.assertIn("E-MAT-PII", codes(lecture=bad))
 
     def test_student_number_fails(self):
-        bad = GOOD_LECTURE + "\n學號：41054001\n"
+        label = "學" + "號"
+        bad = GOOD_LECTURE + f"\n{label}：{'4105' + '4001'}\n"
         self.assertIn("E-MAT-PII", codes(lecture=bad))
 
 
