@@ -200,7 +200,7 @@ task_contract:
       role: 虛實輸出品質記錄者
       constraints: "Mimaki UJF-3042FX 輸出不得超過 300×420 mm 與 50 mm 厚度；不得指定 CONTEXT.md 未確認媒材；白墨、clear、螢光燈管與固定教室配置相關活動一律標 <!-- BLOCKED: 待設備確認 -->"
       equipment_required: [mimaki_ujf_3042fx_body, light_booth_d50_d65, i1_pro_2, i1_pro_3, benq_pd2705q, benq_pd2706qn, display_profiling_via_i1profiler]
-      duration: 3-4 週
+      duration: 3-4 週（OPT-A 裁決後排入 week 10–16，與 TASK-07 共用樣本；見 weekly_plan.task06_ruling）
       submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
 
     # ── 後半 9 週 色彩感知模組（week 10–18）新增之任務 ──
@@ -212,28 +212,32 @@ task_contract:
       equipment_required: [light_booth_d50_d65, i1_pro_2, i1_pro_3]
       duration: 7 週（week 10–16，每週一次進度交件 P1–P7）
       submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      merged_with:
+        task_id: TASK-06
+        rule: TASK-07 的觀察基底即 TASK-06 的輸出樣本，兩者共用同一組實體樣本與同一份量測檔；任一方缺件，兩方皆不成立
+        source: weekly_plan.task06_ruling（OPT-A）
       progressive_submissions:
         - id: P1
           week: 10
-          adds: 儀器數值與人眼判讀的第一組對照，含完整觀察條件紀錄
+          adds: 儀器數值與人眼判讀的第一組對照，含完整觀察條件紀錄，並登錄本模組要輸出的那組色
         - id: P2
           week: 11
-          adds: 同一組色彩在不同適應狀態下的判讀差異
+          adds: 同一組色彩在不同適應狀態與不同背景下的判讀差異
         - id: P3
           week: 12
-          adds: 背景改變造成的同時對比與 crispening 觀察
+          adds: 色貌屬性的分欄記錄，明度／明亮度／彩度／飽和度分開登錄
         - id: P4
           week: 13
-          adds: 色貌屬性的分欄記錄，明度／明亮度／彩度／飽和度分開登錄
+          adds: 第一次實體輸出樣本的觀察紀錄，含媒材與設備描述檔欄位
         - id: P5
           week: 14
           adds: 色覺差異情境下的可區辨性，含 color_audit.py 之 cvd 情境輸出
         - id: P6
           week: 15
-          adds: 判斷任務的設計說明（尺度、觀察者人數、呈現順序、重複次數）
+          adds: 燈箱觀察與儀器量測的對照，含判斷任務參數（觀察者人數、呈現順序、重複次數、參考條件）
         - id: P7
           week: 16
-          adds: 依 P6 設計實際執行一次觀察，資料與前六週紀錄對照
+          adds: 修正後樣本與第一次樣本的前後對照，落差歸因並與前六週紀錄比對
       failure_condition: 任一進度交件缺當週新增內容，或以前週資料充抵 → 該次未通過，不得於學期末補交合併
     - id: TASK-08
       capability_refs: [CAP-08]
@@ -306,23 +310,23 @@ weekly_plan:
       - 客座講題須於 week 1 診斷結果產出後再確認，避免重複學生已具備的內容
     unverified_note: "<!-- UNVERIFIED: 兩位講者之單位職稱、可授課週次與講題須經本人確認，未確認前不得對外公告 -->"
 
-  # TASK-06 虛實輸出鏈在本學期沒有排入的週次。這是本計畫最大的結構性缺口，
-  # 不得以任何方式默默略過。三個選項與其後果如下，須由授課者裁決。
-  unscheduled_task:
+  # TASK-06 虛實輸出鏈的排課裁決（授課者 2026-09-05）
+  task06_ruling:
     task_id: TASK-06
-    reason: 前 9 週須讓出空間給考科涵蓋，後 9 週由授課者指定為色彩感知模組，TASK-06 所需之 3–4 週實作無處安置
-    requires_instructor_ruling: true
-    options:
-      - id: OPT-A
-        action: 併入後半，P1–P7 之觀察基底改為 Mimaki 實體輸出，TASK-06 與 TASK-07 合流
-        consequence: 感知模組壓縮約 2 週；且依賴白墨與 clear 之活動仍須標 BLOCKED（設備未確認）
-      - id: OPT-B
-        action: 縮減為 week 8 之單次示範與 week 16 之一次輸出驗證，不作為完整交付物
-        consequence: TASK-06 之 evidence_contract 交付物不成立，須明列哪幾項不收
-      - id: OPT-C
-        action: 本學期不開 TASK-06
-        consequence: handoff_contract 四項交接產物中，三項（資訊視覺化設計、整合行銷傳播、畢業專題）之 produced_by_task 含 TASK-06，將無法產出，須同步降級為 draft 並通知下游
-    failure_condition: 未裁決即產生任何宣稱已涵蓋虛實輸出鏈之輸出 → 該輸出作廢
+    decision: OPT-A
+    decided_by: instructor
+    decided_on: 2026-09-05
+    action: TASK-06 併入後半，P1–P7 的觀察基底改為學生自己的 Mimaki 實體輸出，TASK-06 與 TASK-07 共用同一組樣本
+    consequences_accepted:
+      - 色彩感知模組由 7 個主題週壓縮為 5 個主題週；原「色適應」與「對比效應」合併於 week 11，原「觀察方法與判斷任務設計」併入 week 15 與 week 16
+      - week 13、15、16 改為設備站週次（S5–S6、S7–S8、S9）
+      - 依賴白墨、clear 與未確認媒材之活動仍為 BLOCKED，不因本裁決解除
+      - 學期配分須重配，見 assessment_contract.rubric_dimensions.semester_weighting_draft
+    chain_span:
+      note: 一條龍九站跨越兩個 block，非後半獨有
+      block_a: [S1 色票登錄 → week 3, S2 顯示器校正 → week 7, S3 工作色域 → week 7, S4 軟打樣 → week 8]
+      block_b: [S5 媒材描述檔 → week 13, S6 第一次輸出 → week 13, S7 燈箱觀察 → week 15, S8 儀器量測 → week 15, S9 修正再輸出 → week 16]
+    failure_condition: 任一設備站缺其產出檔即該站未完成，不得以下一站的結果反推補齊
 
   weeks:
     # ── Block A：色彩規劃與色彩管理主線（考前）──
@@ -426,56 +430,60 @@ weekly_plan:
       equipment_required: []
       note: iPAS 115 年度初級第一次考試 2026-11-14；本週為客座③ 之備用場次
 
-    # ── Block B：色彩感知模組（7 週授課搭配進度交件）──
+    # ── Block B：色彩感知模組（5 個主題週 + 3 個設備站週，共 7 週授課）──
+    # OPT-A 裁決後：觀察基底為學生自己的實體輸出，TASK-06 與 TASK-07 共用同一組樣本。
     - week: 10
       block: B
-      title: 感知與量測的落差
+      title: 感知與量測的落差、觀察基底的設計登錄
       focus:
         - 儀器判定相同、人眼判定不同的四個來源：同色異譜、觀察者差異、觀察條件、適應狀態
         - 本模組的問題設定與資料格式
-      layer_refs: [1, 4]
-      issue: [TASK-07]
+        - S1 觀察基底的色票登錄：本模組要觀察的是自己接下來要輸出的那組色
+      layer_refs: [1, 2, 4]
+      issue: [TASK-06, TASK-07]
       due: []
       equipment_required: [light_booth_d50_d65, i1_pro_2, i1_pro_3]
       equipment_gate: "同色異譜示範限用 D50／D65；依賴螢光燈管之演示標 <!-- BLOCKED: 待設備確認 -->"
       progressive_submission: P1
     - week: 11
       block: B
-      title: 色適應與色恆常
+      title: 色適應、色恆常與對比效應
       focus:
-        - 適應機制與後像
-        - 色恆常失效的情境
-        - 適應狀態如何改變同一組數值的判讀
+        - 適應機制、後像與色恆常失效的情境
+        - 背景改變造成的判讀位移；crispening 對色差判定的影響
+        - 同一組數值在不同適應狀態與不同背景下的判讀差異
       layer_refs: [1]
       issue: []
       due: []
       equipment_required: [light_booth_d50_d65]
       progressive_submission: P2
+      note: 本週為 OPT-A 壓縮後的合併週，原為兩週。授課節奏須留意，不得兩個主題各講一半
     - week: 12
-      block: B
-      title: 對比效應：同時對比、連續對比與 crispening
-      focus:
-        - 背景改變造成的判讀位移
-        - crispening 對色差判定的影響
-        - 版面中對比效應的可觀察位置
-      layer_refs: [1]
-      issue: []
-      due: []
-      equipment_required: []
-      progressive_submission: P3
-    - week: 13
       block: B
       title: 色貌屬性與色貌現象
       focus:
-        - 明度／明亮度／彩度／飽和度／色度的分欄記錄，不得互相代替
+        - 明度／明亮度／彩度／飽和度／色度分欄記錄，不得互相代替
         - 絕對量與相對量的分界
         - 色貌現象在跨媒體情境下的出現位置
       layer_refs: [1]
       issue: []
       due: []
       equipment_required: []
-      progressive_submission: P4
+      progressive_submission: P3
       note: 名詞辨異為本週主要失分點，交件須逐欄登錄而非以單一「顏色深淺」描述
+    - week: 13
+      block: B
+      title: 設備站 S5–S6：媒材／設備描述檔與第一次實體輸出
+      focus:
+        - 媒材與設備描述檔的登錄欄位
+        - Mimaki UJF-3042FX 輸出設定與輸出範圍限制
+        - 第一次輸出樣本作為後續所有觀察的基底
+      layer_refs: [6]
+      issue: []
+      due: []
+      equipment_required: [mimaki_ujf_3042fx_body]
+      equipment_gate: "輸出不得超過 300×420 mm 與 50 mm 厚度；白墨、clear 與未確認媒材之活動一律標 <!-- BLOCKED: 待設備確認 -->"
+      progressive_submission: P4
     - week: 14
       block: B
       title: 色覺差異與可及性
@@ -488,32 +496,35 @@ weekly_plan:
       due: []
       equipment_required: []
       progressive_submission: P5
-      note: TASK-01 由前半移至本週，與 P5 共用同一組版面素材
+      note: TASK-01 由前半移至本週，與 P5 共用 week 13 的輸出樣本與其原始版面
     - week: 15
       block: B
-      title: 觀察方法與判斷任務設計
+      title: 設備站 S7–S8：標準燈箱觀察與儀器量測
       focus:
-        - 尺度型態與其可做的統計
+        - D50／D65 燈箱下的視覺評估，觀察條件逐欄記錄
+        - i1 Pro 量測與 ΔE00 報告，註明 CIEDE2000
         - 判斷任務的參數：觀察者人數、呈現順序、重複次數、參考條件
-        - 觀察紀錄的可重現性要求
-      layer_refs: [1]
+      layer_refs: [1, 4, 6]
       issue: []
       due: []
-      equipment_required: []
+      equipment_required: [light_booth_d50_d65, i1_pro_2, i1_pro_3]
+      equipment_gate: 燈箱型號等級標「待核對」；不得假設 TL84／CWF／U30 存在
       progressive_submission: P6
+      note: 原「觀察方法與判斷任務設計」獨立週已於 OPT-A 併入本週與 week 16
     - week: 16
       block: B
-      title: 觀察執行與資料判讀
+      title: 設備站 S9：修正再輸出與資料判讀
       focus:
-        - 依 P6 之設計實際執行一次觀察
-        - 資料與前六週紀錄對照，指出不一致處
-        - 工具輸出與人眼判讀的落差歸因
-      layer_refs: [1, 4]
+        - 依量測與觀察結果修正，第二次輸出
+        - 第一次與修正後樣本的 ΔE00 前後比較
+        - 工具輸出與人眼判讀的落差歸因，資料與前六週紀錄對照
+      layer_refs: [1, 4, 6]
       issue: [TASK-08]
-      due: [TASK-01, TASK-07]
-      equipment_required: [light_booth_d50_d65, i1_pro_2, i1_pro_3]
+      due: [TASK-01, TASK-06, TASK-07]
+      equipment_required: [mimaki_ujf_3042fx_body, light_booth_d50_d65, i1_pro_2, i1_pro_3]
+      equipment_gate: "同 week 13：白墨、clear 與未確認媒材之活動標 <!-- BLOCKED: 待設備確認 -->"
       progressive_submission: P7
-      note: 若 unscheduled_task 採 OPT-B，本週加入一次實體輸出驗證
+      note: 本週同時收三項任務，是全學期負載最重的一週。設備借用時段須於 week 15 前登記完畢
 
     # ── Block B：自主學習（2 週）──
     - week: 17
@@ -524,7 +535,7 @@ weekly_plan:
       issue: []
       due: []
       equipment_required: []
-      note: 不排課週。設備借用時段須於 week 16 前登記
+      note: 不排課週。week 16 已收件，本週不再開放設備借用
     - week: 18
       block: B
       title: 自主學習與成果繳交
@@ -541,7 +552,7 @@ weekly_plan:
     - 每週 equipment_required 之項目必須出現於 task_contract.equipment_gate.confirmed；
       含 unverified、unavailable 或 undecided 項目者必須寫出 equipment_gate 欄位
     - Block A 之週次不得出現 TASK-07、TASK-08；Block B 之週次不得發出考前涵蓋所需之任務
-    - unscheduled_task 未裁決前，不得產生宣稱已涵蓋虛實輸出鏈之輸出
+    - 設備站週次（week 13、15、16）之教材須逐站產出可被下一站消費的檔案；缺產出檔即該站未完成
   failure_condition: 週次計畫與契約衝突時以契約為準；本節不得放寬任一失敗條件
 
 # ── 契約 3｜評量契約 ─────────────────────────────────────────────
@@ -618,18 +629,21 @@ assessment_contract:
           - {name: 資料與工具輸出的一致性, weight: 25}
           - {name: 限制的誠實度, weight: 20}
     semester_weighting_draft:
+      # OPT-A 裁決後重配（2026-09-05）。TASK-06 為全學期最重的實作，不得低於 20。
       TASK-02: 10
       TASK-03: 10
-      TASK-04: 15
-      TASK-05: 15
-      TASK-07: 25
-      TASK-01: 10
-      TASK-08: 15
+      TASK-04: 12
+      TASK-05: 13
+      TASK-06: 20
+      TASK-07: 20
+      TASK-01: 5
+      TASK-08: 10
       total: 100
+      note: TASK-06 與 TASK-07 共用樣本但分開計分——前者評輸出鏈的完整與可追溯，後者評觀察與歸因
       undecided:
-        - 若 TASK-06 採 OPT-A 或 OPT-B，本表須重新配分
-        - P1–P7 的 25 分如何切分（等分或前輕後重）
+        - P1–P7 的 20 分如何切分（等分或前輕後重）
         - 遲交與補件的扣分規則
+        - TASK-01 降至 5 分是否過低（其交付物含 SC 1.4.1 人工檢核，工作量不小）
     failure_condition: skill 依本節產生分數、等第或總評語 → 該輸出作廢（assessment_contract.principle）
 
 # ── 契約 4｜證據契約 ─────────────────────────────────────────────
