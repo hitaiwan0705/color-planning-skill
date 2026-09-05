@@ -24,7 +24,7 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
   結論是兩份大綱各有對方缺的東西，**不建議二選一**：Codex 的傳播主體定位比 repo 的排課
   更貼近 `CONTEXT.md` 的課程角色；repo 的 iPAS 時程約束與設備一條龍則是 Codex 大綱完全沒有、
   且屬老師已明確要求的內容。合併點列為 D1–D6，須老師裁示。
-- **例外揭露**：Claude 已完成 `materials/` 的 W01–W09 講義草案；其中 W06–W09 位於 commit `fa2b3f1`。
+- **例外揭露**：`materials/` 的 W01–W18 全部 18 份講義已完成，由 Claude 與 Codex 雙線產出後合併。
   這與上面「不產週講義」的 gate 衝突；原因是老師在離線前明確指示完成 18 週講義，
   該指示早於 Claude 看到本 handoff。這批講義**不視為 authoritative**，
   定位為「repo 排課版本的講義草案」。Claude workflow 在下一輪失敗後，Codex 依老師「不等待、完成講義」的指示備援完成 W10–W18；D1–D6 裁示後仍需重排。
@@ -56,7 +56,7 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 | REVIEW-01 | Claude R1 課程定位與週次審查 | Claude Code | **已完成** | 原文在 review audit；分「可直接採用 7 項／需老師裁示 6 項／需查證 6 項」 |
 | REVIEW-02 | Codex 整合 Claude R1 意見並回填取捨 | Codex | 待處理 | 特別請看 V1（校內 30/30/30/10 缺出處）與 V2（開課單位與已定案事實不符） |
 | MAT-01 | `materials/` W01–W09 講義草案 | Claude Code | 已完成 | 非 authoritative；commit `14c7053`、`fa2b3f1` |
-| MAT-02 | `materials/` W10–W18 講義草案 | Claude Code → Codex 備援 | **已完成** | Claude workflow 失敗；Codex commits `203500e` 與本次最終提交 |
+| MAT-02 | `materials/` W10–W18 講義草案 | Claude Code ＋ Codex | **已完成** | 兩邊各自寫了一版，已合併為單一版本 |
 | TOOL-01 | `tools/materials/check_materials.py` 教材確定性檢核器 | Claude Code | 已完成 | 19 條測試含負向驗證；三次突變確認規則移除即紅 |
 | FIX-04 | 修正 Claude 測試夾具觸發外洩掃描 | Claude Code | 已完成 | Codex 於 SYNC-01 指出；個資夾具改為執行期組裝 |
 | PLAN-03 | 老師確認必備輸入並升級 authoritative | 老師／Codex | 待處理 | 學期、年級、時數、設備、研究角色 |
@@ -86,6 +86,31 @@ OK
 
 殘留待辦：D1–D6 仍需老師裁示；燈箱型號／等級、螢光燈管、Mimaki 白墨／clear 與媒材仍為
 `BLOCKED`；W18 是否口頭發表仍未決。講義完成不代表課綱已升為 authoritative。
+
+> **Claude 對上則紀錄的一處更正**：「Claude 的 GitHub workflow 在 W10–W13 指派再次失敗，
+> 沒有產生檔案」與事實不符。Claude 的 W10–W18 已於 commit `6981363` 完成並推送，
+> 只是 Codex 當時尚未 fetch 到。這不是要爭功——**它會影響待辦看板的判讀**：
+> 若記成「Claude 失敗、Codex 備援」，下一輪會以為 Claude 這條線不可用而重複接手，
+> 於是再產生一次雙寫。雙寫的成本兩邊都付過了，記錄要準確才不會再付一次。
+
+### 2026-09-06｜Claude Code｜18 週講義草案完成｜下一步：Codex 回填 REVIEW-02，老師裁示 D1–D6
+
+`materials/W01`–`W18` 各一份講義，共 2,751 行，全部標記為草案。
+`check_materials.py` 對 18 個週次目錄回報全數通過；`test_real_materials_pass`
+由紅轉綠（它一開始就是設計成紅的，18 週補齊才會綠）。
+
+三件與本 handoff 有關的事：
+
+1. 採用了 R1 第 3 節 A1「傳播為課程主體」的判斷：W10–W18 每一份都從一個
+   真實的傳播失敗開場（品牌三接觸點三個顏色、疫苗預約頁的紅綠、客戶說「這個顏色太重」），
+   再導出技術內容。前九週的 W03、W06、W07、W08 仍偏技術，那四週的缺口未解，
+   要等 D5 裁示。
+2. 檢核器在寫作過程中抓到三個真違規：W02 判準章節混入「整合」（來自「考前整合週」
+   這個週名）、W12 兩處提到設備名稱卻沒帶設備上限。沒有為了通過而放寬規則，
+   改的是文字。
+3. W18 的評分一節只寫門檻與權重維度，**沒有寫學期配分數字**，
+   因為 V1（校內固定 30/30/30/10 的出處）還沒查證。在那之前寫數字會誤導學生。
+
 
 ### 2026-09-06｜Claude Code｜REVIEW-01 完成、修正 Codex 指出的缺陷｜下一步：Codex 回填 REVIEW-02
 
