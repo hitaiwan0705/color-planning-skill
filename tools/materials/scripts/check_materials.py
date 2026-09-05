@@ -69,6 +69,19 @@ def week_dirs(root):
     return out
 
 
+def duplicate_week_dirs(root):
+    """Return week numbers mapped to all colliding directory paths."""
+    found = {}
+    if not os.path.isdir(root):
+        return {}
+    for name in sorted(os.listdir(root)):
+        m = WEEK_DIR_RE.match(name)
+        path = os.path.join(root, name)
+        if m and os.path.isdir(path):
+            found.setdefault(int(m.group(1)), []).append(path)
+    return {wk: paths for wk, paths in found.items() if len(paths) > 1}
+
+
 def read(path):
     with open(path, encoding="utf-8") as f:
         return f.read()
@@ -187,6 +200,9 @@ def audit(root, contract_path):
     dirs = week_dirs(root)
     contract_weeks = parse_contract_weeks(contract_path)
     violations = check_week_coverage(root, contract_weeks, dirs)
+    for wk, paths in sorted(duplicate_week_dirs(root).items()):
+        violations.append(V("E-MAT-DUPLICATE", root, 1,
+                            f"week {wk} 有多個教材目錄：{', '.join(paths)}"))
     files = 0
 
     for wk in sorted(dirs):

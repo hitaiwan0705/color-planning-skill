@@ -184,6 +184,17 @@ class TestNegativeWeekCoverage(unittest.TestCase):
     def test_directory_without_contract_week_fails(self):
         self.assertIn("E-MAT-ORPHAN", codes(dirname="W99_不存在的週"))
 
+    def test_duplicate_week_directories_fail(self):
+        fx = Fixture()
+        try:
+            duplicate = os.path.join(fx.materials, "W01_另一份教材")
+            os.makedirs(duplicate)
+            with open(os.path.join(duplicate, "講義.md"), "w", encoding="utf-8") as f:
+                f.write(GOOD_LECTURE)
+            self.assertIn("E-MAT-DUPLICATE", fx.codes())
+        finally:
+            fx.cleanup()
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
