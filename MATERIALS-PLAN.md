@@ -90,6 +90,44 @@ Claude 從規劃寫到講義不換手，脈絡不重灌。
 `lecture/` 位置確認後，須執行一次**去重掃描**：
 凡本課講義中屬於色彩學本體、且 `lecture/` 已涵蓋者，改為引用。
 
+### 1.0d 本機與遠端的工作流程
+
+授課者在**本機**用 Codex 做 `lecture/`，Claude 在**遠端容器**做 `materials/`。
+兩邊唯一的交會點是 GitHub。Claude 看不到本機檔案，本機也看不到 Claude 尚未推送的東西。
+
+**工作分支**：`claude/skill-comparison-color-course-npvyrl`。
+`main` 停在舊版，不要在 `main` 上做事。
+
+```bash
+# 本機第一次
+git clone https://github.com/hitaiwan0705/color-planning-skill.git
+cd color-planning-skill
+git fetch origin
+git checkout -b claude/skill-comparison-color-course-npvyrl \
+              origin/claude/skill-comparison-color-course-npvyrl
+
+# 每次開工前（Claude 那邊可能已經推了新的）
+git pull --rebase origin claude/skill-comparison-color-course-npvyrl
+
+# 收工
+git add lecture
+git commit -m "說明為什麼改，不要複述 diff"
+git push origin claude/skill-comparison-color-course-npvyrl
+```
+
+**三條避免撞車的規則**：
+
+1. **開工先 pull，收工就 push。** 不要累積一整天不推——
+   兩邊同時改同一份檔案的時間窗越長，衝突越難解。
+2. **只碰自己的目錄**（見 1.0c 的表）。目錄不重疊時，git 幾乎不會產生衝突，
+   即使兩邊同時在推。
+3. **衝突發生時不要 force push。** 對方的 commit 會消失。
+   `git pull --rebase` 解完再推；解不了就在 PR 留言，不要硬解。
+
+**Claude 這一端的限制**（授課者需要知道）：
+遠端容器會被回收，容器裡沒推送的東西一律消失。
+因此 Claude 每完成一批就 commit + push，不累積。
+
 <!-- 待授課者告知：lecture/ 位於哪一個 repo。
      確認後以 add_repo 納入，再做去重掃描。 -->
 
