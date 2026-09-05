@@ -63,6 +63,111 @@ capability_contract:
         gap_note: 若 iPAS 115 年度正式簡章列出本表未含之色彩管理細目，須補列；目前僅依 CONTEXT.md 已查證三科名稱比對
     failure_condition: 任一 subject 缺 capability_refs、task_refs、verification_rule，或把 UNVERIFIED 項寫成肯定句 → E-SCOPE
 
+    # ── 官方評鑑主題與評鑑內容（115 年度簡章 115.04 版 2.5 節）──
+    # 逐條列出，供 scope_floor 比對。covered_in 為本學期實際排課位置；
+    # 空值或 post_exam 者即為缺口，見下方 coverage_gap_analysis。
+    official_syllabus:
+      source: 115 年度色彩規劃管理師能力鑑定簡章（初級）115.04 版 2.5 節，授課者提供之官方 PDF
+      source_url: https://ipd.nat.gov.tw/ipas/CPM/
+      verified: true
+      L11_色彩學:
+        L111_色彩學基礎知識:
+          L11101_認識色彩: {covered_in: [W02 客座①], status: guest_only}
+          L11102_色彩視覺原理含色覺異常: {covered_in: [W02 客座①, W14], status: partial_post_exam}
+          L11103_色與光: {covered_in: [W02 客座①, W05 客座②], status: guest_only}
+          L11104_色彩視覺三要素: {covered_in: [W02 客座①], status: guest_only}
+          L11105_表色體系: {covered_in: [W02 客座①, W03], status: partial}
+          L11106_混色原理: {covered_in: [W02 客座①], status: guest_only}
+        L112_色彩應用基礎知識:
+          L11201_數位色彩概論: {covered_in: [W03], status: covered}
+          L11202_色彩基本度量: {covered_in: [W05 客座②, W06], status: covered}
+          L11203_色彩複製: {covered_in: [W08], status: partial}
+          L11204_影像色彩處理與應用: {covered_in: [], status: not_covered}
+          L11205_基礎色彩計畫: {covered_in: [W04], status: covered}
+          L11206_數位色彩管理: {covered_in: [W07, W08], status: covered}
+          L11207_基礎光電色彩: {covered_in: [], status: not_covered}
+        L113_色彩感覺:
+          L11301_心理感覺_恆常性偏好情緒聯想: {covered_in: [W04, W11], status: partial_post_exam}
+          L11302_色彩的可視度與注目性: {covered_in: [], status: not_covered}
+          L11303_色彩對比與同化: {covered_in: [W11], status: post_exam}
+        L114_配色的基本法則:
+          L11401_色調與配色: {covered_in: [], status: not_covered}
+          L11402_以色相為主的配色: {covered_in: [], status: not_covered}
+          L11403_以明度為主的配色: {covered_in: [], status: not_covered}
+          L11404_以彩度為主的配色: {covered_in: [], status: not_covered}
+      L12_色彩計畫實務:
+        L121_色彩基礎實作:
+          L12101_依三屬性排列色票樣: {covered_in: [], status: not_covered}
+          L12102_色彩系統_孟塞爾NCS_PCCS_CIELAB: {covered_in: [W02 客座①, W03], status: partial}
+        L122_色彩計畫應用:
+          L12201_依原理與計畫要求選色配色: {covered_in: [W04], status: partial}
+      L13_色彩管理:
+        L131_色彩量測:
+          L13101_光譜與色溫: {covered_in: [W05 客座②], status: guest_only}
+          L13102_光與視覺: {covered_in: [W05 客座②], status: guest_only}
+          L13103_CIE色彩系統: {covered_in: [W03, W05 客座②], status: covered}
+          L13104_量測儀器與原理: {covered_in: [W05 客座②, W06], status: covered}
+          L13105_色差評估: {covered_in: [W06], status: covered}
+        L132_色彩複製:
+          L13201_複製原理: {covered_in: [W08], status: covered}
+          L13202_視覺與照明特性: {covered_in: [W06, W15], status: partial_post_exam}
+          L13203_顯示色彩複製原理: {covered_in: [W07], status: covered}
+          L13204_攝影色彩複製原理: {covered_in: [], status: not_covered}
+          L13205_印刷色彩複製原理: {covered_in: [W13], status: post_exam}
+          L13206_紡織色彩複製原理: {covered_in: [], status: not_covered}
+          L13207_色彩材質與表面處理: {covered_in: [], status: not_covered}
+        L133_色彩管理系統應用:
+          L13301_色彩管理原理: {covered_in: [W07], status: covered}
+          L13302_色彩管理流程: {covered_in: [W07, W08], status: covered}
+          L13303_ICC色彩管理系統: {covered_in: [W08], status: covered}
+          L13304_色彩校正工具: {covered_in: [W07], status: covered}
+          L13305_演色方式與轉換方法: {covered_in: [W08], status: covered}
+          L13306_相關應用: {covered_in: [W08, W13], status: partial}
+          L13307_基礎色外貌模式的概念: {covered_in: [W12], status: post_exam}
+
+    # ── scope_floor 比對結果 ──
+    coverage_gap_analysis:
+      verdict: E-SCOPE_TRIGGERED
+      rule_violated: global_rules.scope_floor（涵蓋範圍不得窄於 iPAS 初級三科）
+      requires_instructor_ruling: true
+      blocking_for: 教材製作不得在裁決前宣稱已滿足考科涵蓋
+      gaps:
+        - id: GAP-01
+          severity: blocking
+          items: [L11401, L11402, L11403, L11404]
+          finding: 配色的基本法則整個評鑑主題完全未排入。這是科目一的四個細目，且是科目二配色實作的前提
+          proposed_remedy: 指定客座① 講題涵蓋 L114，或將 W04 擴充為「配色法則與色彩意象」兩節
+        - id: GAP-02
+          severity: blocking
+          items: [L12101]
+          finding: 依色相、明度、彩度排列色票（樣）未排入。科目二為實作測驗，且簡章載明搭配實體色票貼紙作答，此為該科核心操作
+          proposed_remedy: W03 或 W04 加入實體色票排列練習；需確認系上是否有可供練習之色票組
+        - id: GAP-03
+          severity: blocking
+          items: [L11302, L11303, L11301]
+          finding: 色彩感覺整個評鑑主題排在考後（W11、W12），科目一考前無涵蓋；L11302 可視度與注目性完全未排入
+          proposed_remedy: 將 L113 的講授部分前移至 W04 或客座①，Block B 保留其觀察與資料層
+        - id: GAP-04
+          severity: structural
+          items: [L13204, L13206, L13207]
+          finding: 攝影、紡織色彩複製原理與色彩材質表面處理未排入；三者皆為科目三 L132 細目
+          proposed_remedy: 併入 W08 作為概念層一節，或列入自習清單並提供指定讀物
+        - id: GAP-05
+          severity: structural
+          items: [L11204, L11207]
+          finding: 影像色彩處理與應用、基礎光電色彩未排入
+          proposed_remedy: 列入自習清單；L11207 可由客座② 一併涵蓋
+        - id: GAP-06
+          severity: structural
+          items: [L13205, L13307]
+          finding: 印刷色彩複製原理與基礎色外貌模式排在考後（W13、W12）
+          proposed_remedy: 於 W08 加入概念層說明，實作仍留在 Block B
+      note: |
+        本表只做比對與提案，不自行改動週次。GAP-01 至 GAP-03 為 blocking，
+        在裁決前，weekly_plan 不得宣稱已滿足 coverage_before_exam。
+      failure_condition: 未裁決即產生宣稱已涵蓋 iPAS 三科之輸出 → 該輸出作廢
+
+
   capabilities:
     # 涉及 ⚠️ 設備者，failure_condition 前加 blocked_marker。
     - id: CAP-01
@@ -269,6 +374,8 @@ task_contract:
           task_refs: [TASK-04, TASK-05]
           post_exam_reinforcement: TASK-06
       post_exam_reinforcement_tasks: [TASK-06]
+      scope_gap_ref: ipas_alignment.coverage_gap_analysis
+      scope_gap_effect: GAP-01 至 GAP-03 未裁決前，本節不得被引用為「已滿足考前涵蓋」之依據
       feasibility_status: requires_instructor_scheduling
       failure_condition: 若 TASK-02 至 TASK-05 無法於 2026-11-14 前授畢，須標需授課者裁決；不得宣稱已滿足考前涵蓋
     registration_note: 報名極可能於開學一至兩週內截止，報考決定須於第 1 週處理
