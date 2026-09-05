@@ -59,13 +59,20 @@ class V:
 
 
 def week_dirs(root):
+    """回傳 {週次: [目錄, ...]}。
+
+    刻意回傳 list 而非單一路徑：同一週出現兩個目錄是真實會發生的事
+    （兩個 agent 同時寫同一週，目錄命名不同）。早期版本用 dict 存單一路徑，
+    後寫入的會靜默覆蓋前一個，兩份講義同時存在卻只有一份被檢查。
+    2026-09-06 由 Codex 與 Claude 同時寫入 materials/ 時暴露。
+    """
     out = {}
     if not os.path.isdir(root):
         return out
     for name in sorted(os.listdir(root)):
         m = WEEK_DIR_RE.match(name)
         if m and os.path.isdir(os.path.join(root, name)):
-            out[int(m.group(1))] = os.path.join(root, name)
+            out.setdefault(int(m.group(1)), []).append(os.path.join(root, name))
     return out
 
 
@@ -191,8 +198,13 @@ def check_week_coverage(root, contract_weeks, dirs):
                        f"契約有 week {wk}（{contract_weeks[wk]}）但 materials/ 沒有對應目錄"))
     for wk in sorted(dirs):
         if wk not in contract_weeks:
-            v.append(V("E-MAT-ORPHAN", dirs[wk], 1,
+            v.append(V("E-MAT-ORPHAN", dirs[wk][0], 1,
                        f"materials/ 有 week {wk} 但契約的 weekly_plan 沒有這一週"))
+        if len(dirs[wk]) > 1:
+            names = "、".join(os.path.basename(d) for d in dirs[wk])
+            v.append(V("E-MAT-DUP", dirs[wk][0], 1,
+                       f"week {wk} 有 {len(dirs[wk])} 個目錄（{names}）；"
+                       f"同一週只能有一份講義，否則學生會拿到兩套說法"))
     return v
 
 
@@ -206,7 +218,7 @@ def audit(root, contract_path):
     files = 0
 
     for wk in sorted(dirs):
-        d = dirs[wk]
+      for d in dirs[wk]:
         lecture = os.path.join(d, "講義.md")
         if not os.path.isfile(lecture):
             violations.append(V("E-MAT-MISSING", d, 1, f"week {wk} 缺 講義.md"))
@@ -235,7 +247,8 @@ def main(argv=None):
 
     dirs, files, violations = audit(args.root, args.contract)
     print(f"教材目錄: {args.root}")
-    print(f"週次目錄: {len(dirs)} ｜ Markdown 檔: {files}")
+    total_dirs = sum(len(v) for v in dirs.values())
+    print(f"週次: {len(dirs)} ｜ 週次目錄: {total_dirs} ｜ Markdown 檔: {files}")
 
     if violations:
         print(f"\n違規 {len(violations)} 項：")

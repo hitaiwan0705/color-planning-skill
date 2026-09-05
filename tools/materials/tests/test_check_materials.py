@@ -176,6 +176,38 @@ class TestNegativePII(unittest.TestCase):
         self.assertIn("E-MAT-PII", codes(lecture=bad))
 
 
+class TestNegativeDuplicateWeek(unittest.TestCase):
+    """同一週兩個目錄必須被抓出來。
+
+    這是真實事故：2026-09-06 Codex 與 Claude 同時寫 materials/，
+    W08–W13 各產生兩個目錄。早期版本用 dict 存單一路徑，後者靜默覆蓋前者。"""
+
+    def test_two_directories_for_one_week_fails(self):
+        fx = Fixture()
+        try:
+            second = os.path.join(fx.materials, "W01_另一個名字")
+            os.makedirs(second)
+            with open(os.path.join(second, "講義.md"), "w", encoding="utf-8") as f:
+                f.write(GOOD_LECTURE)
+            self.assertIn("E-MAT-DUP", fx.codes())
+        finally:
+            fx.cleanup()
+
+    def test_both_directories_are_still_checked(self):
+        """重複不得讓其中一份逃過內容檢查。"""
+        fx = Fixture()
+        try:
+            second = os.path.join(fx.materials, "W01_另一個名字")
+            os.makedirs(second)
+            with open(os.path.join(second, "講義.md"), "w", encoding="utf-8") as f:
+                f.write(GOOD_LECTURE.replace("## 失敗條件", "## 其他"))
+            found = fx.codes()
+            self.assertIn("E-MAT-DUP", found)
+            self.assertIn("E-MAT-SECTION", found)
+        finally:
+            fx.cleanup()
+
+
 class TestNegativeWeekCoverage(unittest.TestCase):
     def test_contract_week_without_directory_fails(self):
         c = CONTRACT + "    - week: 2\n      title: 第二週\n"

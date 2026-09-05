@@ -57,6 +57,8 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 | REVIEW-02 | Codex 整合 Claude R1 意見並回填取捨 | Codex | 待處理 | 特別請看 V1（校內 30/30/30/10 缺出處）與 V2（開課單位與已定案事實不符） |
 | MAT-01 | `materials/` W01–W09 講義草案 | Claude Code | 已完成 | 非 authoritative；commit `14c7053`、`fa2b3f1` |
 | MAT-02 | `materials/` W10–W18 講義草案 | Claude Code ＋ Codex | **已完成** | 兩邊各自寫了一版，已合併為單一版本 |
+| MERGE-01 | 合併 W08–W13 的雙寫講義 | Claude Code | **已完成** | 六週合併為單一版本；請 Codex 覆核是否有段落失真 |
+| TOOL-02 | 修正 `check_materials.py` 重複週次靜默覆蓋 | Claude Code | **已完成** | 新增 `E-MAT-DUP`；由本次雙寫暴露 |
 | TOOL-01 | `tools/materials/check_materials.py` 教材確定性檢核器 | Claude Code | 已完成 | 19 條測試含負向驗證；三次突變確認規則移除即紅 |
 | FIX-04 | 修正 Claude 測試夾具觸發外洩掃描 | Claude Code | 已完成 | Codex 於 SYNC-01 指出；個資夾具改為執行期組裝 |
 | PLAN-03 | 老師確認必備輸入並升級 authoritative | 老師／Codex | 待處理 | 學期、年級、時數、設備、研究角色 |
@@ -92,6 +94,36 @@ OK
 > 只是 Codex 當時尚未 fetch 到。這不是要爭功——**它會影響待辦看板的判讀**：
 > 若記成「Claude 失敗、Codex 備援」，下一輪會以為 Claude 這條線不可用而重複接手，
 > 於是再產生一次雙寫。雙寫的成本兩邊都付過了，記錄要準確才不會再付一次。
+
+### 2026-09-06｜Claude Code｜合併雙寫的六週講義，修掉自己工具的缺陷｜下一步：Codex 覆核合併結果
+
+Codex 與 Claude 同時寫入 `materials/`，W08–W13 各產生兩個目錄、兩份講義。
+git 沒有衝突（目錄名不同），所以雙方都沒有立刻發現——**這正是最危險的形態**。
+
+**先修工具**：`check_materials.py` 原本用週次當 dict key 存單一路徑，
+後寫入的會靜默覆蓋前一個，兩份講義同時存在卻只有一份被檢查。
+已改為存 list，新增 `E-MAT-DUP`，並加兩條測試（其中一條驗證重複時**兩份都仍被內容檢查**）。
+突變測試確認規則移除後對應測試會紅。**這是我自己工具的真缺陷，由這次雙寫暴露。**
+
+**再處理內容**：六週不是二選一，是合併。Codex 的版本有我缺的東西：
+
+- W09 五個常見斷點（RGB 沒 profile、Lab 沒照明體、ΔE 沒版本、軟打樣沒 intent、
+  意象沒受眾證據）與修復單機制
+- W10「不可直接下的結論」欄——擋住「換光源有差就一定是同色異譜」這類跳步歸因
+- W11 的實驗控制：兩輪分開改條件、亂序判讀、不得看到前一位的答案
+- W13 完整的可重作登錄欄位與設備規格出處
+- 全部六份都附外部標準連結，我的版本幾乎沒有
+
+**其中一項是 Codex 更正了我的錯誤**：W12 的五個色貌屬性應為
+lightness／brightness／chroma／saturation／**colorfulness**，我把 colorfulness 寫成了色相。
+已改正，並補上 relative／absolute 的分界說明與「保留英文術語」的要求。
+
+合併後保留 Claude 的目錄名（其他週的「下週」指標指向它們），
+Codex 的六個重複目錄以 `git rm` 移除，內容已全數併入。
+**請 Codex 覆核合併結果**：若有任何段落在合併中失真，直接指出，我改。
+
+驗證：`check_materials.py` 18 週全過；測試 21 條全過；CIEDE2000 15/15；外洩掃描通過。
+
 
 ### 2026-09-06｜Claude Code｜18 週講義草案完成｜下一步：Codex 回填 REVIEW-02，老師裁示 D1–D6
 
