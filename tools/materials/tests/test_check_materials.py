@@ -1,0 +1,181 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+test_check_materials.py — check_materials.py 的驗證套件
+
+【設計原則】只會 PASS 的測試沒有價值。
+每一條規則都有負向驗證：植入對應錯誤，確認該規則會抓到且錯誤碼正確。
+規則被誤刪或寫壞時，對應測試必須 FAIL。
+
+執行：python3 -m unittest discover -s tools/materials/tests -v
+"""
+
+import importlib.util
+import os
+import shutil
+import tempfile
+import unittest
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_REPO = os.path.abspath(os.path.join(_HERE, "..", "..", ".."))
+_SCRIPT = os.path.join(_REPO, "tools", "materials", "scripts", "check_materials.py")
+_spec = importlib.util.spec_from_file_location("check_materials", _SCRIPT)
+cm = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(cm)
+
+CONTRACT = """weekly_plan:
+  weeks:
+    - week: 1
+      title: 測試週
+"""
+
+GOOD_LECTURE = """# W01 測試週｜講義
+
+## 這一週在解什麼問題
+
+一段敘述。這裡可以自由使用理解、應用、整合這些詞，因為不是判準。
+
+## 本週交付
+
+- 交出觀察條件紀錄，含光源、背景與觀察距離三欄
+- 交出色票清單，每筆附來源檔名
+
+## 失敗條件
+
+- 缺任一欄位即未通過
+- 以口頭描述代替數值紀錄即未通過
+"""
+
+
+class Fixture:
+    def __init__(self, lecture=GOOD_LECTURE, contract=CONTRACT, dirname="W01_測試週", extra=None):
+        self.root = tempfile.mkdtemp(prefix="mat_")
+        self.materials = os.path.join(self.root, "materials")
+        wk = os.path.join(self.materials, dirname)
+        os.makedirs(wk)
+        if lecture is not None:
+            with open(os.path.join(wk, "講義.md"), "w", encoding="utf-8") as f:
+                f.write(lecture)
+        if extra:
+            for fn, body in extra.items():
+                with open(os.path.join(wk, fn), "w", encoding="utf-8") as f:
+                    f.write(body)
+        self.contract = os.path.join(self.root, "CONTRACT.yaml")
+        with open(self.contract, "w", encoding="utf-8") as f:
+            f.write(contract)
+
+    def codes(self):
+        _dirs, _files, vs = cm.audit(self.materials, self.contract)
+        return [v.code for v in vs]
+
+    def cleanup(self):
+        shutil.rmtree(self.root, ignore_errors=True)
+
+
+def codes(**kw):
+    fx = Fixture(**kw)
+    try:
+        return fx.codes()
+    finally:
+        fx.cleanup()
+
+
+class TestPositive(unittest.TestCase):
+    """合法輸入不得被誤判，否則負向測試沒有意義。"""
+
+    def test_good_week_passes(self):
+        self.assertEqual(codes(), [])
+
+    def test_abstract_verbs_allowed_outside_criteria_sections(self):
+        """敘述性內文用『理解／應用／整合』不算違規 —— 只有判準章節禁止。"""
+        self.assertNotIn("E-MAT-VERB", codes())
+
+    def test_real_materials_pass(self):
+        root = os.path.join(_REPO, "materials")
+        contract = os.path.join(_REPO, "skill", "color-planning", "COURSE-CONTRACT.yaml")
+        if not os.path.isdir(root) or not os.listdir(root):
+            self.skipTest("materials/ 尚未建立")
+        _d, _f, vs = cm.audit(root, contract)
+        self.assertEqual([str(v) for v in vs], [])
+
+
+class TestNegativeSections(unittest.TestCase):
+    def test_missing_required_section_fails(self):
+        bad = GOOD_LECTURE.replace("## 失敗條件", "## 其他")
+        self.assertIn("E-MAT-SECTION", codes(lecture=bad))
+
+    def test_missing_lecture_file_fails(self):
+        self.assertIn("E-MAT-MISSING", codes(lecture=None))
+
+
+class TestNegativeVerbs(unittest.TestCase):
+    def test_abstract_verb_in_deliverable_section_fails(self):
+        bad = GOOD_LECTURE.replace("- 交出觀察條件紀錄，含光源、背景與觀察距離三欄",
+                                   "- 學生能整合觀察條件與量測資料")
+        self.assertIn("E-MAT-VERB", codes(lecture=bad))
+
+    def test_abstract_verb_in_failure_section_fails(self):
+        bad = GOOD_LECTURE.replace("- 缺任一欄位即未通過", "- 未掌握色差概念即未通過")
+        self.assertIn("E-MAT-VERB", codes(lecture=bad))
+
+    def test_every_listed_verb_is_detected(self):
+        """逐字驗證：清單漏掉任何一個詞，本測試就 FAIL。"""
+        for verb in cm.ABSTRACT_VERBS:
+            with self.subTest(verb=verb):
+                bad = GOOD_LECTURE.replace("- 缺任一欄位即未通過", f"- 未{verb}即未通過")
+                self.assertIn("E-MAT-VERB", codes(lecture=bad), f"漏掉 {verb!r}")
+
+
+class TestNegativeGates(unittest.TestCase):
+    def test_mimaki_without_gate_fails(self):
+        bad = GOOD_LECTURE + "\n用 Mimaki 輸出一張樣本。\n"
+        self.assertIn("E-MAT-GATE", codes(lecture=bad))
+
+    def test_mimaki_with_gate_passes(self):
+        ok = GOOD_LECTURE + "\n用 Mimaki 輸出，上限 300 × 420 mm、厚度 50 mm。\n"
+        self.assertNotIn("E-MAT-GATE", codes(lecture=ok))
+
+    def test_tl84_without_blocked_fails(self):
+        bad = GOOD_LECTURE + "\n在 TL84 下觀察同色異譜。\n"
+        self.assertIn("E-MAT-GATE", codes(lecture=bad))
+
+    def test_white_ink_without_blocked_fails(self):
+        bad = GOOD_LECTURE + "\n先上一層白墨再印。\n"
+        self.assertIn("E-MAT-GATE", codes(lecture=bad))
+
+
+class TestNegativeNumericClaims(unittest.TestCase):
+    def test_delta_e_without_source_fails(self):
+        bad = GOOD_LECTURE + "\n這一對的 ΔE00 = 3.2，屬於可接受範圍。\n"
+        self.assertIn("E-MAT-CLAIM", codes(lecture=bad))
+
+    def test_delta_e_with_source_passes(self):
+        ok = GOOD_LECTURE + "\n這一對的 ΔE00 = 3.2（來源：color_audit.py 輸出）。\n"
+        self.assertNotIn("E-MAT-CLAIM", codes(lecture=ok))
+
+    def test_delta_e_inside_code_fence_is_ignored(self):
+        ok = GOOD_LECTURE + "\n```\nΔE00 = 3.2\n```\n"
+        self.assertNotIn("E-MAT-CLAIM", codes(lecture=ok))
+
+
+class TestNegativePII(unittest.TestCase):
+    def test_id_number_fails(self):
+        bad = GOOD_LECTURE + "\n範例：A123456789\n"
+        self.assertIn("E-MAT-PII", codes(lecture=bad))
+
+    def test_student_number_fails(self):
+        bad = GOOD_LECTURE + "\n學號：41054001\n"
+        self.assertIn("E-MAT-PII", codes(lecture=bad))
+
+
+class TestNegativeWeekCoverage(unittest.TestCase):
+    def test_contract_week_without_directory_fails(self):
+        c = CONTRACT + "    - week: 2\n      title: 第二週\n"
+        self.assertIn("E-MAT-MISSING", codes(contract=c))
+
+    def test_directory_without_contract_week_fails(self):
+        self.assertIn("E-MAT-ORPHAN", codes(dirname="W99_不存在的週"))
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
