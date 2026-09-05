@@ -584,8 +584,53 @@ assessment_contract:
     failure_condition: 輸出含分數、等第或總評語 → 違反 principle，該輸出作廢
 
   rubric_dimensions:
-    # 維度與權重尚未決定（CONTEXT.md 第 8 節），填入前須先取得授課者裁決。
-    status: undecided_by_instructor
+    # 維度與權重仍列為 CONTEXT.md 第 8 節之未決事項。
+    # 以下為草案，核定前不得作為評分依據，也不得被 skill 引用產生分數。
+    status: draft
+    drafted_by: claude
+    ratified_by: instructor_only
+    source: MATERIALS-PLAN.md 第 5 節
+    scope_note: 本組維度供授課者評分使用；skill 本身仍不得輸出分數、等第或總評語
+    gates:
+      # 門檻不是權重維度。未過門檻者不進入權重計算，且不得以其他項目補償。
+      - id: G1
+        rule: evidence_contract.required_artifacts.always 齊全
+        on_fail: 該次不計分，退回補件
+      - id: G2
+        rule: AI 使用揭露存在
+        on_fail: disclosure_missing，該次不計分
+      - id: G3
+        rule: 每個數值主張可追溯至 color_audit.py 輸出或 i1 Pro 量測檔
+        on_fail: unsupported_claim，該數值不採計
+    profiles:
+      - id: R-A
+        applies_to: [TASK-02, TASK-04, TASK-05, TASK-06]
+        dimensions:
+          - {name: 可追溯性與量測紀錄品質, weight: 25}
+          - {name: 規格符合度, weight: 25}
+          - {name: 判斷的正當性, weight: 25}
+          - {name: 修正迴圈證據, weight: 25}
+      - id: R-B
+        applies_to: [TASK-01, TASK-07, TASK-08]
+        dimensions:
+          - {name: 觀察條件紀錄完整性, weight: 25}
+          - {name: 機制歸因與排除理由, weight: 30}
+          - {name: 資料與工具輸出的一致性, weight: 25}
+          - {name: 限制的誠實度, weight: 20}
+    semester_weighting_draft:
+      TASK-02: 10
+      TASK-03: 10
+      TASK-04: 15
+      TASK-05: 15
+      TASK-07: 25
+      TASK-01: 10
+      TASK-08: 15
+      total: 100
+      undecided:
+        - 若 TASK-06 採 OPT-A 或 OPT-B，本表須重新配分
+        - P1–P7 的 25 分如何切分（等分或前輕後重）
+        - 遲交與補件的扣分規則
+    failure_condition: skill 依本節產生分數、等第或總評語 → 該輸出作廢（assessment_contract.principle）
 
 # ── 契約 4｜證據契約 ─────────────────────────────────────────────
 # 每個主張需要什麼證據。缺項即未通過，不得補償。
