@@ -10,7 +10,7 @@ meta:
   institution: 中國文化大學 資訊傳播學系
   level: 大三上
   required: true
-  version: 0.1.0-content-filled
+  version: 0.2.0-18week-scheduled
   status: content_filled    # skeleton | content_filled | classroom_ready
   classroom_ready: false    # 設備未確認項與交接草案仍須授課者核定
   context_source: CONTEXT.md
@@ -108,6 +108,22 @@ capability_contract:
       validation_rule: 鏈路十步驟不得缺項或改序；Mimaki 輸出不得超過 300×420 mm 與 50 mm 厚度；媒材名稱若未由授課者確認，該媒材指定須標 BLOCKED；白墨、clear 或螢光燈管活動須標 BLOCKED
       failure_condition: 缺任一鏈路證據、未交修正後樣本、未載媒材/設備描述檔、或使用未確認白墨/clear/TL84 做肯定教學 → 未通過
 
+    # ── 後半 9 週 色彩感知模組（week 10–18）新增之能力 ──
+    - id: CAP-07
+      layer: 1
+      input_evidence: 指定色票與版面、觀察條件紀錄（光源、背景色、觀察距離、觀察時間）、觀察者當下適應狀態自述、color_audit.py 輸出、涉及實體樣本時之 i1 Pro 量測檔、AI 使用揭露
+      observable_behavior: 對同一組色彩分別記錄儀器數值與人眼判讀，標出兩者不一致的位置，並指名該不一致可歸因於哪一個機制（同色異譜、適應狀態、背景與同時對比、觀察者差異），同時說明排除其餘機制的理由
+      deliverable: 感知落差對照表、觀察條件紀錄、機制歸因說明、排除理由紀錄、工具與儀器輸出附件
+      validation_rule: 每一筆落差須同時具備儀器數值與人眼判讀，缺一不成立；歸因須指名單一機制並附排除其餘機制之理由；ΔE00 須追溯至 color_audit.py 或 i1 Pro 量測檔並註明 CIEDE2000
+      failure_condition: 只有人眼判讀而無儀器數值、只有儀器數值而無觀察條件紀錄、或歸因未附排除理由 → 未通過
+    - id: CAP-08
+      layer: 1
+      input_evidence: 自選之色彩感知問題、CAP-07 累積之落差資料、自行補充之觀察或量測資料、外部來源清單、AI 使用揭露
+      observable_behavior: 提出一個可由所附資料回答的色彩感知問題，寫出觀察條件與判斷方法，報告資料結果，並列出本次資料無法回答的部分
+      deliverable: 報告本文（問題、方法、觀察條件、資料、限制）、原始資料檔、外部來源清單、AI 使用揭露
+      validation_rule: 問題須可由所附資料回答；每個數值主張須追溯至工具輸出或儀器量測檔；外部事實須附可查證來源，查不到須標 UNVERIFIED；限制章節不得為空
+      failure_condition: 問題無法由所附資料回答、限制章節為空、以文獻敘述替代自身觀察資料、或將 AI 生成內容列為事實來源 → 未通過
+
 # ── 契約 2｜任務契約 ─────────────────────────────────────────────
 # 在什麼情境、限制與角色下完成。
 task_contract:
@@ -187,6 +203,49 @@ task_contract:
       duration: 3-4 週
       submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
 
+    # ── 後半 9 週 色彩感知模組（week 10–18）新增之任務 ──
+    - id: TASK-07
+      capability_refs: [CAP-07]
+      scenario: 以七週的進度交件累積一份感知落差資料集，每週新增一個機制的觀察
+      role: 色彩感知觀察記錄者
+      constraints: "每週僅新增當週機制之觀察，不得回頭改寫前週資料（改寫須另開修訂紀錄）；量化數值一律由 color_audit.py 或 i1 Pro 產生；同色異譜觀察限用 D50/D65，依賴螢光燈管者標 <!-- BLOCKED: 待設備確認 -->"
+      equipment_required: [light_booth_d50_d65, i1_pro_2, i1_pro_3]
+      duration: 7 週（week 10–16，每週一次進度交件 P1–P7）
+      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      progressive_submissions:
+        - id: P1
+          week: 10
+          adds: 儀器數值與人眼判讀的第一組對照，含完整觀察條件紀錄
+        - id: P2
+          week: 11
+          adds: 同一組色彩在不同適應狀態下的判讀差異
+        - id: P3
+          week: 12
+          adds: 背景改變造成的同時對比與 crispening 觀察
+        - id: P4
+          week: 13
+          adds: 色貌屬性的分欄記錄，明度／明亮度／彩度／飽和度分開登錄
+        - id: P5
+          week: 14
+          adds: 色覺差異情境下的可區辨性，含 color_audit.py 之 cvd 情境輸出
+        - id: P6
+          week: 15
+          adds: 判斷任務的設計說明（尺度、觀察者人數、呈現順序、重複次數）
+        - id: P7
+          week: 16
+          adds: 依 P6 設計實際執行一次觀察，資料與前六週紀錄對照
+      failure_condition: 任一進度交件缺當週新增內容，或以前週資料充抵 → 該次未通過，不得於學期末補交合併
+    - id: TASK-08
+      capability_refs: [CAP-08]
+      scenario: 兩週自主學習，就 TASK-07 累積的資料提出並回答一個色彩感知問題
+      role: 色彩感知報告撰寫者
+      constraints: 自主學習週不排課，授課者提供固定 office hour；報告須含限制章節；不得以 AI 生成內容作為事實來源；不得引用未標示可信度等級之非官方筆記作為判準
+      equipment_required: []
+      duration: 2 週（week 17–18）
+      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      undecided_by_instructor:
+        - week 18 是否安排口頭發表，或僅線上繳交
+
   schedule_constraint:
     # 由 CONTEXT.md 第 4 節導出，非課程內容，Codex 不得更動。
     exam_date: 2026-11-14
@@ -194,7 +253,10 @@ task_contract:
     coverage_before_exam:
       required_for_ipas_subjects:
         - subject: 科目一 色彩學
-          task_refs: [TASK-01, TASK-02, TASK-04]
+          task_refs: [TASK-02, TASK-04]
+          post_exam_reinforcement: TASK-01
+          coverage_note: 依 CONTEXT.md 第 1 節學生先修狀態，科目一之基礎由先修課程與客座複習（week 2、week 5）承擔；TASK-01 色彩知覺稽核移至後半感知模組 week 14
+          failure_condition: 若先修狀態或客座場次未落實，本科考前涵蓋即不成立，須回報缺口，不得以「學生應已學過」代替
         - subject: 科目二 色彩計畫實務
           task_refs: [TASK-02, TASK-03]
           post_exam_reinforcement: TASK-06
@@ -204,9 +266,283 @@ task_contract:
           post_exam_reinforcement: TASK-06
       post_exam_reinforcement_tasks: [TASK-06]
       feasibility_status: requires_instructor_scheduling
-      failure_condition: 若 TASK-01 至 TASK-05 無法於 2026-11-14 前授畢，須標需授課者裁決；不得宣稱已滿足考前涵蓋
+      failure_condition: 若 TASK-02 至 TASK-05 無法於 2026-11-14 前授畢，須標需授課者裁決；不得宣稱已滿足考前涵蓋
     registration_note: 報名極可能於開學一至兩週內截止，報考決定須於第 1 週處理
     unverified_note: 報名期間與團體報名截止日須以 115 年度初級簡章條文為準
+
+# ── 週次計畫（18 週）───────────────────────────────────────────
+# 這不是第八項契約，是前六項契約在本學期的排課實例。
+# 契約規定「什麼算數」，本節只規定「哪一週做」。兩者衝突時以契約為準。
+weekly_plan:
+  meta:
+    total_weeks: 18
+    structure: 前 9 週色彩規劃與色彩管理主線（考前）／後 9 週色彩感知（7 週授課搭配進度交件、2 週自主學習報告）
+    authority: 授課者定案 2026-09-05
+    week_to_date_rule: 週次與日期之對應須由授課者以實際開學日核算後填入；本檔不得寫入未經核算之日期
+
+  assumptions:
+    - id: A1
+      statement: 學生已修過色彩學與色彩度量學，前 9 週不重講基礎
+      source: CONTEXT.md 第 1 節 學生先修狀態
+      status: instructor_stated
+    - id: A2
+      statement: iPAS 115 年度初級第一次考試 2026-11-14 落在第 9 週或之前
+      status: unverified
+      verification_rule: 授課者須以實際開學日核算 11/14 為第幾週
+      failure_condition: 若 11/14 早於第 9 週，須將 week 6 至 week 8 之量測與色彩管理內容前移，並回報受影響之 TASK 與交件日
+    - id: A3
+      statement: 每週一次課，客座場次佔用該週全部課堂時間
+      status: instructor_stated
+
+  guest_lectures:
+    count_max: 3
+    speakers: [吳瑞卿, 陳鴻興]
+    scheduled_weeks: [2, 5]
+    reserve_week: 9
+    purpose: 色彩學與色彩度量學之複習，不新增本課評量要求
+    rules:
+      - 客座週不發新任務、不收新交件
+      - 客座內容不得作為評量判準之唯一來源；判準一律回到 COURSE-CONTRACT 與工具輸出
+      - 客座講題須於 week 1 診斷結果產出後再確認，避免重複學生已具備的內容
+    unverified_note: "<!-- UNVERIFIED: 兩位講者之單位職稱、可授課週次與講題須經本人確認，未確認前不得對外公告 -->"
+
+  # TASK-06 虛實輸出鏈在本學期沒有排入的週次。這是本計畫最大的結構性缺口，
+  # 不得以任何方式默默略過。三個選項與其後果如下，須由授課者裁決。
+  unscheduled_task:
+    task_id: TASK-06
+    reason: 前 9 週須讓出空間給考科涵蓋，後 9 週由授課者指定為色彩感知模組，TASK-06 所需之 3–4 週實作無處安置
+    requires_instructor_ruling: true
+    options:
+      - id: OPT-A
+        action: 併入後半，P1–P7 之觀察基底改為 Mimaki 實體輸出，TASK-06 與 TASK-07 合流
+        consequence: 感知模組壓縮約 2 週；且依賴白墨與 clear 之活動仍須標 BLOCKED（設備未確認）
+      - id: OPT-B
+        action: 縮減為 week 8 之單次示範與 week 16 之一次輸出驗證，不作為完整交付物
+        consequence: TASK-06 之 evidence_contract 交付物不成立，須明列哪幾項不收
+      - id: OPT-C
+        action: 本學期不開 TASK-06
+        consequence: handoff_contract 四項交接產物中，三項（資訊視覺化設計、整合行銷傳播、畢業專題）之 produced_by_task 含 TASK-06，將無法產出，須同步降級為 draft 並通知下游
+    failure_condition: 未裁決即產生任何宣稱已涵蓋虛實輸出鏈之輸出 → 該輸出作廢
+
+  weeks:
+    # ── Block A：色彩規劃與色彩管理主線（考前）──
+    - week: 1
+      block: A
+      title: 課程契約、iPAS 報考處理與先修診斷
+      focus:
+        - 交付物規格、證據要求與 AI 使用揭露規則說明
+        - iPAS 115 年度初級簡章統一說明與報考決定（CONTEXT.md 第 4 節：須於第 1 週處理）
+        - 先修診斷：色彩學與色彩度量學基礎，結果用於決定客座複習深度
+      layer_refs: []
+      issue: []
+      due: []
+      equipment_required: []
+      note: 診斷結果不計分，僅用於調整 week 2 與 week 5 之客座講題
+    - week: 2
+      block: A
+      title: 客座① 色彩學複習
+      focus: [依 week 1 診斷結果調整之色彩學重點複習]
+      layer_refs: [1, 2]
+      issue: []
+      due: []
+      equipment_required: []
+      note: 客座週，不發任務
+    - week: 3
+      block: A
+      title: 色彩表徵與可交換色彩資料
+      focus:
+        - 主線 CIE XYZ → CIELAB／LCh → ΔE → ICC
+        - RGB、CMYK、OKLCH 與 design token 的登錄方式
+        - Pantone 的位置：產業溝通與色票指定，不作為色彩科學起點
+      layer_refs: [2]
+      issue: [TASK-02]
+      due: []
+      equipment_required: []
+    - week: 4
+      block: A
+      title: 色彩意象與色彩計畫實務
+      focus:
+        - 語意差異、情感意象、文化語境、品牌人格
+        - 候選色票的取捨與排除理由的寫法
+        - 外部文化主張的來源要求與 UNVERIFIED 標記
+      layer_refs: [3]
+      issue: [TASK-03]
+      due: [TASK-02]
+      equipment_required: []
+    - week: 5
+      block: A
+      title: 客座② 色彩度量學與量測複習
+      focus: [量測幾何、觀察條件、同色異譜、色差公式版本之複習]
+      layer_refs: [4]
+      issue: []
+      due: []
+      equipment_required: []
+      note: 客座週，不發任務。此場次同時承擔科目一與科目三之基礎複習
+    - week: 6
+      block: A
+      title: 色彩量測實作
+      focus:
+        - i1 Pro 2／i1 Pro 3 操作與量測條件紀錄
+        - D50／D65 標準燈箱下的視覺觀察與儀器紀錄分欄
+        - ΔE00 報告格式，註明 CIEDE2000，不與 CIE76 混用
+      layer_refs: [4]
+      issue: [TASK-04]
+      due: []
+      equipment_required: [i1_pro_2, i1_pro_3, light_booth_d50_d65]
+      equipment_gate: 燈箱型號等級標「待核對」；不得假設 TL84／CWF／U30 存在
+    - week: 7
+      block: A
+      title: 色彩管理 I：校正與特性化
+      focus:
+        - 校正、特性化、轉換三者的分界與順序
+        - i1 Pro + i1Profiler 建立 OS 層顯示器 ICC profile
+        - 工作色域指定與 profile 版本控管
+      layer_refs: [5]
+      issue: [TASK-05]
+      due: [TASK-03]
+      equipment_required: [benq_pd2705q, benq_pd2706qn, display_profiling_via_i1profiler, i1_pro_2, i1_pro_3]
+      equipment_gate: 僅 software calibration；不得寫入 monitor LUT，不得經 AQCOLOR Pilot
+    - week: 8
+      block: A
+      title: 色彩管理 II：轉換、軟打樣與色域對映
+      focus:
+        - PCS 與 rendering intent 的選擇後果
+        - 色域對映與色域外色彩清單
+        - 軟打樣設定與其可信範圍
+      layer_refs: [5, 6]
+      issue: []
+      due: [TASK-04]
+      equipment_required: [benq_pd2705q, benq_pd2706qn]
+      note: 若 unscheduled_task 採 OPT-B，本週加入一次 Mimaki 輸出示範
+    - week: 9
+      block: A
+      title: 考前整合週（客座③ 備用）
+      focus:
+        - 三科重點與本課交付物的對照
+        - 考科範圍與本課涵蓋差異的缺口說明
+      layer_refs: []
+      issue: []
+      due: [TASK-05]
+      equipment_required: []
+      note: iPAS 115 年度初級第一次考試 2026-11-14；本週為客座③ 之備用場次
+
+    # ── Block B：色彩感知模組（7 週授課搭配進度交件）──
+    - week: 10
+      block: B
+      title: 感知與量測的落差
+      focus:
+        - 儀器判定相同、人眼判定不同的四個來源：同色異譜、觀察者差異、觀察條件、適應狀態
+        - 本模組的問題設定與資料格式
+      layer_refs: [1, 4]
+      issue: [TASK-07]
+      due: []
+      equipment_required: [light_booth_d50_d65, i1_pro_2, i1_pro_3]
+      equipment_gate: "同色異譜示範限用 D50／D65；依賴螢光燈管之演示標 <!-- BLOCKED: 待設備確認 -->"
+      progressive_submission: P1
+    - week: 11
+      block: B
+      title: 色適應與色恆常
+      focus:
+        - 適應機制與後像
+        - 色恆常失效的情境
+        - 適應狀態如何改變同一組數值的判讀
+      layer_refs: [1]
+      issue: []
+      due: []
+      equipment_required: [light_booth_d50_d65]
+      progressive_submission: P2
+    - week: 12
+      block: B
+      title: 對比效應：同時對比、連續對比與 crispening
+      focus:
+        - 背景改變造成的判讀位移
+        - crispening 對色差判定的影響
+        - 版面中對比效應的可觀察位置
+      layer_refs: [1]
+      issue: []
+      due: []
+      equipment_required: []
+      progressive_submission: P3
+    - week: 13
+      block: B
+      title: 色貌屬性與色貌現象
+      focus:
+        - 明度／明亮度／彩度／飽和度／色度的分欄記錄，不得互相代替
+        - 絕對量與相對量的分界
+        - 色貌現象在跨媒體情境下的出現位置
+      layer_refs: [1]
+      issue: []
+      due: []
+      equipment_required: []
+      progressive_submission: P4
+      note: 名詞辨異為本週主要失分點，交件須逐欄登錄而非以單一「顏色深淺」描述
+    - week: 14
+      block: B
+      title: 色覺差異與可及性
+      focus:
+        - 色覺差異型態與其對色票組的影響
+        - WCAG 對比（SC 1.4.3／1.4.11）與 SC 1.4.1「僅以顏色傳達」為兩個獨立問題
+        - color_audit.py 的 cvd 情境輸出判讀
+      layer_refs: [1]
+      issue: [TASK-01]
+      due: []
+      equipment_required: []
+      progressive_submission: P5
+      note: TASK-01 由前半移至本週，與 P5 共用同一組版面素材
+    - week: 15
+      block: B
+      title: 觀察方法與判斷任務設計
+      focus:
+        - 尺度型態與其可做的統計
+        - 判斷任務的參數：觀察者人數、呈現順序、重複次數、參考條件
+        - 觀察紀錄的可重現性要求
+      layer_refs: [1]
+      issue: []
+      due: []
+      equipment_required: []
+      progressive_submission: P6
+    - week: 16
+      block: B
+      title: 觀察執行與資料判讀
+      focus:
+        - 依 P6 之設計實際執行一次觀察
+        - 資料與前六週紀錄對照，指出不一致處
+        - 工具輸出與人眼判讀的落差歸因
+      layer_refs: [1, 4]
+      issue: [TASK-08]
+      due: [TASK-01, TASK-07]
+      equipment_required: [light_booth_d50_d65, i1_pro_2, i1_pro_3]
+      progressive_submission: P7
+      note: 若 unscheduled_task 採 OPT-B，本週加入一次實體輸出驗證
+
+    # ── Block B：自主學習（2 週）──
+    - week: 17
+      block: B
+      title: 自主學習（不排課）
+      focus: [報告製作；授課者提供固定 office hour]
+      layer_refs: [1]
+      issue: []
+      due: []
+      equipment_required: []
+      note: 不排課週。設備借用時段須於 week 16 前登記
+    - week: 18
+      block: B
+      title: 自主學習與成果繳交
+      focus: [報告完成與繳交]
+      layer_refs: [1]
+      issue: []
+      due: [TASK-08]
+      equipment_required: []
+      undecided_by_instructor:
+        - 是否安排口頭發表；若安排，本週恢復排課
+
+  validation_rules:
+    - 每個 issue／due 之 TASK id 必須存在於 task_contract.tasks
+    - 每週 equipment_required 之項目必須出現於 task_contract.equipment_gate.confirmed；
+      含 unverified、unavailable 或 undecided 項目者必須寫出 equipment_gate 欄位
+    - Block A 之週次不得出現 TASK-07、TASK-08；Block B 之週次不得發出考前涵蓋所需之任務
+    - unscheduled_task 未裁決前，不得產生宣稱已涵蓋虛實輸出鏈之輸出
+  failure_condition: 週次計畫與契約衝突時以契約為準；本節不得放寬任一失敗條件
 
 # ── 契約 3｜評量契約 ─────────────────────────────────────────────
 # 如何判斷品質與能力層級。本 skill 產生落差清單，不產生分數。
@@ -279,6 +615,11 @@ evidence_contract:
         artifacts: [i1Profiler_calibration_record, OS_ICC_profile_record, working_space_setting, soft_proof_setting, out_of_gamut_color_list]
       - task_id: TASK-06
         artifacts: [原始設計檔, 顯示器校正紀錄, working_space_setting, soft_proof_record, media_device_profile_record, first_physical_sample, revised_physical_sample, D50_D65_light_booth_observation, i1_pro_measurement_file, DeltaE00_before_after_report, visual_evaluation_form, revision_output_log]
+
+      - task_id: TASK-07
+        artifacts: [感知落差對照表, 觀察條件紀錄, 機制歸因說明, 排除理由紀錄, color_audit_json, i1_pro_measurement_file, 週次進度交件紀錄]
+      - task_id: TASK-08
+        artifacts: [報告本文, 原始資料檔, 外部來源清單, 限制章節, AI_usage_disclosure]
 
   traceability_rule:
     statement: 每個數值主張須追溯至 color_audit.py 輸出或儀器量測檔
