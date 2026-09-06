@@ -780,6 +780,8 @@ assignment_contract:
     learning_survey:
       applies_to: [ASSIGN-01, ASSIGN-02, ASSIGN-03, ASSIGN-04]
       rule: 每次作業得搭配一份學習問卷；問卷自願、不計分、不影響交件完整性
+      grading_rule: 未填問卷不得列為缺交、交付物不齊或扣分理由（由 check_materials.py E-MAT-SURVEY 執行）
+      why_optional: 綁進成績就是強迫填答；問卷日後若轉作研究資料，這種綁定在倫理上站不住
       not_a_submission_event: true
       why: 問卷附掛在既有的四個交件事件上，不新增交件點，故不受 max_submission_events 拘束
       data_rule: 問卷回應**不進入本 repo**，一律留在 Teams 或授課者指定之校方儲存位置
@@ -829,7 +831,7 @@ assignment_contract:
       weight: 10
       exam_alignment: 科目一 L112、科目二 L121（考前複習定位）
       rubric_profile: R-A
-      learning_survey: true
+      learning_survey: optional
     - id: ASSIGN-02
       title: 配色計畫與量測驗證
       task_refs: [TASK-03, TASK-04]
@@ -839,7 +841,7 @@ assignment_contract:
       weight: 10
       exam_alignment: 科目一 L113／L114、科目二 L122、科目三 L131（考前最後一份，設計為做中複習）
       rubric_profile: R-A
-      learning_survey: true
+      learning_survey: optional
     - id: ASSIGN-03
       title: 傳播色彩系統
       task_refs: [TASK-05, TASK-07, TASK-09]
@@ -849,7 +851,7 @@ assignment_contract:
       weight: 10
       note: W10 起以傳播為主體（D5）。問題設定須從訊息、閱聽人與接觸點出發；TASK-09 是這句話的執行者——接觸點少於三個或色彩功能無可觀察判準即未通過，不是扣分
       rubric_profile: R-B
-      learning_survey: true
+      learning_survey: optional
     - id: ASSIGN-04
       title: 虛實輸出與驗證（期末）
       task_refs: [TASK-01, TASK-06, TASK-07, TASK-08]
@@ -859,7 +861,7 @@ assignment_contract:
       weight: 30
       note: 跑站的產出在此匯總。TASK-07 的觀察資料橫跨 ASSIGN-03 與 ASSIGN-04，兩份各取其階段
       rubric_profile: R-B
-      learning_survey: true
+      learning_survey: optional
       presentation: [簡報檔, 錄製口頭發表]
 
   station_rotation:

@@ -6,7 +6,7 @@ check_materials.py — 教材確定性檢核器 v1.0
 【存在理由】
 教材的錯誤類型是「規格性」的，不是「創造性」的：術語不一致、必備章節缺漏、
 抽象能力動詞、設備閘門漏標、數值主張沒有來源、週次與契約不一致、
-講義寫的截止日與契約的 weekly_plan 對不起來。
+講義寫的截止日與契約的 weekly_plan 對不起來、把自願問卷寫成必交。
 規格性錯誤用確定性檢核抓，比用第二個 LLM 抓更準、更便宜、且可重現。
 異質模型複審應限縮在觀點與論證層次（MATERIALS-PLAN.md 1.0b）。
 
@@ -53,6 +53,14 @@ SOURCE_MARKERS = ["color_audit.py", "i1_pro", "i1 Pro", "量測檔", "工具輸�
 # 同一行同時出現「收」與「發放」，靠語序判斷會誤判。宣告行不靠語序。
 SUBMISSION_RE = re.compile(
     r"^<!--\s*交件事件:\s*issue=\[(.*?)\]\s*due=\[(.*?)\]\s*-->\s*$")
+
+# 學習問卷是自願、不計分的（授課者裁示 2026-09-06）。
+# 「失敗條件」章節若把未填問卷寫成缺交或扣分，就等於把自願問卷變成強迫填答——
+# 這正是本 repo 實際發生過的錯誤，由 Codex 抓到。豁免的寫法是把那種處理本身
+# 標為違規（「將未填列為缺交 → 違反自願原則」），因此豁免詞只認 違反／不得／自願／不計分。
+SURVEY_WORD = "問卷"
+SURVEY_PENALTY = ("缺交", "不齊", "扣分")
+SURVEY_EXEMPT = ("違反", "不得", "自願", "不計分")
 
 # 個資字樣（第二道防線，主防線在 tools/validation）
 PII_PATTERNS = [re.compile(r"\b[A-Z][12]\d{8}\b"), re.compile(r"學號\s*[:：]\s*\S")]
@@ -139,6 +147,27 @@ def check_abstract_verbs(path, text):
             if verb in raw:
                 v.append(V("E-MAT-VERB", path, i + 1,
                            f"判準章節出現抽象能力動詞 {verb!r}，須改寫為可觀察行為"))
+    return v
+
+
+def check_survey_not_graded(path, text):
+    """失敗條件章節不得把未填學習問卷寫成缺交或扣分。"""
+    v = []
+    lines = text.split("\n")
+    fenced = fence_mask(lines)
+    in_scope = False
+    for i, raw in enumerate(lines):
+        if raw.startswith("## "):
+            in_scope = raw.strip() == "## 失敗條件"
+            continue
+        if not in_scope or i in fenced:
+            continue
+        if SURVEY_WORD not in raw:
+            continue
+        if any(w in raw for w in SURVEY_PENALTY) and not any(w in raw for w in SURVEY_EXEMPT):
+            v.append(V("E-MAT-SURVEY", path, i + 1,
+                       "失敗條件把未填學習問卷列為缺交或扣分；"
+                       "問卷為自願、不計分，綁進成績等於強迫填答"))
     return v
 
 
@@ -293,6 +322,7 @@ def audit(root, contract_path):
                 violations += check_required_sections(path, text)
                 violations += check_abstract_verbs(path, text)
                 violations += check_submission_declaration(path, text, wk, contract_sub)
+                violations += check_survey_not_graded(path, text)
             violations += check_equipment_gates(path, text)
             violations += check_numeric_claims(path, text)
             violations += check_pii(path, text)

@@ -250,6 +250,37 @@ class TestNegativeSubmissionDeclaration(unittest.TestCase):
         self.assertNotIn("E-MAT-SUBMIT", codes(lecture=good, contract=contract))
 
 
+class TestNegativeSurveyNotGraded(unittest.TestCase):
+    """學習問卷自願、不計分——失敗條件不得把未填寫成缺交或扣分。
+
+    這條規則來自一個真的犯過的錯：本 repo 一度在 W18 寫「學習問卷未填 →
+    交付物不齊」。把自願問卷綁進成績就是強迫填答，而問卷日後若轉作研究資料，
+    這種綁定在倫理上站不住。豁免的寫法是把那種處理本身標為違規。
+    """
+
+    def test_survey_as_missing_deliverable_fails(self):
+        bad = GOOD_LECTURE.replace("- 缺任一欄位即未通過",
+                                   "- 學習問卷未填 → 交付物不齊")
+        self.assertIn("E-MAT-SURVEY", codes(lecture=bad))
+
+    def test_survey_as_deduction_fails(self):
+        bad = GOOD_LECTURE.replace("- 缺任一欄位即未通過",
+                                   "- 未填學習問卷者扣分")
+        self.assertIn("E-MAT-SURVEY", codes(lecture=bad))
+
+    def test_inverted_form_is_allowed(self):
+        """把「列為缺交」本身標為違規，是正確寫法，不得誤判。"""
+        ok = GOOD_LECTURE.replace("- 缺任一欄位即未通過",
+                                  "- 將學習問卷未填列為缺交或扣分 → 違反自願、不計分原則")
+        self.assertNotIn("E-MAT-SURVEY", codes(lecture=ok))
+
+    def test_survey_mentioned_outside_failure_section_is_allowed(self):
+        """只有判準章節受限；內文說明問卷怎麼交不算違規。"""
+        ok = GOOD_LECTURE.replace("- 交出色票清單，每筆附來源檔名",
+                                  "- 交出色票清單；學習問卷另行自願填答")
+        self.assertNotIn("E-MAT-SURVEY", codes(lecture=ok))
+
+
 class TestNegativeWeekCoverage(unittest.TestCase):
     def test_contract_week_without_directory_fails(self):
         c = CONTRACT + "    - week: 2\n      title: 第二週\n"
