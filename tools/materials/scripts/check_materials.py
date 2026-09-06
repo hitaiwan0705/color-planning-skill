@@ -5,7 +5,8 @@ check_materials.py — 教材確定性檢核器 v1.0
 
 【存在理由】
 教材的錯誤類型是「規格性」的，不是「創造性」的：術語不一致、必備章節缺漏、
-抽象能力動詞、設備閘門漏標、數值主張沒有來源、週次與契約不一致。
+抽象能力動詞、設備閘門漏標、數值主張沒有來源、週次與契約不一致、
+講義寫的截止日與契約的 weekly_plan 對不起來。
 規格性錯誤用確定性檢核抓，比用第二個 LLM 抓更準、更便宜、且可重現。
 異質模型複審應限縮在觀點與論證層次（MATERIALS-PLAN.md 1.0b）。
 
@@ -46,6 +47,12 @@ EQUIPMENT_GATES = {
 # 數值主張：出現 ΔE 數值時必須有來源字樣
 DELTA_E_NUM_RE = re.compile(r"ΔE(?:00|\*ab|\*)?\s*[=＝]\s*\d")
 SOURCE_MARKERS = ["color_audit.py", "i1_pro", "i1 Pro", "量測檔", "工具輸出"]
+
+# 交件宣告：每份講義必須有一行機器可讀的交件宣告，供本檢核器與契約比對。
+# 為什麼要另立一行而不是去讀正文：正文寫「本週收 ASSIGN-03（W10 發放）」時，
+# 同一行同時出現「收」與「發放」，靠語序判斷會誤判。宣告行不靠語序。
+SUBMISSION_RE = re.compile(
+    r"^<!--\s*交件事件:\s*issue=\[(.*?)\]\s*due=\[(.*?)\]\s*-->\s*$")
 
 # 個資字樣（第二道防線，主防線在 tools/validation）
 PII_PATTERNS = [re.compile(r"\b[A-Z][12]\d{8}\b"), re.compile(r"學號\s*[:：]\s*\S")]
@@ -166,6 +173,63 @@ def check_pii(path, text):
     return v
 
 
+def parse_contract_submissions(contract_path):
+    """抓 weekly_plan 每一週的 issue／due，供講義的交件宣告比對。
+
+    D6 之後交件事件只有四個，而截止日同時寫在契約與 18 份講義裡。
+    兩處各自被改，就是這門課最容易發生的不一致——學生看講義，
+    檢核器看契約，沒有人比對兩者。這個函式就是那個比對者。
+    """
+    if not os.path.isfile(contract_path):
+        return {}
+    text = read(contract_path)
+    idx = text.find("weekly_plan:")
+    if idx < 0:
+        return {}
+    out, cur = {}, None
+    for raw in text[idx:].split("\n"):
+        m = re.match(r"^\s*- week: (\d+)\s*$", raw)
+        if m:
+            cur = int(m.group(1))
+            out[cur] = {"issue": [], "due": []}
+            continue
+        if cur is None:
+            continue
+        m2 = re.match(r"^\s+(issue|due): \[(.*)\]\s*$", raw)
+        if m2:
+            out[cur][m2.group(1)] = [x.strip() for x in m2.group(2).split(",") if x.strip()]
+    return out
+
+
+def check_submission_declaration(path, text, week, contract_sub):
+    """講義的交件宣告必須與契約的 weekly_plan 一致。"""
+    v = []
+    found = None
+    for i, raw in enumerate(text.split("\n")):
+        m = SUBMISSION_RE.match(raw.strip())
+        if m:
+            if found is not None:
+                v.append(V("E-MAT-SUBMIT", path, i + 1, "同一份講義有兩行交件宣告"))
+                return v
+            found = ([x.strip() for x in m.group(1).split(",") if x.strip()],
+                     [x.strip() for x in m.group(2).split(",") if x.strip()],
+                     i + 1)
+    if found is None:
+        v.append(V("E-MAT-SUBMIT", path, 1,
+                   "缺交件宣告行 <!-- 交件事件: issue=[...] due=[...] -->"))
+        return v
+    issue, due, ln = found
+    want = contract_sub.get(week)
+    if want is None:
+        return v
+    for key, got in (("issue", issue), ("due", due)):
+        if sorted(got) != sorted(want[key]):
+            v.append(V("E-MAT-SUBMIT", path, ln,
+                       f"交件宣告的 {key} 為 {got or '[]'}，"
+                       f"但契約 week {week} 為 {want[key] or '[]'}"))
+    return v
+
+
 def parse_contract_weeks(contract_path):
     """不引入 yaml 相依：只抓 weekly_plan 底下的 `- week: N` 與其 title。"""
     if not os.path.isfile(contract_path):
@@ -206,6 +270,7 @@ def check_week_coverage(root, contract_weeks, dirs):
 def audit(root, contract_path):
     dirs = week_dirs(root)
     contract_weeks = parse_contract_weeks(contract_path)
+    contract_sub = parse_contract_submissions(contract_path)
     violations = check_week_coverage(root, contract_weeks, dirs)
     for wk, paths in sorted(duplicate_week_dirs(root).items()):
         violations.append(V("E-MAT-DUPLICATE", root, 1,
@@ -227,6 +292,7 @@ def audit(root, contract_path):
             if fn == "講義.md":
                 violations += check_required_sections(path, text)
                 violations += check_abstract_verbs(path, text)
+                violations += check_submission_declaration(path, text, wk, contract_sub)
             violations += check_equipment_gates(path, text)
             violations += check_numeric_claims(path, text)
             violations += check_pii(path, text)

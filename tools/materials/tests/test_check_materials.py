@@ -27,9 +27,13 @@ CONTRACT = """weekly_plan:
   weeks:
     - week: 1
       title: 測試週
+      issue: [ASSIGN-01]
+      due: []
 """
 
 GOOD_LECTURE = """# W01 測試週｜講義
+
+<!-- 交件事件: issue=[ASSIGN-01] due=[] -->
 
 ## 這一週在解什麼問題
 
@@ -207,6 +211,43 @@ class TestNegativeDuplicateWeek(unittest.TestCase):
             self.assertIn("E-MAT-SECTION", found)
         finally:
             fx.cleanup()
+
+
+class TestNegativeSubmissionDeclaration(unittest.TestCase):
+    """交件宣告必須與契約的 weekly_plan 一致。
+
+    這條規則存在的理由：截止日同時寫在契約與 18 份講義裡。
+    兩處各自被改，學生看講義、檢核器看契約，沒有人比對兩者。
+    """
+
+    def test_missing_declaration_fails(self):
+        bad = GOOD_LECTURE.replace("<!-- 交件事件: issue=[ASSIGN-01] due=[] -->\n", "")
+        self.assertIn("E-MAT-SUBMIT", codes(lecture=bad))
+
+    def test_declaration_disagreeing_with_contract_fails(self):
+        bad = GOOD_LECTURE.replace("issue=[ASSIGN-01]", "issue=[ASSIGN-02]")
+        self.assertIn("E-MAT-SUBMIT", codes(lecture=bad))
+
+    def test_declaring_a_due_the_contract_does_not_have_fails(self):
+        bad = GOOD_LECTURE.replace("due=[]", "due=[ASSIGN-01]")
+        self.assertIn("E-MAT-SUBMIT", codes(lecture=bad))
+
+    def test_contract_side_change_alone_fails(self):
+        """反向：只改契約不改講義，也必須抓到——不一致沒有方向之分。"""
+        bad_contract = CONTRACT.replace("issue: [ASSIGN-01]", "issue: [ASSIGN-03]")
+        self.assertIn("E-MAT-SUBMIT", codes(contract=bad_contract))
+
+    def test_two_declarations_fail(self):
+        bad = GOOD_LECTURE.replace(
+            "<!-- 交件事件: issue=[ASSIGN-01] due=[] -->",
+            "<!-- 交件事件: issue=[ASSIGN-01] due=[] -->\n"
+            "<!-- 交件事件: issue=[ASSIGN-01] due=[] -->")
+        self.assertIn("E-MAT-SUBMIT", codes(lecture=bad))
+
+    def test_order_within_the_list_does_not_matter(self):
+        contract = CONTRACT.replace("issue: [ASSIGN-01]", "issue: [ASSIGN-01, ASSIGN-02]")
+        good = GOOD_LECTURE.replace("issue=[ASSIGN-01]", "issue=[ASSIGN-02, ASSIGN-01]")
+        self.assertNotIn("E-MAT-SUBMIT", codes(lecture=good, contract=contract))
 
 
 class TestNegativeWeekCoverage(unittest.TestCase):
