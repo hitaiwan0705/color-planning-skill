@@ -61,7 +61,7 @@ skill/color-planning/   課程 skill 本體
 tools/
   color/scripts/        決定性運算（色差、對比、色覺模擬）
   color/tests/          驗證套件（含負向驗證）
-  validation/           repo 層防線：資料外洩、涵蓋範圍下限
+  validation/           repo 層防線：資料外洩、契約一致性、涵蓋範圍下限
   validation/tests/     防線自身的驗證套件（含負向驗證）
   materials/scripts/    教材確定性檢核
   materials/tests/      教材檢核器的驗證套件（含負向驗證）

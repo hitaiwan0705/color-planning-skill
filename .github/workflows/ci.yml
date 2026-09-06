@@ -25,7 +25,14 @@ jobs:
           cd tools/color/tests
           python3 test_ciede2000.py --report test_report.md
 
-      # 第三道：涵蓋範圍不得窄於 iPAS 初級三科（global_rules.scope_floor）
+      # 第三道之一：契約自身的內部一致性
+      # 2026-09-06 實測：把五個契約違規植入 COURSE-CONTRACT.yaml，當時的四道關卡
+      # 一個都沒抓到。那五項正是每次改契約時用臨時腳本手動驗的東西——臨時腳本
+      # 不持久、不在 CI，下一個改契約的人不會跑。
+      - name: 契約內部一致性檢核
+        run: python3 tools/validation/check_contract.py
+
+      # 第三道之二：涵蓋範圍不得窄於 iPAS 初級三科（global_rules.scope_floor）
       # 這條規則原本只寫在契約裡，沒有執行者；2026-09-06 靠人工比對官方簡章
       # 才發現 14 條細目缺口。有規則而無執行者，等於沒有規則。
       - name: 涵蓋範圍下限檢核
