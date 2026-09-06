@@ -106,7 +106,7 @@ python3 tools/color/scripts/color_audit.py --pair "#前景" "#背景" --json
 
 ## 4. 六層結構的處理流程
 
-六層定義見 `CONTEXT.md` 第 3 節。每一層的處理一律走同一程序：
+六層定義見 `COURSE-CONTRACT.yaml` 的 `capability_contract.layer_definitions`。每一層的處理一律走同一程序：
 
 1. 讀取該層在 `COURSE-CONTRACT.yaml` `capability_contract` 中的條目
 2. 執行第 2 節設備閘門
