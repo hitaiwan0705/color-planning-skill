@@ -59,16 +59,42 @@ task_contract:
       capability_refs: [CAP-02]
       equipment_required: [i1_pro_2, light_booth_d50_d65]
 
+assignment_contract:
+  # ── 交件事件層：分數與截止日掛在 ASSIGN，不掛在 TASK ──
+  max_submission_events: 2
+  assignments:
+    - id: ASSIGN-01
+      title: 色彩知覺風險盤點
+      task_refs: [TASK-01]
+      issue_week: 1
+      due_week: 2
+      grade_slot: 平時
+      weight: 40
+      rubric_profile: R-A
+    # ── 期末 ──
+    - id: ASSIGN-02
+      title: 量測與驗證
+      task_refs: [TASK-02]
+      issue_week: 2
+      due_week: 3
+      grade_slot: 期末
+      weight: 60
+      rubric_profile: R-A
+
 weekly_plan:
   weeks:
     - week: 1
-      issue: [TASK-01]
+      issue: [ASSIGN-01]
       due: []
       equipment_required: []
     - week: 2
-      issue: [TASK-02]
-      due: [TASK-01]
+      issue: [ASSIGN-02]
+      due: [ASSIGN-01]
       equipment_required: [light_booth_d50_d65]
+    - week: 3
+      issue: []
+      due: [ASSIGN-02]
+      equipment_required: []
 
 assessment_contract:
   rubric_dimensions:
@@ -78,11 +104,15 @@ assessment_contract:
         dimensions:
           - {name: 可追溯性, weight: 50}
           - {name: 規格符合度, weight: 50}
-    semester_weighting_draft:
-      # 配分草案，待授課者核定
-      TASK-01: 40
-      TASK-02: 60
+    semester_weighting:
+      # 授課者裁定的成績欄位配分
+      平時: 40
+      期末: 60
       total: 100
+      source_map:
+        # 子區塊不得中止掃描，也不得被誤收為配分
+        平時: ASSIGN-01
+        期末: ASSIGN-02
 
 evidence_contract:
   required_artifacts:
@@ -95,7 +125,7 @@ evidence_contract:
 
 
 def codes(text):
-    _caps, _tasks, vs = cc.audit(text)
+    *_, vs = cc.audit(text)
     return [v.code for v in vs]
 
 
@@ -105,7 +135,7 @@ class TestPositive(unittest.TestCase):
 
     def test_comments_do_not_truncate_blocks(self):
         """註解行不得截斷區塊——兩個 parser bug 都由此而來。"""
-        caps, tasks, _ = cc.audit(GOOD)
+        caps, tasks, _n, _vs = cc.audit(GOOD)
         self.assertEqual([c["id"] for c in caps], ["CAP-01", "CAP-02"])
         self.assertEqual([t["id"] for t in tasks], ["TASK-01", "TASK-02"])
 
@@ -114,9 +144,10 @@ class TestPositive(unittest.TestCase):
         if not os.path.isfile(p):
             self.skipTest("契約檔不存在")
         with open(p, encoding="utf-8") as f:
-            caps, tasks, vs = cc.audit(f.read())
+            caps, tasks, n, vs = cc.audit(f.read())
         self.assertGreaterEqual(len(caps), 8)
         self.assertGreaterEqual(len(tasks), 8)
+        self.assertGreaterEqual(n, 1)
         self.assertEqual([str(x) for x in vs], [])
 
 
@@ -200,14 +231,105 @@ class TestNegativeC5(unittest.TestCase):
 
     def test_semester_weighting_mismatch_fails(self):
         """區塊第一行是註解時仍須生效——早期版本在此完全失效。"""
-        bad = GOOD.replace("      TASK-01: 40", "      TASK-01: 50")
+        bad = GOOD.replace("      平時: 40", "      平時: 50")
+        self.assertIn("E-CONTRACT-WEIGHT", codes(bad))
+
+    def test_nested_block_does_not_stop_the_scan(self):
+        """source_map 這類子區塊只能被略過，不能中止掃描。
+
+        若掃描在子區塊處中止，total 之後若還有配分鍵就永遠讀不到；
+        本測試把 total 移到最後，確認前面的鍵仍被收齊。
+        """
+        moved = GOOD.replace("      total: 100\n", "")
+        moved = moved.replace("        期末: ASSIGN-02\n",
+                              "        期末: ASSIGN-02\n      total: 100\n")
+        self.assertNotIn("E-CONTRACT-WEIGHT", codes(moved))
+        bad = moved.replace("      平時: 40", "      平時: 50")
         self.assertIn("E-CONTRACT-WEIGHT", codes(bad))
 
 
 class TestNegativeC6(unittest.TestCase):
-    def test_week_due_dangling_task_fails(self):
-        bad = GOOD.replace("      due: [TASK-01]", "      due: [TASK-99]")
+    """C6 週次的 issue／due 指向存在的 ASSIGN"""
+
+    def test_week_due_dangling_assignment_fails(self):
+        bad = GOOD.replace("      due: [ASSIGN-01]", "      due: [ASSIGN-99]")
         self.assertIn("E-CONTRACT-WEEK", codes(bad))
+
+    def test_week_pointing_at_a_task_now_fails(self):
+        """D6 之後週次不得再直接指向 TASK——TASK 只剩證據規格，沒有截止日。"""
+        bad = GOOD.replace("      due: [ASSIGN-01]", "      due: [TASK-01]")
+        self.assertIn("E-CONTRACT-WEEK", codes(bad))
+
+
+class TestNegativeC8(unittest.TestCase):
+    """C8 ASSIGN 欄位齊全、task_refs 有效"""
+
+    def test_every_required_field_is_checked(self):
+        for f in cc.ASSIGN_FIELDS:
+            with self.subTest(field=f):
+                bad, hit = GOOD, False
+                for line in GOOD.split("\n"):
+                    if line.strip().startswith(f + ": "):
+                        bad = GOOD.replace(line + "\n", "", 1)
+                        hit = True
+                        break
+                self.assertTrue(hit, f"夾具裡找不到 {f!r} 欄位")
+                self.assertIn("E-CONTRACT-ASSIGN", codes(bad), f"漏掉 {f!r}")
+
+    def test_dangling_task_ref_fails(self):
+        bad = GOOD.replace("      task_refs: [TASK-01]", "      task_refs: [TASK-99]")
+        self.assertIn("E-CONTRACT-ASSIGN", codes(bad))
+
+    def test_comment_between_assignments_does_not_truncate(self):
+        """夾具在兩份作業之間放了註解行；若被截斷，ASSIGN-02 會整條消失。"""
+        _caps, _tasks, n, _vs = cc.audit(GOOD)
+        self.assertEqual(n, 2)
+
+
+class TestNegativeC9(unittest.TestCase):
+    """C9 宣告週次與 weekly_plan 雙向一致"""
+
+    def test_declared_week_mismatch_fails(self):
+        bad = GOOD.replace("      issue_week: 1", "      issue_week: 2")
+        self.assertIn("E-CONTRACT-ASSIGN", codes(bad))
+
+    def test_assignment_never_issued_fails(self):
+        """只宣告不排週次，等於學生永遠拿不到題目。"""
+        bad = GOOD.replace("      issue: [ASSIGN-01]", "      issue: []")
+        self.assertIn("E-CONTRACT-ASSIGN", codes(bad))
+
+    def test_assignment_collected_twice_fails(self):
+        bad = GOOD.replace("      due: [ASSIGN-02]", "      due: [ASSIGN-02, ASSIGN-01]")
+        self.assertIn("E-CONTRACT-ASSIGN", codes(bad))
+
+
+class TestNegativeC10(unittest.TestCase):
+    """C10 交件事件數上限（授課者裁示 D6）"""
+
+    def test_exceeding_the_cap_fails(self):
+        bad = GOOD.replace("  max_submission_events: 2", "  max_submission_events: 1")
+        self.assertIn("E-CONTRACT-ASSIGN", codes(bad))
+
+    def test_cap_is_read_from_the_contract_not_hardcoded(self):
+        """上限是授課者的裁示，改契約就該改行為；寫死在程式裡會讓裁示失效。"""
+        ok = GOOD.replace("  max_submission_events: 2", "  max_submission_events: 9")
+        self.assertNotIn("E-CONTRACT-ASSIGN", codes(ok))
+
+    def test_missing_cap_is_a_parse_error(self):
+        bad = GOOD.replace("  max_submission_events: 2\n", "")
+        self.assertIn("E-CONTRACT-PARSE", codes(bad))
+
+
+class TestNegativeC11(unittest.TestCase):
+    """C11 作業權重合計等於學期配分"""
+
+    def test_slot_weight_mismatch_fails(self):
+        bad = GOOD.replace("      weight: 40", "      weight: 30")
+        self.assertIn("E-CONTRACT-ASSIGN", codes(bad))
+
+    def test_unknown_grade_slot_fails(self):
+        bad = GOOD.replace("      grade_slot: 平時", "      grade_slot: 期中")
+        self.assertIn("E-CONTRACT-ASSIGN", codes(bad))
 
 
 class TestNegativeC7(unittest.TestCase):

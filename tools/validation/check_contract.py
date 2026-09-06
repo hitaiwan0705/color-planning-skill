@@ -23,8 +23,13 @@ C2  能力的判準欄位不得使用抽象能力動詞
 C3  TASK 的 capability_refs 指向存在的 CAP
 C4  週次與任務的 equipment_required 僅含 equipment_gate.confirmed 項
 C5  rubric 每組 profile 權重合計 100；學期配分合計等於宣告的 total
-C6  週次的 issue／due 指向存在的 TASK
+C6  週次的 issue／due 指向存在的 ASSIGN
 C7  evidence_contract 的 per_task 覆蓋所有 TASK
+C8  ASSIGN 條目欄位齊全，且 task_refs 指向存在的 TASK
+C9  ASSIGN 的 issue_week／due_week 與 weekly_plan 的 issue／due 雙向一致，
+    且每份作業恰好發一次、收一次
+C10 交件事件數不超過 assignment_contract.max_submission_events（授課者裁示 D6）
+C11 同一 grade_slot 的 ASSIGN 權重合計等於 semester_weighting 中該欄位的分數
 
 【檢不到、也不該假裝檢得到的】
 下列規則作用在 skill 的**執行期輸出**或**學生交件**上，不是 repo 檔案，
@@ -56,6 +61,8 @@ ABSTRACT_VERBS = ["理解", "應用", "整合", "熟悉", "掌握",
                   "understand", "apply", "integrate"]
 CAP_ID_RE = re.compile(r"^CAP-\d{2}$")
 TASK_ID_RE = re.compile(r"^TASK-\d{2}$")
+ASSIGN_FIELDS = ("title", "task_refs", "issue_week", "due_week",
+                 "grade_slot", "weight", "rubric_profile")
 
 
 class V:
@@ -105,8 +112,8 @@ def audit(text):
     caps = _blocks(lines, "CAP")
     tasks = _blocks(lines, "TASK")
     if not caps or not tasks:
-        return [], [], [V("E-CONTRACT-PARSE", 1,
-                          "解析不到 capabilities 或 tasks；契約格式可能已改變")]
+        return [], [], 0, [V("E-CONTRACT-PARSE", 1,
+                             "解析不到 capabilities 或 tasks；契約格式可能已改變")]
 
     cap_ids = {c["id"] for c in caps}
     task_ids = {t["id"] for t in tasks}
@@ -175,38 +182,117 @@ def audit(text):
     # 逐行掃描而非一次比對整段：區塊內夾雜註解行，
     # 早期版本用 `((?:      \S+: \d+\n)+)` 要求下一行就是數字，
     # 被第一行註解擋掉導致整條規則從未生效——由植入測試第 6 項抓到。
+    slot_weights, sw_line = {}, None
     start = None
     for i, raw in enumerate(lines):
-        if re.match(r"^    semester_weighting_draft:\s*$", raw):
+        if re.match(r"^    semester_weighting:\s*$", raw):
             start = i
             break
     if start is not None:
-        pairs, total = {}, 0
+        sw_line = start + 1
+        total = 0
+        # 只收「恰好 6 格縮排」的數字鍵；更深的縮排是子區塊（source_map、undecided），
+        # 略過而非中止——早期版本一遇到子區塊就 break，等於把規則的作用範圍
+        # 綁在鍵的排列順序上。終止條件改為「回到 4 格以內的鍵」。
         for raw in lines[start + 1:]:
             if not raw.strip() or raw.lstrip().startswith("#"):
                 continue
+            indent = len(raw) - len(raw.lstrip())
+            if indent <= 4:
+                break
             m2 = re.match(r"^      (\S+): (\d+)\s*$", raw)
             if m2:
                 if m2.group(1) == "total":
                     total = int(m2.group(2))
                 else:
-                    pairs[m2.group(1)] = int(m2.group(2))
-                continue
-            if not raw.startswith("       "):
-                break
-        got = sum(pairs.values())
+                    slot_weights[m2.group(1)] = int(m2.group(2))
+        got = sum(slot_weights.values())
         if total and got != total:
-            v.append(V("E-CONTRACT-WEIGHT", start + 1,
+            v.append(V("E-CONTRACT-WEIGHT", sw_line,
                        f"學期配分合計 {got}，但宣告 total 為 {total}"))
+    else:
+        v.append(V("E-CONTRACT-PARSE", 1, "解析不到 semester_weighting"))
 
-    # C6 —— 週次的 issue／due
+    # ── 作業（交件事件）層 ────────────────────────────────────────
+    # 2026-09-06 授課者裁示 D6 之後，分數與截止日掛在 ASSIGN 上，TASK 只剩證據規格。
+    # 若不同時檢 ASSIGN，C6 會退化成「檢一組沒人用的 id」。
+    assigns = _blocks(lines, "ASSIGN")
+    assign_ids = {a["id"] for a in assigns}
+
+    # C6 —— 週次的 issue／due 指向存在的 ASSIGN
+    # 同時記下週次帳本，供 C9 反向比對
+    weekly = {}   # assign_id -> {"issue": [week...], "due": [week...]}
+    cur_week = None
     for i, raw in enumerate(lines, 1):
+        mw = re.match(r"^    - week: (\d+)\s*$", raw)
+        if mw:
+            cur_week = int(mw.group(1))
+            continue
         m = re.match(r"^      (issue|due): \[(.*)\]\s*$", raw)
         if m:
             for t in _list_field("[" + m.group(2) + "]"):
-                if t not in task_ids:
+                if t not in assign_ids:
                     v.append(V("E-CONTRACT-WEEK", i,
                                f"週次 {m.group(1)} 指向不存在的 {t}"))
+                elif cur_week is not None:
+                    weekly.setdefault(t, {"issue": [], "due": []})[m.group(1)].append(cur_week)
+
+    if not assigns:
+        v.append(V("E-CONTRACT-PARSE", 1, "解析不到 assignment_contract.assignments"))
+    else:
+        # C8 —— ASSIGN 欄位齊全、task_refs 有效
+        for a in assigns:
+            for f in ASSIGN_FIELDS:
+                if f not in a["fields"] or not a["fields"][f][0]:
+                    v.append(V("E-CONTRACT-ASSIGN", a["line"],
+                               f"{a['id']} 缺欄位 {f!r}"))
+            refs_val, refs_ln = a["fields"].get("task_refs", ("", a["line"]))
+            for r in _list_field(refs_val):
+                if r not in task_ids:
+                    v.append(V("E-CONTRACT-ASSIGN", refs_ln,
+                               f"{a['id']} 的 task_refs 指向不存在的 {r}"))
+
+        # C9 —— 宣告的週次與 weekly_plan 雙向一致
+        for a in assigns:
+            book = weekly.get(a["id"], {"issue": [], "due": []})
+            for key, field in (("issue", "issue_week"), ("due", "due_week")):
+                declared = a["fields"].get(field, ("", a["line"]))[0]
+                got = book[key]
+                if len(got) != 1:
+                    v.append(V("E-CONTRACT-ASSIGN", a["line"],
+                               f"{a['id']} 在 weekly_plan 中 {key} {len(got)} 次，應為 1 次"
+                               f"（實際週次 {got or '無'}）"))
+                elif declared.isdigit() and int(declared) != got[0]:
+                    v.append(V("E-CONTRACT-ASSIGN", a["line"],
+                               f"{a['id']} 宣告 {field} 為 {declared}，"
+                               f"但 weekly_plan 的 {key} 在 week {got[0]}"))
+
+        # C10 —— 交件事件數上限（授課者裁示 D6，上限值讀自契約而非寫死）
+        mcap = re.search(r"^  max_submission_events: (\d+)", text, re.M)
+        if not mcap:
+            v.append(V("E-CONTRACT-PARSE", 1,
+                       "解析不到 assignment_contract.max_submission_events"))
+        elif len(assigns) > int(mcap.group(1)):
+            v.append(V("E-CONTRACT-ASSIGN", 1,
+                       f"交件事件 {len(assigns)} 個，超過上限 {mcap.group(1)}"))
+
+        # C11 —— 每個 grade_slot 的作業權重合計等於學期配分
+        by_slot = {}
+        for a in assigns:
+            slot = a["fields"].get("grade_slot", ("", 0))[0]
+            w = a["fields"].get("weight", ("", 0))[0]
+            if slot and w.isdigit():
+                by_slot.setdefault(slot, 0)
+                by_slot[slot] += int(w)
+        for slot, got in sorted(by_slot.items()):
+            want = slot_weights.get(slot)
+            if want is None:
+                v.append(V("E-CONTRACT-ASSIGN", sw_line or 1,
+                           f"作業使用 grade_slot {slot!r}，但 semester_weighting 沒有這一欄"))
+            elif got != want:
+                v.append(V("E-CONTRACT-ASSIGN", sw_line or 1,
+                           f"grade_slot {slot!r} 的作業權重合計 {got}，"
+                           f"但 semester_weighting 為 {want}"))
 
     # C7 —— per_task 覆蓋
     per = set(re.findall(r"^      - task_id: (TASK-\d+)\s*$", text, re.M))
@@ -216,7 +302,7 @@ def audit(text):
                        f"{t} 沒有 evidence_contract.per_task 條目"))
 
     v.sort(key=lambda x: (x.line, x.code))
-    return caps, tasks, v
+    return caps, tasks, len(assigns), v
 
 
 def main(argv=None):
@@ -228,7 +314,7 @@ def main(argv=None):
         print(f"找不到契約檔: {args.contract}", file=sys.stderr)
         return 2
     with open(args.contract, encoding="utf-8") as f:
-        caps, tasks, violations = audit(f.read())
+        caps, tasks, n_assign, violations = audit(f.read())
 
     if any(x.code == "E-CONTRACT-PARSE" for x in violations):
         for x in violations:
@@ -236,7 +322,7 @@ def main(argv=None):
         return 2
 
     print(f"契約: {args.contract}")
-    print(f"能力: {len(caps)} 條｜任務: {len(tasks)} 項")
+    print(f"能力: {len(caps)} 條｜任務: {len(tasks)} 項｜交件事件: {n_assign} 個")
     if violations:
         print(f"\n違規 {len(violations)} 項：")
         for x in violations:
