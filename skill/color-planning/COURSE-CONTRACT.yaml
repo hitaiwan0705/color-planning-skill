@@ -798,28 +798,24 @@ assignment_contract:
 
   grade_mapping:
     # 配分依 CONTEXT.md 第 8 節（授課者裁定，非校內條文）
-    期中: {weight: 30, source: iPAS 考試成績, note: 不另出作業}
+    期中: {weight: 30, source: iPAS 考試成績；符合特殊狀況並於考前說明者另行考試, note: 無特殊原因未報考者視同缺交，以 0 分計}
     期末: {weight: 30, source: ASSIGN-04}
     平時: {weight: 30, source: [ASSIGN-01, ASSIGN-02, ASSIGN-03], each: 10}
     參與: {weight: 10, source: [課堂點名, 跑站簽核, 里程碑檢查]}
     failure_condition: 交件事件超過 4 個（不含點名與跑站簽核）→ 違反 D6，須重新打包
 
-  midterm_unresolved:
-    # 這一項擋住期中成績的定案，不是我能決定的
-    issue: iPAS 報考為自願（第 1 週決定），但期中 30% 以 iPAS 成績計算
-    consequence: 未報考的學生沒有期中成績來源
-    requires_instructor_ruling: true
-    options:
-      - id: M-A
-        action: 未報考者於 W09 應考課內期中測驗，範圍與 iPAS 三科相同
-        cost: 需另出一份考卷；報考與未報考者的評量標準是否等值須說明
-      - id: M-B
-        action: 期中 30% 改為「iPAS 成績或 ASSIGN-02 擇優」
-        cost: 報考者實質多一次機會，可能被視為不公平
-      - id: M-C
-        action: 全班統一報考，期中即 iPAS
-        cost: 報名費由學生負擔，強制報考可能有爭議
-    failure_condition: 未裁示即公告期中計分方式 → 該公告作廢
+  midterm_policy:
+    status: ratified
+    authority: 授課者裁示（2026-09-07）
+    standard_route:
+      source: iPAS 考試成績
+      no_registration_without_special_circumstance: 視同期中缺交，以 0 分計
+    exception_route:
+      eligibility: 因特殊狀況不能報考
+      notice_deadline: 須於 iPAS 正式考試日前向授課者說明原因
+      assessment: 由授課者另行安排考試
+      not_an_elective_option: true
+    failure_condition: 無特殊狀況而未報考者另給替代成績，或把另行考試公告為可自由選擇的第二路徑 → 違反授課者裁示
 
   assignments:
     - id: ASSIGN-01
@@ -969,7 +965,7 @@ assessment_contract:
       參與: 10
       total: 100
       source_map:
-        期中: iPAS 考試成績（D1）；未報考者之方案未裁示，見 assignment_contract.midterm_unresolved
+        期中: iPAS 考試成績（D1）；無特殊原因未報考者以 0 分計；因特殊狀況不能報考者須於考前說明並另行考試
         期末: ASSIGN-04
         平時: ASSIGN-01／ASSIGN-02／ASSIGN-03 各 10
         參與: 課堂點名、跑站簽核、里程碑檢查

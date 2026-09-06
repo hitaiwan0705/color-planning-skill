@@ -1,7 +1,7 @@
 ---
 status: draft
-version: v0.2
-updated: 2026-09-06
+version: v0.3
+updated: 2026-09-07
 supersedes: none
 authoritative_outline: 18_week_authoritative_outline_v1.md
 ---
@@ -13,7 +13,7 @@ authoritative_outline: 18_week_authoritative_outline_v1.md
 - 學期：115-1（依老師目前指定的課程路徑建置）。
 - 開課單位：中國文化大學資訊傳播學系（依 repo `CONTEXT.md` 已確認事實）。
 - 年級與性質：大三上必修（依 repo `CONTEXT.md` 已確認事實）。
-- 學分、每週時數、班級人數、實際授課場地：待確認。
+- 學分與每週時數：2 學分、每週 2 小時。班級人數與實際授課場地待確認。
 - 設備：僅使用 repo `CONTEXT.md` 已確認項；燈箱型號／等級、螢光燈管、Mimaki 白墨／clear 狀態仍待核對。
 - 學期結構：16 週授課 + W17-W18 自主學習，不到校上課；W18 線上繳交書面報告與錄製口頭簡報，並同步提供自願、不計分的學習問卷。
 
@@ -39,7 +39,7 @@ authoritative_outline: 18_week_authoritative_outline_v1.md
 
 ## 評量 profile
 
-依老師於 2026-08-12 確認、記載在 Dropbox `Lecture/AGENTS.md` 的校內規定，總成績固定為期中 30%、期末 30%、平時 30%、參與 10%。平時暫規劃 4 份報告各 7.5%；repo 既有八項 TASK 如何映射到四類成績仍待老師裁示。每份作業均採共同專業能力 70% + 差異化反思 30%，作業說明與 rubric 同時發布。任何研究問卷、自願訪談、作品公開授權均不計分且不影響成績。
+總成績依授課者裁示為期中 30%、期末 30%、平時 30%、參與 10%。期中以 iPAS 考試成績計算；未報考視同缺交，無特殊原因者以 0 分計。因特殊狀況不能報考者，須在正式考試日前向授課者說明原因，並另行考試。期末為 ASSIGN-04（30%）；平時為 ASSIGN-01、ASSIGN-02、ASSIGN-03 各 10%；參與包含課堂點名、跑站簽核與里程碑檢查。每份作業均採共同專業能力 70% + 差異化反思 30%，作業說明與 rubric 同時發布。任何研究問卷、自願訪談、作品公開授權均不計分且不影響成績。
 
 ## 研究角色
 

@@ -1,7 +1,7 @@
 ---
 status: authoritative
-version: v0.1
-updated: 2026-09-06
+version: v0.2
+updated: 2026-09-07
 supersedes: none
 authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 ---
@@ -12,6 +12,9 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 
 ## 1. 現在的狀態
 
+- **2026-09-07 老師裁示期中未報考規則**：未報考 iPAS 視同缺交，無特殊原因者期中以 0 分計；
+  因特殊狀況不能報考者，須在正式考試日前向授課者說明原因，並另行考試。另行考試不是
+  可自由選擇的第二路徑。此案已由 unresolved 改為 ratified，W01 可對學生公告。
 - **2026-09-06 老師新增裁示**：設備以需求選工具，不因未確認型號阻擋教學內容；18 週固定為 W1–W16 上課、W17–W18 自主學習；W18 提交錄製口頭簡報與書面報告，不排現場課，並搭配自願、不計分的學習問卷。問卷研究同意與影片／作品授權分開。
 
 - **2026-09-06 老師裁示 D1–D6／V1／V3／V4 已全部落地**（見 `CONTEXT.md` 第 8 節）。
@@ -19,12 +22,8 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
   D6（約 4 次作業）以 `assignment_contract` 打包層實現，交件事件由 15 個降為 4 個。
   V1 的配分**出處已釐清：授課者職權，非校內條文**——Codex 原記「校內固定的 30/30/30/10」
   須更正，那不是校規，是老師說了算。
-- **一件擋住定案的事**：iPAS 報考為自願，但期中 30% 以 iPAS 成績計算，
-  未報考的學生沒有期中成績來源。三個選項見
-  `COURSE-CONTRACT.yaml` 的 `assignment_contract.midterm_unresolved`。
-  **裁示前不得對學生公告期中計分方式**，W01 講義已標為待裁示。
-
-- 2026-09-06 由 Codex 建立 115-1 課程生產骨架。學期、系級與每週時數仍待老師確認，因此課程 profile 與 18 週大綱維持 `draft`。
+- 期中計分已無待裁示 blocker。課程 profile 與 18 週大綱仍維持 `draft`，待完成跨檔一致性覆核後再升級；
+  班級人數、場地與研究用途屬後續執行資訊，不阻擋講義內容確認。
 - 原始來源位於 `/Users/slchu/Library/CloudStorage/Dropbox/Lecture/色彩學/`，共 1,454 個檔案、約 3.2 GB；原檔不得覆寫或移動。
 - 已讀來源：舊版「色彩應用」課綱文字、iPAS 2026 色彩學教學與學習指引部分內容、iPAS 2026 色彩計畫實務評量重點部分內容，以及舊版 iPAS 色彩計畫實務參考指引目錄。
 - 已建立初步來源地圖、課程 profile、18 週大綱、外部審查追蹤與 Claude R1 prompt。
@@ -46,14 +45,13 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 
 ## 2. 下一步（明確指派）
 
-下一步給 Claude Code：對 Codex 備援完成的 W10–W18 做跨模型審查；不得覆寫原稿，意見寫入 `lecture/10_review-skills/`。
+下一步給 Claude Code：以老師 2026-09-07 的期中裁示為最高優先，覆核
+`COURSE-CONTRACT.yaml`、`CONTEXT.md`、W01 與 `lecture/00_course-plan/` 是否只剩一套期中規則；
+不得恢復 M-A／M-B／M-C 選項或把另行考試寫成學生可自由選擇的方案。意見與修正寫入
+`lecture/10_review-skills/`，再交回 Codex 做最終一致性驗證。
 
-1. 核對每週是否符合 `COURSE-CONTRACT.yaml` 的 focus、issue/due、P1–P7 與設備 gate。
-2. 檢查 W10–W18 是否真正需要訊息、媒介或閱聽人證據，避免退回純技術課。
-3. 將問題分成可直接修正／需老師裁示／需查證；不得自行解除 `BLOCKED`。
-4. 下一步交回 Codex：整合審查並準備老師裁示 D1–D6。
-
-老師待確認：學期是否為 115-1、開課年級、每週時數、班級人數與場地設備、研究用途，以及是否採用本 draft 的 4 份平時報告與期末專題方向。
+老師可開始確認 W01–W18 講義內容。班級人數、實際場地與設備型號在依賴操作前補齊；
+研究問題、primary outcome 與 IRB 時程在要啟動研究用途時另行裁示，均不阻擋目前的教學內容確認。
 
 ## 3. 待辦看板
 
@@ -74,11 +72,19 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 | TOOL-02 | 修正 `check_materials.py` 重複週次靜默覆蓋 | Claude Code | **已完成** | 新增 `E-MAT-DUP`；由本次雙寫暴露 |
 | TOOL-01 | `tools/materials/check_materials.py` 教材確定性檢核器 | Claude Code | 已完成 | 19 條測試含負向驗證；三次突變確認規則移除即紅 |
 | FIX-04 | 修正 Claude 測試夾具觸發外洩掃描 | Claude Code | 已完成 | Codex 於 SYNC-01 指出；個資夾具改為執行期組裝 |
-| PLAN-03 | 老師確認必備輸入並升級 authoritative | 老師／Codex | 待處理 | 學期、年級、時數、設備、研究角色 |
-| HANDOUT-01 | W01 整合講義 | Codex 起稿／Claude 審查 | 待處理 | PLAN-03 完成後才可開始 |
+| PLAN-03 | 老師確認必備輸入並升級 authoritative | 老師／Codex | 部分完成 | 期中規則已定；完成跨檔覆核後再升級，研究與實際設備資訊不阻擋講義確認 |
+| HANDOUT-01 | W01 整合講義 | Claude 起稿／Codex 修訂 | 已完成待老師確認 | 期中未報考與特殊狀況另考規則已寫入 |
 | QA-01 | W01–W18 確定性檢核與負向測試 | Codex | **已完成** | 新增重複週次檢查；20/20 tests pass |
 
 ## 4. 交接紀錄（時間倒序）
+
+### 2026-09-07｜Codex｜期中未報考規則定案｜下一步：Claude Code 做跨檔一致性覆核
+
+老師裁示：未報考 iPAS 視同缺交；無特殊原因者期中以 0 分計。因特殊狀況不能報考者，
+須在正式考試日前說明原因，並另行考試。已移除契約中的 `midterm_unresolved` 與三選一方案，
+改為 ratified policy；同步修正 W01、`CONTEXT.md`、course profile 與 18 週大綱中過時的
+W9 專題期中／四份平時作業敘述。詳細紀錄與驗證輸出見
+`10_review-skills/2026-09-07_midterm_ipas_policy_decision.md`。
 
 ### 2026-09-06｜Codex｜落實設備原則、18 週結構與 W18 呈現／問卷裁示｜下一步：Claude 驗證需求一致性
 
