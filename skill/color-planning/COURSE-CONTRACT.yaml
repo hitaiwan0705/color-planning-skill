@@ -24,7 +24,7 @@ global_rules:
     replacement_form: [input_evidence, observable_behavior, deliverable, validation_rule, failure_condition]
     scope: 僅適用於 capability_contract.capabilities 之 input_evidence、observable_behavior、deliverable、validation_rule、failure_condition 欄位；課程名稱、專有名詞不適用
   external_fact_rule: 涉及外部事實者必須附可查證連結，查不到即標 UNVERIFIED，不得寫成肯定句
-  equipment_rule: 僅得使用 CONTEXT.md 第 2 節已確認之設備；標 ⚠️ 或未定者相關活動標 BLOCKED
+  equipment_rule: 未確認設備不得阻擋概念與方法教學；實際操作前依功能需求核對可用工具、媒材與安全條件。只有依賴未確認功能的實作步驟標 BLOCKED，並提供功能等價替代路徑
   scope_floor: 涵蓋範圍不得窄於 iPAS 初級三科（色彩學／色彩計畫實務／色彩管理）
   todo_marker: TODO(codex)
   blocked_marker: "<!-- BLOCKED: 待設備確認 -->"
@@ -262,7 +262,7 @@ capability_contract:
       layer: 1
       input_evidence: 自選之色彩感知問題、CAP-07 累積之落差資料、自行補充之觀察或量測資料、外部來源清單、AI 使用揭露
       observable_behavior: 提出一個可由所附資料回答的色彩感知問題，寫出觀察條件與判斷方法，報告資料結果，並列出本次資料無法回答的部分
-      deliverable: 報告本文（問題、方法、觀察條件、資料、限制）、原始資料檔、外部來源清單、AI 使用揭露
+      deliverable: 報告本文（問題、方法、觀察條件、資料、限制）、簡報檔、錄製的口頭發表、原始資料檔、外部來源清單、AI 使用揭露
       validation_rule: 問題須可由所附資料回答；每個數值主張須追溯至工具輸出或儀器量測檔；外部事實須附可查證來源，查不到須標 UNVERIFIED；限制章節不得為空
       failure_condition: 問題無法由所附資料回答、限制章節為空、以文獻敘述替代自身觀察資料、或將 AI 生成內容列為事實來源 → 未通過
 
@@ -403,14 +403,13 @@ task_contract:
       failure_condition: 任一進度交件缺當週新增內容，或以前週資料充抵 → 該次未通過，不得於學期末補交合併
     - id: TASK-08
       capability_refs: [CAP-08]
-      scenario: 兩週自主學習，就 TASK-07 累積的資料提出並回答一個色彩感知問題
+      scenario: 兩週自主學習，就 TASK-07 累積的資料提出並回答一個色彩感知問題，並將口頭發表錄製成可回溯成果
       role: 色彩感知報告撰寫者
-      constraints: 自主學習週不排課，授課者提供固定 office hour；報告須含限制章節；不得以 AI 生成內容作為事實來源；不得引用未標示可信度等級之非官方筆記作為判準
+      constraints: W17–W18 不排課，授課者提供固定 office hour；提交書面報告、簡報檔與錄製的口頭發表，不另排現場發表；報告須含限制章節；不得以 AI 生成內容作為事實來源；不得引用未標示可信度等級之非官方筆記作為判準；學習問卷自願且不計分，影片公開授權另行取得
       equipment_required: []
       duration: 2 週（week 17–18）
       submission_channel: Microsoft Teams（授課者指定，2026-09-06）
-      undecided_by_instructor:
-        - week 18 是否安排口頭發表，或僅線上繳交
+      presentation_mode: 非同步錄製口頭發表；W18 不恢復實體上課
 
   schedule_constraint:
     # 由 CONTEXT.md 第 4 節導出，非課程內容，Codex 不得更動。
@@ -726,7 +725,7 @@ weekly_plan:
     - week: 17
       block: B
       title: 自主學習（不排課）
-      focus: [報告製作；授課者提供固定 office hour]
+      focus: [報告製作與錄製口頭發表腳本；授課者提供固定 office hour]
       layer_refs: [1]
       issue: []
       due: []
@@ -734,18 +733,16 @@ weekly_plan:
       note: 不排課週。week 16 已收件，本週不再開放設備借用
     - week: 18
       block: B
-      title: 成果繳交與口頭發表
+      title: 自主學習、錄製口頭發表與成果繳交
       focus:
-        - 概念：發表是最後一個接觸點——你的規範書要說服的是人，不是檢核器
-        - ASSIGN-04 繳交（含錄製簡報）
-        - 口頭發表與學習問卷
+        - 概念：錄製的口頭發表是最後一個接觸點——你的規範書要說服的是人，不是檢核器
+        - ASSIGN-04 繳交（含簡報檔與錄製的口頭發表）
+        - 自願填寫不計分的學習問卷
       layer_refs: [1, 3]
       issue: []
       due: [ASSIGN-04]
       equipment_required: []
-      note: 授課者補充（2026-09-06）：期末設錄製簡報與口頭發表，故本週恢復排課
-      undecided_by_instructor:
-        - 現場發表的時長與人數安排（依班級人數而定，未確認）；規則須於 week 1 公告
+      note: 授課者再次確認（2026-09-06）：18 週為 16 週上課＋2 週自主學習；口頭發表採錄製方式，W18 不恢復實體上課
 
   validation_rules:
     - 每個 issue／due 之 ASSIGN id 必須存在於 assignment_contract.assignments，
@@ -782,7 +779,7 @@ assignment_contract:
     channel: Microsoft Teams
     learning_survey:
       applies_to: [ASSIGN-01, ASSIGN-02, ASSIGN-03, ASSIGN-04]
-      rule: 每次作業得搭配一份學習問卷，隨該次作業一併提交
+      rule: 每次作業得搭配一份學習問卷；問卷自願、不計分、不影響交件完整性
       not_a_submission_event: true
       why: 問卷附掛在既有的四個交件事件上，不新增交件點，故不受 max_submission_events 拘束
       data_rule: 問卷回應**不進入本 repo**，一律留在 Teams 或授課者指定之校方儲存位置
@@ -791,19 +788,11 @@ assignment_contract:
       failure_condition: 問卷回應、姓名或學號以任何形式進入 repo → 立即違反 CLAUDE.md 絕對禁止第 1 條
     final_presentation:
       applies_to: [ASSIGN-04]
-      required: [錄製簡報, 口頭發表]
-      recorded_deck:
-        rule: 錄製簡報隨 ASSIGN-04 於 week 18 交件，為交付物之一，不另計為交件事件
-        why: 錄製版可重播、可回溯、可作為評量證據；現場發表不可重播
-      oral:
-        rule: week 18 恢復排課進行口頭發表
-        capacity_risk:
-          statement: 每週 2 小時（V3）內全班完成口頭發表的可行性，取決於班級人數
-          unverified: 班級人數未確認
-          mitigation: 錄製簡報全體皆交；現場發表可採抽選、分組代表或縮短時長，
-            但**規則須於 week 1 公告**，不得於 week 18 臨時決定
-      failure_condition: 以現場發表代替錄製簡報 → 缺交付物；
-        以錄製簡報代替 ASSIGN-04 的證據交付 → 該次未通過（簡報不是證據）
+      required: [簡報檔, 錄製口頭發表]
+      recorded_oral:
+        rule: 簡報檔與錄製的口頭發表隨 ASSIGN-04 於 week 18 上傳 Teams，為同一交件事件；W18 不排現場課
+        why: 錄製版可重播、可回溯，並保留學生對證據與限制的口頭論證
+      failure_condition: 缺簡報檔或錄製口頭發表 → 缺交付物；以簡報或錄影代替 ASSIGN-04 的證據交付 → 該次未通過（簡報不是證據）
 
   grade_mapping:
     # 配分依 CONTEXT.md 第 8 節（授課者裁定，非校內條文）
@@ -871,7 +860,7 @@ assignment_contract:
       note: 跑站的產出在此匯總。TASK-07 的觀察資料橫跨 ASSIGN-03 與 ASSIGN-04，兩份各取其階段
       rubric_profile: R-B
       learning_survey: true
-      presentation: [錄製簡報, 口頭發表]
+      presentation: [簡報檔, 錄製口頭發表]
 
   station_rotation:
     # D3：一條龍以跑站形式進行。取代原 P1–P7 的七次交件。
@@ -1020,7 +1009,7 @@ evidence_contract:
       - task_id: TASK-07
         artifacts: [感知落差對照表, 觀察條件紀錄, 機制歸因說明, 排除理由紀錄, color_audit_json, i1_pro_measurement_file, 週次進度交件紀錄]
       - task_id: TASK-08
-        artifacts: [報告本文, 原始資料檔, 外部來源清單, 限制章節, AI_usage_disclosure]
+        artifacts: [報告本文, 簡報檔, 錄製口頭發表, 原始資料檔, 外部來源清單, 限制章節, AI_usage_disclosure]
       - task_id: TASK-09
         artifacts: [接觸點色彩功能對照表, 跨接觸點色彩規範書, 失效點清單, 閱聽人與觀看條件假設表, color_audit_json, i1_pro_measurement_file]
 
@@ -1173,7 +1162,7 @@ portability_contract:
 # ── 研究層 overlay（可插拔，預設關閉）────────────────────────────
 research_overlay:
   enabled: false
-  note: 本 skill 不得自行開啟，也不得建議特定研究問題（SKILL.md 第 7 節）
+  note: 本 skill 不得自行開啟，也不得建議特定研究問題（SKILL.md 第 7 節）。學習問卷先作自願、無分數的教學回饋；未完成倫理程序前不得轉作研究資料
   blocked_until: [研究問題確定, primary_outcome 確定, 倫理程序完成]
   additional_fields_when_enabled:
     - group_assignment
