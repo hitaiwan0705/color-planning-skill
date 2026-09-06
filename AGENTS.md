@@ -53,7 +53,7 @@ Claude 讀取的是 `CLAUDE.md`，**兩份內容必須保持同步**；修改一
 ## 目錄結構
 
 ```
-CONTEXT.md              已定案事實（上限 150 行）
+CONTEXT.md              已定案事實（上限 150 行，由 check_file_budgets.py 執行）
 CLAUDE.md / AGENTS.md   工作規則（本檔）
 skill/color-planning/   課程 skill 本體
   SKILL.md              LLM 執行指令
@@ -61,7 +61,7 @@ skill/color-planning/   課程 skill 本體
 tools/
   color/scripts/        決定性運算（色差、對比、色覺模擬）
   color/tests/          驗證套件（含負向驗證）
-  validation/           repo 層防線：資料外洩、契約一致性、涵蓋範圍下限
+  validation/           repo 層防線：資料外洩、契約一致性、涵蓋範圍下限、檔案長度上限
   validation/tests/     防線自身的驗證套件（含負向驗證）
   materials/scripts/    教材確定性檢核
   materials/tests/      教材檢核器的驗證套件（含負向驗證）

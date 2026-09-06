@@ -38,7 +38,13 @@ jobs:
       - name: 涵蓋範圍下限檢核
         run: python3 tools/validation/check_scope_floor.py
 
-      - name: 涵蓋範圍檢核器自身的驗證套件
+      # 第三道之三：CONTEXT.md 自己寫著「上限 150 行」，但沒有東西在數。
+      # 2026-09-06 一輪之內被超過三次，三次都靠人工發現。上限的意義不在數字，
+      # 在於它強迫「這件事該不該進 CONTEXT.md」被問出來——沒有執行者就不會被問。
+      - name: 檔案長度上限檢核
+        run: python3 tools/validation/check_file_budgets.py
+
+      - name: repo 層檢核器自身的驗證套件
         run: python3 -m unittest discover -s tools/validation/tests -v
 
       # 第四道：教材與契約必須一致（週次覆蓋、重複週次、判準章節、設備閘門、數值來源）
