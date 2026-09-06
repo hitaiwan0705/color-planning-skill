@@ -293,7 +293,7 @@ task_contract:
       constraints: 觀看條件不得假設，須現場記錄；燈箱僅得使用 D50／D65，型號等級寫「待核對」；容差一律以 ΔE00 表示；不得以品牌指南既有色票作為未經量測的一致性證據
       equipment_required: [benq_pd2705q, display_profiling_via_i1profiler, mimaki_ujf_3042fx_body, light_booth_d50_d65, i1_pro_2, i1_pro_3]
       duration: 4 週（week 10–13）
-      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      submission_channel: Microsoft Teams（授課者指定，2026-09-06）
 
   equipment_gate:
     # 對應 SKILL.md 第 2 節。狀態為 unverified 者，相關任務必須標 BLOCKED。
@@ -323,7 +323,7 @@ task_contract:
       constraints: 不得以個人偏好作為判斷；對比數值須由 color_audit.py 產生；SC 1.4.1 以人工檢核表記錄
       equipment_required: []
       duration: 1-2 週
-      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      submission_channel: Microsoft Teams（授課者指定，2026-09-06）
     - id: TASK-02
       capability_refs: [CAP-02]
       scenario: 將傳播設計色票轉成可交換的色彩資料與 design token，標明色彩空間、profile 與版本
@@ -331,7 +331,7 @@ task_contract:
       constraints: 主線須從 CIE XYZ 到 CIELAB/LCh 到 ΔE 到 ICC；Pantone 只能作為產業溝通或色票指定欄位
       equipment_required: []
       duration: 1-2 週
-      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      submission_channel: Microsoft Teams（授課者指定，2026-09-06）
     - id: TASK-03
       capability_refs: [CAP-03]
       scenario: 為品牌或傳播情境建立色彩意象決策表，將語意差異、文化語境與候選色票連成證據鏈
@@ -339,7 +339,7 @@ task_contract:
       constraints: 外部文化、標準或產業事實須附連結；查不到須標 UNVERIFIED；不得把 AI 產生內容寫成事實來源
       equipment_required: []
       duration: 2 週
-      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      submission_channel: Microsoft Teams（授課者指定，2026-09-06）
     - id: TASK-04
       capability_refs: [CAP-04]
       scenario: 以 i1 Pro 2 或 i1 Pro 3 量測實體樣本，在 D50/D65 標準燈箱下記錄視覺觀察，產出 ΔE00 報告
@@ -347,7 +347,7 @@ task_contract:
       constraints: 燈箱可使用 D50/D65；型號與等級須寫「待核對」；不得假設 TL84、CWF 或 U30 存在
       equipment_required: [i1_pro_2, i1_pro_3, light_booth_d50_d65]
       duration: 2 週
-      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      submission_channel: Microsoft Teams（授課者指定，2026-09-06）
     - id: TASK-05
       capability_refs: [CAP-05]
       scenario: 對 BenQ PD2705Q 或 PD2706QN 走 i1Profiler 到 OS 層 ICC 的顯示器校正與軟打樣設定
@@ -355,7 +355,7 @@ task_contract:
       constraints: 只允許 software calibration；不得寫入 monitor LUT；不得使用 AQCOLOR Pilot 作為本課校色路徑
       equipment_required: [benq_pd2705q, benq_pd2706qn, display_profiling_via_i1profiler, i1_pro_2, i1_pro_3]
       duration: 2 週
-      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      submission_channel: Microsoft Teams（授課者指定，2026-09-06）
     - id: TASK-06
       capability_refs: [CAP-06]
       scenario: 完成虛實輸出完整鏈：數位設計 → 顯示器校正 → 指定工作色域 → 軟打樣 → 媒材/設備描述檔 → 實體輸出 → 標準燈箱觀察 → 儀器量測 → 視覺評估 → 修正再輸出
@@ -363,7 +363,7 @@ task_contract:
       constraints: "Mimaki UJF-3042FX 輸出不得超過 300×420 mm 與 50 mm 厚度；不得指定 CONTEXT.md 未確認媒材；白墨、clear、螢光燈管與固定教室配置相關活動一律標 <!-- BLOCKED: 待設備確認 -->"
       equipment_required: [mimaki_ujf_3042fx_body, light_booth_d50_d65, i1_pro_2, i1_pro_3, benq_pd2705q, benq_pd2706qn, display_profiling_via_i1profiler]
       duration: 3-4 週（OPT-A 裁決後排入 week 10–16，與 TASK-07 共用樣本；見 weekly_plan.task06_ruling）
-      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      submission_channel: Microsoft Teams（授課者指定，2026-09-06）
 
     # ── 後半 9 週 色彩感知模組（week 10–18）新增之任務 ──
     - id: TASK-07
@@ -373,7 +373,7 @@ task_contract:
       constraints: "每週僅新增當週機制之觀察，不得回頭改寫前週資料（改寫須另開修訂紀錄）；量化數值一律由 color_audit.py 或 i1 Pro 產生；同色異譜觀察限用 D50/D65，依賴螢光燈管者標 <!-- BLOCKED: 待設備確認 -->"
       equipment_required: [light_booth_d50_d65, i1_pro_2, i1_pro_3]
       duration: 7 週（week 10–16，每週一次進度交件 P1–P7）
-      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      submission_channel: Microsoft Teams（授課者指定，2026-09-06）
       merged_with:
         task_id: TASK-06
         rule: TASK-07 的觀察基底即 TASK-06 的輸出樣本，兩者共用同一組實體樣本與同一份量測檔；任一方缺件，兩方皆不成立
@@ -408,7 +408,7 @@ task_contract:
       constraints: 自主學習週不排課，授課者提供固定 office hour；報告須含限制章節；不得以 AI 生成內容作為事實來源；不得引用未標示可信度等級之非官方筆記作為判準
       equipment_required: []
       duration: 2 週（week 17–18）
-      submission_channel: 課程指定 LMS 或授課者指定之 repo 交件位置
+      submission_channel: Microsoft Teams（授課者指定，2026-09-06）
       undecided_by_instructor:
         - week 18 是否安排口頭發表，或僅線上繳交
 
@@ -734,14 +734,18 @@ weekly_plan:
       note: 不排課週。week 16 已收件，本週不再開放設備借用
     - week: 18
       block: B
-      title: 自主學習與成果繳交
-      focus: [報告完成與繳交]
-      layer_refs: [1]
+      title: 成果繳交與口頭發表
+      focus:
+        - 概念：發表是最後一個接觸點——你的規範書要說服的是人，不是檢核器
+        - ASSIGN-04 繳交（含錄製簡報）
+        - 口頭發表與學習問卷
+      layer_refs: [1, 3]
       issue: []
       due: [ASSIGN-04]
       equipment_required: []
+      note: 授課者補充（2026-09-06）：期末設錄製簡報與口頭發表，故本週恢復排課
       undecided_by_instructor:
-        - 是否安排口頭發表；若安排，本週恢復排課
+        - 現場發表的時長與人數安排（依班級人數而定，未確認）；規則須於 week 1 公告
 
   validation_rules:
     - 每個 issue／due 之 ASSIGN id 必須存在於 assignment_contract.assignments，
@@ -771,6 +775,35 @@ assignment_contract:
 
   # 上限交由 check_contract.py C10 執行；改這個數字等於改課程負荷，須授課者裁示
   max_submission_events: 4
+
+  submission_format:
+    # 授課者補充（2026-09-06）：交件形式與發表形式。
+    authority: 授課者補充說明（2026-09-06）
+    channel: Microsoft Teams
+    learning_survey:
+      applies_to: [ASSIGN-01, ASSIGN-02, ASSIGN-03, ASSIGN-04]
+      rule: 每次作業得搭配一份學習問卷，隨該次作業一併提交
+      not_a_submission_event: true
+      why: 問卷附掛在既有的四個交件事件上，不新增交件點，故不受 max_submission_events 拘束
+      data_rule: 問卷回應**不進入本 repo**，一律留在 Teams 或授課者指定之校方儲存位置
+      research_boundary: 問卷作為教學回饋時屬課程資料；若要作為研究資料使用，
+        須先啟用 research_overlay 並完成倫理程序，兩者不得混用
+      failure_condition: 問卷回應、姓名或學號以任何形式進入 repo → 立即違反 CLAUDE.md 絕對禁止第 1 條
+    final_presentation:
+      applies_to: [ASSIGN-04]
+      required: [錄製簡報, 口頭發表]
+      recorded_deck:
+        rule: 錄製簡報隨 ASSIGN-04 於 week 18 交件，為交付物之一，不另計為交件事件
+        why: 錄製版可重播、可回溯、可作為評量證據；現場發表不可重播
+      oral:
+        rule: week 18 恢復排課進行口頭發表
+        capacity_risk:
+          statement: 每週 2 小時（V3）內全班完成口頭發表的可行性，取決於班級人數
+          unverified: 班級人數未確認
+          mitigation: 錄製簡報全體皆交；現場發表可採抽選、分組代表或縮短時長，
+            但**規則須於 week 1 公告**，不得於 week 18 臨時決定
+      failure_condition: 以現場發表代替錄製簡報 → 缺交付物；
+        以錄製簡報代替 ASSIGN-04 的證據交付 → 該次未通過（簡報不是證據）
 
   grade_mapping:
     # 配分依 CONTEXT.md 第 8 節（授課者裁定，非校內條文）
@@ -807,6 +840,7 @@ assignment_contract:
       weight: 10
       exam_alignment: 科目一 L112、科目二 L121（考前複習定位）
       rubric_profile: R-A
+      learning_survey: true
     - id: ASSIGN-02
       title: 配色計畫與量測驗證
       task_refs: [TASK-03, TASK-04]
@@ -816,6 +850,7 @@ assignment_contract:
       weight: 10
       exam_alignment: 科目一 L113／L114、科目二 L122、科目三 L131（考前最後一份，設計為做中複習）
       rubric_profile: R-A
+      learning_survey: true
     - id: ASSIGN-03
       title: 傳播色彩系統
       task_refs: [TASK-05, TASK-07, TASK-09]
@@ -825,6 +860,7 @@ assignment_contract:
       weight: 10
       note: W10 起以傳播為主體（D5）。問題設定須從訊息、閱聽人與接觸點出發；TASK-09 是這句話的執行者——接觸點少於三個或色彩功能無可觀察判準即未通過，不是扣分
       rubric_profile: R-B
+      learning_survey: true
     - id: ASSIGN-04
       title: 虛實輸出與驗證（期末）
       task_refs: [TASK-01, TASK-06, TASK-07, TASK-08]
@@ -834,6 +870,8 @@ assignment_contract:
       weight: 30
       note: 跑站的產出在此匯總。TASK-07 的觀察資料橫跨 ASSIGN-03 與 ASSIGN-04，兩份各取其階段
       rubric_profile: R-B
+      learning_survey: true
+      presentation: [錄製簡報, 口頭發表]
 
   station_rotation:
     # D3：一條龍以跑站形式進行。取代原 P1–P7 的七次交件。
