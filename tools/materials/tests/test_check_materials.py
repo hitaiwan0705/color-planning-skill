@@ -24,6 +24,9 @@ cm = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(cm)
 
 CONTRACT = """weekly_plan:
+  meta:
+    session_minutes: 120
+    self_study_weeks: [17, 18]
   weeks:
     - week: 1
       title: 測試週
@@ -34,6 +37,7 @@ CONTRACT = """weekly_plan:
 GOOD_LECTURE = """# W01 測試週｜講義
 
 <!-- 交件事件: issue=[ASSIGN-01] due=[] -->
+<!-- 課堂時間: 120 分鐘 -->
 
 ## 這一週在解什麼問題
 
@@ -350,6 +354,48 @@ class TestNegativeToolLimits(unittest.TestCase):
 
     def test_lecture_without_the_tool_is_unaffected(self):
         self.assertNotIn("E-MAT-TOOLLIMIT", codes())
+
+
+class TestNegativeSessionMinutes(unittest.TestCase):
+    """授課時數宣告必須與契約的 session_minutes 一致（V3：2 學分＝每週 2 小時）。
+
+    這條規則的由來：人工核對 16 個授課週時，同一件事有四種寫法
+    （純列分鐘、「本週共 120 分鐘：」、「完成 120 分鐘活動：」、表格時間區間），
+    要寫四種剖析才驗得出來。結果全部正確——但「驗得出來」不能靠每次都有人手寫剖析器。
+    """
+
+    def test_wrong_minutes_fails(self):
+        bad = GOOD_LECTURE.replace("課堂時間: 120 分鐘", "課堂時間: 150 分鐘")
+        self.assertIn("E-MAT-SESSION", codes(lecture=bad))
+
+    def test_missing_declaration_fails(self):
+        bad = GOOD_LECTURE.replace("<!-- 課堂時間: 120 分鐘 -->\n", "")
+        self.assertIn("E-MAT-SESSION", codes(lecture=bad))
+
+    def test_contract_side_change_alone_fails(self):
+        """只改契約不改講義也要抓到——不一致沒有方向之分。"""
+        bad = CONTRACT.replace("session_minutes: 120", "session_minutes: 100")
+        self.assertIn("E-MAT-SESSION", codes(contract=bad))
+
+    def test_value_comes_from_the_contract_not_hardcoded(self):
+        """時數是授課者的裁示；寫死在程式裡等於讓裁示失效。"""
+        contract = CONTRACT.replace("session_minutes: 120", "session_minutes: 90")
+        ok = GOOD_LECTURE.replace("課堂時間: 120 分鐘", "課堂時間: 90 分鐘")
+        self.assertNotIn("E-MAT-SESSION", codes(lecture=ok, contract=contract))
+
+    def test_self_study_week_must_declare_zero(self):
+        """夾具是 week 1；把它列為自主學習週，120 分鐘就該轉紅。"""
+        contract = CONTRACT.replace("self_study_weeks: [17, 18]", "self_study_weeks: [1]")
+        self.assertIn("E-MAT-SESSION", codes(contract=contract))
+
+    def test_two_declarations_fail(self):
+        bad = GOOD_LECTURE.replace("<!-- 課堂時間: 120 分鐘 -->",
+                                   "<!-- 課堂時間: 120 分鐘 -->\n<!-- 課堂時間: 120 分鐘 -->")
+        self.assertIn("E-MAT-SESSION", codes(lecture=bad))
+
+    def test_missing_contract_key_is_a_parse_error(self):
+        bad = CONTRACT.replace("    session_minutes: 120\n", "")
+        self.assertIn("E-MAT-PARSE", codes(contract=bad))
 
 
 class TestNegativeWeekCoverage(unittest.TestCase):

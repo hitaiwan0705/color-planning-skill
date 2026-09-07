@@ -7,7 +7,7 @@ check_materials.py — 教材確定性檢核器 v1.0
 教材的錯誤類型是「規格性」的，不是「創造性」的：術語不一致、必備章節缺漏、
 抽象能力動詞、設備閘門漏標、數值主張沒有來源、週次與契約不一致、
 講義寫的截止日與契約的 weekly_plan 對不起來、把自願問卷寫成必交、
-引用決定性工具卻沒寫出它的限制。
+引用決定性工具卻沒寫出它的限制、授課週的時數與 V3 裁示對不起來。
 規格性錯誤用確定性檢核抓，比用第二個 LLM 抓更準、更便宜、且可重現。
 異質模型複審應限縮在觀點與論證層次（MATERIALS-PLAN.md 1.0b）。
 
@@ -53,6 +53,13 @@ FORBIDDEN_STUDENT_MARKERS = [
     "Review ledger",
     "7/34",
 ]
+
+# 授課時數宣告：V3 裁定 2 學分＝每週 2 小時，授課週的活動配置必須正好用完。
+# 為什麼要另立一行：2026-09-07 人工核對 16 個授課週時，同一件事出現四種寫法
+# （純列分鐘、「本週共 120 分鐘：」、「完成 120 分鐘活動：」、表格時間區間），
+# 要寫四種剖析才驗得出來——結果全部正確，但「驗得出來」不能靠每次都有人手寫剖析器。
+# 宣告行不管內文怎麼寫，時數改了就會被抓到。
+SESSION_RE = re.compile(r"^<!--\s*課堂時間:\s*(\d+)\s*分鐘\s*-->\s*$")
 
 # 提到決定性工具的講義，必須同時寫出它的限制。
 # 2026-09-07 的實測：把「7/34」列入學生端禁用字串之後，**所有 18 份講義的
@@ -168,6 +175,45 @@ def check_student_facing_leaks(path, text):
             if marker in raw:
                 v.append(V("E-MAT-INTERNAL", path, i,
                            f"學生講義出現教師端內部標記或路徑 {marker!r}"))
+    return v
+
+
+def parse_contract_session(contract_path):
+    """讀 weekly_plan.meta 的 session_minutes 與 self_study_weeks。
+
+    時數是授課者的裁示（V3），值放在契約、不寫死在這裡——
+    改時數就該改行為，寫死等於讓裁示失效。
+    """
+    if not os.path.isfile(contract_path):
+        return None, set()
+    text = read(contract_path)
+    m = re.search(r"^    session_minutes: (\d+)\s*$", text, re.M)
+    m2 = re.search(r"^    self_study_weeks: \[(.*?)\]\s*$", text, re.M)
+    weeks = {int(x) for x in re.findall(r"\d+", m2.group(1))} if m2 else set()
+    return (int(m.group(1)) if m else None), weeks
+
+
+def check_session_minutes(path, text, week, want, self_study):
+    """授課週須宣告契約規定的時數；自主學習週須宣告 0。"""
+    v = []
+    if want is None:
+        return [V("E-MAT-PARSE", path, 1, "契約缺 weekly_plan.meta.session_minutes")]
+    found = None
+    for i, raw in enumerate(text.split("\n"), 1):
+        m = SESSION_RE.match(raw.strip())
+        if m:
+            if found is not None:
+                return [V("E-MAT-SESSION", path, i, "同一份講義有兩行課堂時間宣告")]
+            found = (int(m.group(1)), i)
+    if found is None:
+        return [V("E-MAT-SESSION", path, 1,
+                  "缺課堂時間宣告行 <!-- 課堂時間: N 分鐘 -->")]
+    got, ln = found
+    expect = 0 if week in self_study else want
+    if got != expect:
+        v.append(V("E-MAT-SESSION", path, ln,
+                   f"宣告課堂時間 {got} 分鐘，但 week {week} 應為 {expect} 分鐘"
+                   f"（契約 weekly_plan.meta.session_minutes）"))
     return v
 
 
@@ -351,6 +397,7 @@ def audit(root, contract_path):
     dirs = week_dirs(root)
     contract_weeks = parse_contract_weeks(contract_path)
     contract_sub = parse_contract_submissions(contract_path)
+    session_minutes, self_study = parse_contract_session(contract_path)
     violations = check_week_coverage(root, contract_weeks, dirs)
     for wk, paths in sorted(duplicate_week_dirs(root).items()):
         violations.append(V("E-MAT-DUPLICATE", root, 1,
@@ -373,6 +420,8 @@ def audit(root, contract_path):
                 violations += check_required_sections(path, text)
                 violations += check_student_facing_leaks(path, text)
                 violations += check_tool_limits(path, text)
+                violations += check_session_minutes(path, text, wk,
+                                                    session_minutes, self_study)
                 violations += check_abstract_verbs(path, text)
                 violations += check_submission_declaration(path, text, wk, contract_sub)
                 violations += check_survey_not_graded(path, text)
