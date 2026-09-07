@@ -95,3 +95,66 @@ materials tests             32 passed
 
 作業總數仍為 **4 次**——本裁示未新增交件事件（另行考試是考試，不是作業），
 D6 的上限未被觸及。
+
+---
+
+# 追加覆核：`6a7f47b`（十八週講義完成與評量契約鎖定）
+
+## 7. 70/30 的分歧已解決，方向正確
+
+上一節第 4 點提的分歧，Codex 解法是**把結構補進契約**，不是刪 profile。這是對的：
+
+- `rubric_dimensions.common_structure` 明訂 70/30，`publication_rule` 要求作業說明與 rubric 同時公告
+- R-A／R-B 的維度加上 `group:` 標記，兩組各自合計 70 與 30，總計 100
+- `applies_to` 由 TASK id 改為 **ASSIGN id**——這一點比 70/30 本身更重要：
+  rubric 掛在學生實際交件的事件上，不掛在證據規格上，與 D6 的打包層一致
+- 新增 **C12** 執行它：缺 `group` 標記、分組合計不符、或未知 group 皆會轉紅
+
+`E-MAT-INTERNAL`（學生講義不得出現教師端標記與 repo 路徑）也是好規則。
+
+## 8. 但那條禁用字串造成一個真實退化，已修
+
+`FORBIDDEN_STUDENT_MARKERS` 收了 `"7/34"`。結果不只那個數字消失——
+**18 份講義的工具限制聲明全部一起不見了。**
+
+```
+$ grep -rn "不得宣稱完整驗證|未通過完整|研究等級" materials/*/講義.md
+（無輸出）
+```
+
+契約 `tool_contract` 與 `SKILL.md` 第 102 行仍寫著「不得宣稱完整驗證；不得用於研究等級主張」，
+但**學生看的是講義**。W03、W04、W06、W10 四份要求學生交 `color_audit.py` 的輸出，
+卻沒有一份告訴他們這個工具還沒完整驗證過——學生完全可以誠實地寫下「ΔE00 已驗證」。
+
+禁那個數字本身沒錯（那確實是教師端品管數字）。錯在**限制可以不帶數字，但不能不存在**。
+已在四份講義補回不帶數字的版本，並新增 **E-MAT-TOOLLIMIT**：
+提到 `color_audit` 的講義必須同時帶限制聲明。
+測試含一條「限制聲明不帶內部數字時，兩條規則都要放行」——
+兩個規則不得互相逼死。突變驗證：關掉該規則後 37 條測試轉紅 1 條。
+
+## 9. ⚠️ 三個旗標被翻成「授課者已核定」，依據需要確認
+
+| 位置 | 之前 | 現在 | 依據 |
+|---|---|---|---|
+| `coverage_gap_analysis` | `REMEDIED_PENDING_RATIFICATION`／`claude_drafted`／`ratified_by: instructor_only` | `REMEDIED`／`instructor_directed_completion`／`ratified_by: instructor` | 「授課者於 2026-09-07 指示直接完成每週講義」 |
+| `assignment_contract.status` | `draft`／`instructor_only` | `authoritative`／`instructor` | 同上 |
+| `rubric_dimensions.status` | `draft`／`drafted_by: claude` | `authoritative`／`ratified_by: instructor` | `Lecture/AGENTS.md` 第 1A 節 |
+
+**第一項要特別講，因為那是我起草的東西被標成已核准。**
+
+六項 GAP 補救是**我在授課者不在時做的排課裁決**，當初刻意標成 `claude_drafted`、
+可逆、`ratified_by: instructor_only`，理由寫在原 `remedy_note` 裡：那本應由授課者做。
+「請完成每週講義」推導出「這六項排課補救已獲核准」——**這兩件事不是同一件事**。
+
+我不主張 Codex 錯：授課者可能真的在別處核定過。我主張的是**這個推論形態本身有風險**，
+而且我自己剛犯過同一個錯——把「可以設定錄製簡報與口頭發表」讀成「W18 恢復排課」，
+被 Codex 正確擋下。同一個標準要雙向適用。
+
+第三項的依據 `Lecture/AGENTS.md` 是本 session 讀不到的本機檔案。
+**不是說它不存在**——但同一份檔案先前被引為「校內固定 30/30/30/10」的出處，
+而授課者後來更正為「是我的職權，不是校內條文」。同一來源有一次被更正的紀錄，
+引用時值得多問一句。
+
+**未逕行改回**：這是 authority 標記，改回去等於我單方面撤銷授課者的核定，
+風險比留著更高。請授課者確認這三項是否確已核定；若否，改回 `draft` 即可，
+六項補救的內容不必動。

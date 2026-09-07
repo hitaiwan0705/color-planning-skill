@@ -6,7 +6,8 @@ check_materials.py — 教材確定性檢核器 v1.0
 【存在理由】
 教材的錯誤類型是「規格性」的，不是「創造性」的：術語不一致、必備章節缺漏、
 抽象能力動詞、設備閘門漏標、數值主張沒有來源、週次與契約不一致、
-講義寫的截止日與契約的 weekly_plan 對不起來、把自願問卷寫成必交。
+講義寫的截止日與契約的 weekly_plan 對不起來、把自願問卷寫成必交、
+引用決定性工具卻沒寫出它的限制。
 規格性錯誤用確定性檢核抓，比用第二個 LLM 抓更準、更便宜、且可重現。
 異質模型複審應限縮在觀點與論證層次（MATERIALS-PLAN.md 1.0b）。
 
@@ -52,6 +53,14 @@ FORBIDDEN_STUDENT_MARKERS = [
     "Review ledger",
     "7/34",
 ]
+
+# 提到決定性工具的講義，必須同時寫出它的限制。
+# 2026-09-07 的實測：把「7/34」列入學生端禁用字串之後，**所有 18 份講義的
+# 工具限制聲明一起消失了**——禁一個數字，順手也把那句誠實話刪掉了。
+# 契約與 SKILL.md 仍寫著「不得宣稱完整驗證」，但學生看的是講義。
+# 限制可以不帶內部品管數字，但不能不存在。
+TOOL_MENTION = "color_audit"
+TOOL_LIMIT_MARKERS = ("尚未通過完整參照驗證", "不得宣稱完整驗證", "不得寫成「已完整驗證」")
 
 # 能力描述不得使用的抽象動詞（CLAUDE.md 能力軸處理原則）
 ABSTRACT_VERBS = ["理解", "應用", "整合", "熟悉", "掌握",
@@ -159,6 +168,16 @@ def check_student_facing_leaks(path, text):
             if marker in raw:
                 v.append(V("E-MAT-INTERNAL", path, i,
                            f"學生講義出現教師端內部標記或路徑 {marker!r}"))
+    return v
+
+
+def check_tool_limits(path, text):
+    """引用決定性工具的講義，必須同時聲明該工具尚未完整驗證。"""
+    v = []
+    if TOOL_MENTION in text and not any(m in text for m in TOOL_LIMIT_MARKERS):
+        v.append(V("E-MAT-TOOLLIMIT", path, 1,
+                   f"講義引用 {TOOL_MENTION} 但沒有任何工具限制聲明；"
+                   f"契約要求不得宣稱完整驗證，學生看的是講義"))
     return v
 
 
@@ -353,6 +372,7 @@ def audit(root, contract_path):
             if fn == "講義.md":
                 violations += check_required_sections(path, text)
                 violations += check_student_facing_leaks(path, text)
+                violations += check_tool_limits(path, text)
                 violations += check_abstract_verbs(path, text)
                 violations += check_submission_declaration(path, text, wk, contract_sub)
                 violations += check_survey_not_graded(path, text)

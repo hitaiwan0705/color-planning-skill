@@ -325,6 +325,33 @@ class TestNegativeSurveyNotGraded(unittest.TestCase):
         self.assertNotIn("E-MAT-SURVEY", codes(lecture=ok))
 
 
+class TestNegativeToolLimits(unittest.TestCase):
+    """引用決定性工具的講義必須寫出它的限制。
+
+    這條規則來自一次真實的退化：把內部品管數字「7/34」列入學生端禁用字串後，
+    18 份講義的工具限制聲明**一起消失了**——禁一個數字，順手把那句誠實話也刪了。
+    契約與 SKILL.md 仍寫著「不得宣稱完整驗證」，但學生看的是講義。
+    """
+
+    def test_tool_without_limit_statement_fails(self):
+        bad = GOOD_LECTURE.replace("- 交出色票清單，每筆附來源檔名",
+                                   "- 交出 color_audit.py 的 JSON 輸出檔")
+        self.assertIn("E-MAT-TOOLLIMIT", codes(lecture=bad))
+
+    def test_limit_statement_without_the_internal_ratio_passes(self):
+        """限制可以不帶內部品管數字——兩條規則不得互相逼死。"""
+        ok = GOOD_LECTURE.replace(
+            "- 交出色票清單，每筆附來源檔名",
+            "- 交出 color_audit.py 的 JSON 輸出檔\n"
+            "- 註明：color_audit.py 尚未通過完整參照驗證，不得寫成「已完整驗證」")
+        got = codes(lecture=ok)
+        self.assertNotIn("E-MAT-TOOLLIMIT", got)
+        self.assertNotIn("E-MAT-INTERNAL", got)
+
+    def test_lecture_without_the_tool_is_unaffected(self):
+        self.assertNotIn("E-MAT-TOOLLIMIT", codes())
+
+
 class TestNegativeWeekCoverage(unittest.TestCase):
     def test_contract_week_without_directory_fails(self):
         c = CONTRACT + "    - week: 2\n      title: 第二週\n"
