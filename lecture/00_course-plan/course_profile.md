@@ -1,6 +1,6 @@
 ---
-status: draft
-version: v0.3
+status: authoritative
+version: v1.0
 updated: 2026-09-07
 supersedes: none
 authoritative_outline: 18_week_authoritative_outline_v1.md
@@ -10,11 +10,11 @@ authoritative_outline: 18_week_authoritative_outline_v1.md
 
 ## 基本資料與待確認項
 
-- 學期：115-1（依老師目前指定的課程路徑建置）。
+- 學期：115-1。
 - 開課單位：中國文化大學資訊傳播學系（依 repo `CONTEXT.md` 已確認事實）。
 - 年級與性質：大三上必修（依 repo `CONTEXT.md` 已確認事實）。
 - 學分與每週時數：2 學分、每週 2 小時。班級人數與實際授課場地待確認。
-- 設備：僅使用 repo `CONTEXT.md` 已確認項；燈箱型號／等級、螢光燈管、Mimaki 白墨／clear 狀態仍待核對。
+- 設備：依教學需求選擇工具；型號未確認不阻擋概念與方法教學。燈箱型號／等級、螢光燈管、Mimaki 白墨／clear 狀態在依賴操作前核對，缺少時採功能等價替代並記錄限制。
 - 學期結構：16 週授課 + W17-W18 自主學習，不到校上課；W18 線上繳交書面報告與錄製口頭簡報，並同步提供自願、不計分的學習問卷。
 
 ## 課程主體

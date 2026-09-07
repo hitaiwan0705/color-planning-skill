@@ -141,68 +141,65 @@ capability_contract:
 
     # ── scope_floor 比對結果 ──
     coverage_gap_analysis:
-      verdict: REMEDIED_PENDING_RATIFICATION
+      verdict: REMEDIED
       verdict_history:
         - {on: 2026-09-05, verdict: E-SCOPE_TRIGGERED, by: claude, note: 42 條細目中 14 條未涵蓋或排在考後}
         - {on: 2026-09-05, verdict: REMEDIED_PENDING_RATIFICATION, by: claude, note: 六項缺口皆已排入週次；補救為草案，須授課者核定}
-      remedy_authority: claude_drafted
-      ratified_by: instructor_only
+        - {on: 2026-09-07, verdict: REMEDIED, by: instructor_and_codex, note: 授課者指示直接完成每週講義；六項補救已寫入權威課綱與完整週講義}
+      remedy_authority: instructor_directed_completion
+      ratified_by: instructor
       remedy_note: |
-        授課者不在時，由 Claude 依本表原有之 proposed_remedy 逐條實施，改動 week 2、3、4、8、9。
-        這是排課裁決，本應由授課者做。實施理由：授課者指示自行完成講義，而講義的涵蓋範圍
-        無法在缺口未補的情況下決定；不補而寫，等於把缺口寫進教材。
-        所有改動皆可逆，逐週記於 weekly_plan.weeks[].gap_remedy 與 syllabus_refs。
-        授課者若不同意任一項，改動該週的 focus 與 syllabus_refs 即可，講義隨之調整。
+        Claude 先依 proposed_remedy 補入 week 2、3、4、8、9；授課者於 2026-09-07 指示
+        直接完成每週講義後，Codex 將補救收斂進權威課綱與 W01–W18 完整講義。
+        逐週位置仍記於 weekly_plan.weeks[].gap_remedy 與 syllabus_refs，供後續查核。
       rule_violated: global_rules.scope_floor（涵蓋範圍不得窄於 iPAS 初級三科）
-      requires_instructor_ruling: true
-      blocking_for: 教材製作不得在裁決前宣稱已滿足考科涵蓋
+      requires_instructor_ruling: false
+      blocking_for: none
       gaps:
         - id: GAP-01
-          status: remedied_draft
+          status: remedied_authoritative
           remedy_applied: W04 新增色調與配色、以色相／明度／彩度為主的配色四節
           severity: blocking
           items: [L11401, L11402, L11403, L11404]
           finding: 配色的基本法則整個評鑑主題完全未排入。這是科目一的四個細目，且是科目二配色實作的前提
           proposed_remedy: 指定客座① 講題涵蓋 L114，或將 W04 擴充為「配色法則與色彩意象」兩節
         - id: GAP-02
-          status: remedied_draft
+          status: remedied_authoritative
           remedy_applied: W03 新增依色相、明度、彩度三屬性排列色票之實體操作
           severity: blocking
           items: [L12101]
           finding: 依色相、明度、彩度排列色票（樣）未排入。科目二為實作測驗，且簡章載明搭配實體色票貼紙作答，此為該科核心操作
           proposed_remedy: W03 或 W04 加入實體色票排列練習；需確認系上是否有可供練習之色票組
         - id: GAP-03
-          status: remedied_draft
+          status: remedied_authoritative
           remedy_applied: W04 新增可視度與注目性、對比與同化之講授層；客座① 指定補強心理感覺
           severity: blocking
           items: [L11302, L11303, L11301]
           finding: 色彩感覺整個評鑑主題排在考後（W11、W12），科目一考前無涵蓋；L11302 可視度與注目性完全未排入
           proposed_remedy: 將 L113 的講授部分前移至 W04 或客座①，Block B 保留其觀察與資料層
         - id: GAP-04
-          status: remedied_draft
+          status: remedied_authoritative
           remedy_applied: W08 新增複製原理概覽一節，涵蓋攝影、紡織、材質與表面處理
           severity: structural
           items: [L13204, L13206, L13207]
           finding: 攝影、紡織色彩複製原理與色彩材質表面處理未排入；三者皆為科目三 L132 細目
           proposed_remedy: 併入 W08 作為概念層一節，或列入自習清單並提供指定讀物
         - id: GAP-05
-          status: remedied_draft
+          status: remedied_authoritative
           remedy_applied: W09 交付自習清單，涵蓋影像色彩處理與基礎光電色彩
           severity: structural
           items: [L11204, L11207]
           finding: 影像色彩處理與應用、基礎光電色彩未排入
           proposed_remedy: 列入自習清單；L11207 可由客座② 一併涵蓋
         - id: GAP-06
-          status: remedied_draft
+          status: remedied_authoritative
           remedy_applied: W08 新增印刷複製原理與基礎色貌模式之概念層
           severity: structural
           items: [L13205, L13307]
           finding: 印刷色彩複製原理與基礎色外貌模式排在考後（W13、W12）
           proposed_remedy: 於 W08 加入概念層說明，實作仍留在 Block B
-      note: |
-        本表只做比對與提案，不自行改動週次。GAP-01 至 GAP-03 為 blocking，
-        在裁決前，weekly_plan 不得宣稱已滿足 coverage_before_exam。
-      failure_condition: 未裁決即產生宣稱已涵蓋 iPAS 三科之輸出 → 該輸出作廢
+      note: 六項缺口均已在考前週次、權威課綱與週講義中落地；後續若改動週次，須重新執行 scope floor 檢核。
+      failure_condition: 移除任一補救內容而未同步更新 official_syllabus、weekly_plan 與講義 → 涵蓋宣稱作廢
 
 
   capabilities:
@@ -767,8 +764,8 @@ weekly_plan:
 assignment_contract:
   principle: 交件事件數受授課者上限拘束；證據要求不因打包而減少
   authority: 授課者裁示 D6（2026-09-06）
-  status: draft
-  ratified_by: instructor_only
+  status: authoritative
+  ratified_by: instructor
 
   # 上限交由 check_contract.py C10 執行；改這個數字等於改課程負荷，須授課者裁示
   max_submission_events: 4
@@ -923,12 +920,18 @@ assessment_contract:
   rubric_dimensions:
     # 總成績配分（期中 30／期末 30／平時 30／參與 10）已由授課者裁定，
     # 見 CONTEXT.md 第 8 節；依據為授課者職權，非校內條文。
-    # 以下的「維度與權重」仍為草案，核定前不得作為評分依據，也不得被 skill 引用產生分數。
-    status: draft
-    drafted_by: claude
-    ratified_by: instructor_only
-    source: MATERIALS-PLAN.md 第 5 節
+    # 每份作業的 70/30 結構依 Lecture/AGENTS.md 第 1A 節之授課者已確認決策。
+    # R-A／R-B 只改變共同專業能力 70% 內的專業向度，不改變反思 30%。
+    status: authoritative
+    drafted_by: claude_and_codex
+    ratified_by: instructor
+    source: Lecture/AGENTS.md 第 1A 節與授課者既有裁示
     scope_note: 本組維度供授課者評分使用；skill 本身仍不得輸出分數、等第或總評語
+    common_structure:
+      shared_professional_capability: 70
+      differentiated_reflection: 30
+      publication_rule: 作業說明與適用 rubric 必須同時公告
+      reflection_rule: 反思須依決策歷程、限制辨識與未來遷移三個可觀察向度評分，不得採無標準印象分
     gates:
       # 門檻不是權重維度。未過門檻者不進入權重計算，且不得以其他項目補償。
       - id: G1
@@ -942,19 +945,25 @@ assessment_contract:
         on_fail: unsupported_claim，該數值不採計
     profiles:
       - id: R-A
-        applies_to: [TASK-02, TASK-04, TASK-05, TASK-06]
+        applies_to: [ASSIGN-01, ASSIGN-02]
         dimensions:
-          - {name: 可追溯性與量測紀錄品質, weight: 25}
-          - {name: 規格符合度, weight: 25}
-          - {name: 判斷的正當性, weight: 25}
-          - {name: 修正迴圈證據, weight: 25}
+          - {group: 共同專業能力, name: 可追溯性與量測紀錄品質, weight: 20}
+          - {group: 共同專業能力, name: 規格符合度, weight: 15}
+          - {group: 共同專業能力, name: 判斷的正當性, weight: 20}
+          - {group: 共同專業能力, name: 修正迴圈證據, weight: 15}
+          - {group: 差異化反思, name: 個人決策歷程與轉折, weight: 10}
+          - {group: 差異化反思, name: 限制辨識與自我評估, weight: 10}
+          - {group: 差異化反思, name: 未來情境遷移與具體行動, weight: 10}
       - id: R-B
-        applies_to: [TASK-01, TASK-07, TASK-08, TASK-09]
+        applies_to: [ASSIGN-03, ASSIGN-04]
         dimensions:
-          - {name: 觀察條件紀錄完整性, weight: 25}
-          - {name: 機制歸因與排除理由, weight: 30}
-          - {name: 資料與工具輸出的一致性, weight: 25}
-          - {name: 限制的誠實度, weight: 20}
+          - {group: 共同專業能力, name: 觀察條件紀錄完整性, weight: 15}
+          - {group: 共同專業能力, name: 機制歸因與排除理由, weight: 20}
+          - {group: 共同專業能力, name: 資料與工具輸出的一致性, weight: 20}
+          - {group: 共同專業能力, name: 限制與風險揭露, weight: 15}
+          - {group: 差異化反思, name: 個人決策歷程與轉折, weight: 10}
+          - {group: 差異化反思, name: 限制辨識與自我評估, weight: 10}
+          - {group: 差異化反思, name: 未來情境遷移與具體行動, weight: 10}
     semester_weighting:
       # 授課者裁定（V1，2026-09-06），非草案，非校內條文。
       # 鍵為成績欄位而非 TASK：TASK 已改為純證據規格，不再各自帶分數

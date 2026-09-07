@@ -1,6 +1,6 @@
 ---
 status: authoritative
-version: v0.2
+version: v1.0
 updated: 2026-09-07
 supersedes: none
 authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
@@ -12,6 +12,11 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 
 ## 1. 現在的狀態
 
+- **2026-09-07 W01–W18 每週講義已完成並通過驗證。** W01–W16 各為 120 分鐘授課；
+  W17–W18 為不上課的自主學習。課程 profile、18 週大綱與來源地圖已升為 authoritative；
+  四次作業均採共同專業能力 70%＋差異化反思 30%。詳細紀錄見
+  `10_review-skills/2026-09-07_weekly_handouts_completion.md`。
+
 - **2026-09-07 老師裁示期中未報考規則**：未報考 iPAS 視同缺交，無特殊原因者期中以 0 分計；
   因特殊狀況不能報考者，須在正式考試日前向授課者說明原因，並另行考試。另行考試不是
   可自由選擇的第二路徑。此案已由 unresolved 改為 ratified，W01 可對學生公告。
@@ -22,33 +27,31 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
   D6（約 4 次作業）以 `assignment_contract` 打包層實現，交件事件由 15 個降為 4 個。
   V1 的配分**出處已釐清：授課者職權，非校內條文**——Codex 原記「校內固定的 30/30/30/10」
   須更正，那不是校規，是老師說了算。
-- 期中計分已無待裁示 blocker。課程 profile 與 18 週大綱仍維持 `draft`，待完成跨檔一致性覆核後再升級；
-  班級人數、場地與研究用途屬後續執行資訊，不阻擋講義內容確認。
+- 期中計分已無待裁示 blocker。班級人數、場地、實際設備型號與研究用途屬後續執行資訊，
+  不阻擋已完成的講義內容；設備以需求選工具，若不可用則採講義所列功能等價流程。
 - 原始來源位於 `/Users/slchu/Library/CloudStorage/Dropbox/Lecture/色彩學/`，共 1,454 個檔案、約 3.2 GB；原檔不得覆寫或移動。
 - 已讀來源：舊版「色彩應用」課綱文字、iPAS 2026 色彩學教學與學習指引部分內容、iPAS 2026 色彩計畫實務評量重點部分內容，以及舊版 iPAS 色彩計畫實務參考指引目錄。
 - 已建立初步來源地圖、課程 profile、18 週大綱、外部審查追蹤與 Claude R1 prompt。
 - 已建立中央課程子 skill：`/Users/slchu/.codex/skills/course-color-communication/`，`quick_validate.py` 驗證通過。
 - 2026-09-06 老師更正：Claude 的既有課程資料與審查工作位於 GitHub repo `hitaiwan0705/color-planning-skill` 的 `claude/skill-comparison-color-course-npvyrl` 分支；先前以本機 CLI 登入作為唯一協作入口的判斷已撤回。
 - Codex `lecture/` 已推送至該分支 commit `0fb5da5`；其前一個 commit `14c7053` 為 Claude 已完成的 W01-W05 講義，兩條工作均已保留。
-- 在大綱升為 authoritative 前，不產週講義、作業 rubric 或 PPTX。
+- authoritative 大綱與講義已完成；PPTX 尚未產生，後續須先完成 weekly schema 再進入簡報工具鏈。
 - 2026-09-06 Claude：REVIEW-01 已完成，完整意見在 `10_review-skills/2026-09-06_claude_review_audit.md`。
   結論是兩份大綱各有對方缺的東西，**不建議二選一**：Codex 的傳播主體定位比 repo 的排課
   更貼近 `CONTEXT.md` 的課程角色；repo 的 iPAS 時程約束與設備一條龍則是 Codex 大綱完全沒有、
   且屬老師已明確要求的內容。合併點列為 D1–D6，須老師裁示。
-- **例外揭露**：`materials/` 的 W01–W18 全部 18 份講義已完成，由 Claude 與 Codex 雙線產出後合併。
-  這與上面「不產週講義」的 gate 衝突；原因是老師在離線前明確指示完成 18 週講義，
-  該指示早於 Claude 看到本 handoff。這批講義**不視為 authoritative**，
-  定位為「repo 排課版本的講義草案」。Claude workflow 在下一輪失敗後，Codex 依老師「不等待、完成講義」的指示備援完成 W10–W18；D1–D6 裁示後仍需重排。
-- `materials/` 現有 W01–W18 各一份講義，共 18 週；教材檢核、20 條單元測試、學生資料／機密掃描與 CIEDE2000 15 條測試均已通過。
+- `materials/` 現有 W01–W18 各一份講義，共 18 週；本輪已依老師後續裁示收斂，不再沿用
+  「repo 排課版本草案」定位。教材檢核、34 條教材測試、58 條契約驗證測試、學生資料／
+  機密掃描與 CIEDE2000 15 條測試均通過；完整原始摘要見本輪完成紀錄。
 - Claude 這一端跑在遠端容器，**讀不到本機 Dropbox 路徑**。凡指派需開啟本機檔案的任務，
   須先把該檔案 push 到本分支。
 
 ## 2. 下一步（明確指派）
 
-下一步給 Claude Code：以老師 2026-09-07 的期中裁示為最高優先，覆核
-`COURSE-CONTRACT.yaml`、`CONTEXT.md`、W01 與 `lecture/00_course-plan/` 是否只剩一套期中規則；
-不得恢復 M-A／M-B／M-C 選項或把另行考試寫成學生可自由選擇的方案。意見與修正寫入
-`lecture/10_review-skills/`，再交回 Codex 做最終一致性驗證。
+下一步給 Claude Code：以 `00_course-plan/18_week_authoritative_outline_v1.md` 與已 ratified 的
+`COURSE-CONTRACT.yaml` 對 W01–W18 做第二次內容審查，優先檢查可直接授課性、外部來源與
+四次 rubric 的 70/30 一致性；不得恢復 M-A／M-B／M-C。意見寫入 `lecture/10_review-skills/`，
+再交回 Codex 依 weekly schema 製作 W01–W16 簡報。
 
 老師可開始確認 W01–W18 講義內容。班級人數、實際場地與設備型號在依賴操作前補齊；
 研究問題、primary outcome 與 IRB 時程在要啟動研究用途時另行裁示，均不阻擋目前的教學內容確認。
@@ -60,11 +63,11 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 | SETUP-01 | 課程資料夾與必要子資料夾 | Codex | 已完成 | 115-1 為待老師確認的工作假設 |
 | SRC-01 | 第一批來源盤點與路徑登錄 | Codex | 已完成 | 深讀與授權查核待續 |
 | SKILL-01 | 建立 `course-color-communication` 子 skill | Codex | 已完成 | 中央單一真實來源；validator 通過 |
-| PLAN-01 | 課程 profile v0.1 | Codex | 已完成 | draft |
-| PLAN-02 | 18 週大綱 v0.1 | Codex | 已完成 | draft；待 Claude 與老師覆核 |
+| PLAN-01 | 課程 profile | Codex | 已完成 | authoritative v1.0 |
+| PLAN-02 | 18 週大綱 | Codex | 已完成 | authoritative v1.0；16 週授課＋2 週自主學習 |
 | SYNC-01 | clone GitHub repo、切換 comparison 分支並匯入 `lecture/` | Codex | 已完成 | commit `0fb5da5` 已 push；未 force push |
 | REVIEW-01 | Claude R1 課程定位與週次審查 | Claude Code | **已完成** | 原文在 review audit；分「可直接採用 7 項／需老師裁示 6 項／需查證 6 項」 |
-| REVIEW-02 | Codex 整合 Claude R1 意見並回填取捨 | Codex | 待處理 | 特別請看 V1（校內 30/30/30/10 缺出處）與 V2（開課單位與已定案事實不符） |
+| REVIEW-02 | Codex 整合 Claude R1 意見並回填取捨 | Codex | **已完成** | 老師決策優先；30/30/30/10 記為授課者裁示，非校規 |
 | MAT-01 | `materials/` W01–W09 講義草案 | Claude Code | 已完成 | 非 authoritative；commit `14c7053`、`fa2b3f1` |
 | MAT-02 | `materials/` W10–W18 講義草案 | Claude Code ＋ Codex | **已完成** | 兩邊各自寫了一版，已合併為單一版本 |
 | MERGE-01 | 合併 W08–W13 的雙寫講義 | Claude Code | **已完成** | 六週合併為單一版本 |
@@ -72,11 +75,20 @@ authoritative_outline: 00_course-plan/18_week_authoritative_outline_v1.md
 | TOOL-02 | 修正 `check_materials.py` 重複週次靜默覆蓋 | Claude Code | **已完成** | 新增 `E-MAT-DUP`；由本次雙寫暴露 |
 | TOOL-01 | `tools/materials/check_materials.py` 教材確定性檢核器 | Claude Code | 已完成 | 19 條測試含負向驗證；三次突變確認規則移除即紅 |
 | FIX-04 | 修正 Claude 測試夾具觸發外洩掃描 | Claude Code | 已完成 | Codex 於 SYNC-01 指出；個資夾具改為執行期組裝 |
-| PLAN-03 | 老師確認必備輸入並升級 authoritative | 老師／Codex | 部分完成 | 期中規則已定；完成跨檔覆核後再升級，研究與實際設備資訊不阻擋講義確認 |
+| PLAN-03 | 老師確認必備輸入並升級 authoritative | 老師／Codex | **已完成** | 研究與實際設備資訊不阻擋講義；需求出現時再確認工具 |
 | HANDOUT-01 | W01 整合講義 | Claude 起稿／Codex 修訂 | 已完成待老師確認 | 期中未報考與特殊狀況另考規則已寫入 |
-| QA-01 | W01–W18 確定性檢核與負向測試 | Codex | **已完成** | 新增重複週次檢查；20/20 tests pass |
+| QA-01 | W01–W18 確定性檢核與負向測試 | Codex | **已完成** | 18/18 講義；教材 34、契約驗證 58、色差 15 項通過 |
+| HANDOUT-ALL | W01–W18 可直接授課講義 | Codex＋Claude Code | **已完成** | 詳見 2026-09-07 完成紀錄；下一步為 Claude 第二次內容審查 |
 
 ## 4. 交接紀錄（時間倒序）
+
+### 2026-09-07｜Codex｜完成 W01–W18 講義並收斂權威版本｜下一步：Claude Code
+
+依授課者「直接完成每週講義內容生成」指示，完成 18 份正文。W01–W16 每週 120 分鐘，
+W17–W18 不排課；四次作業皆以共同專業能力 70%＋差異化反思 30%評分。課綱、profile、
+來源地圖與契約同步收斂，並新增 C12 及負向測試防止 rubric 漂移。完整原始驗證輸出見
+`10_review-skills/2026-09-07_weekly_handouts_completion.md`。下一步請 Claude Code 依權威課綱
+做第二次內容審查；不得把已定案項目重新列為待裁示。
 
 ### 2026-09-07｜Codex｜期中未報考規則定案｜下一步：Claude Code 做跨檔一致性覆核
 

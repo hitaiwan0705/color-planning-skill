@@ -98,12 +98,18 @@ weekly_plan:
 
 assessment_contract:
   rubric_dimensions:
+    common_structure:
+      shared_professional_capability: 70
+      differentiated_reflection: 30
     profiles:
       - id: R-A
-        applies_to: [TASK-01]
+        applies_to: [ASSIGN-01, ASSIGN-02]
         dimensions:
-          - {name: 可追溯性, weight: 50}
-          - {name: 規格符合度, weight: 50}
+          - {group: 共同專業能力, name: 可追溯性, weight: 35}
+          - {group: 共同專業能力, name: 規格符合度, weight: 35}
+          - {group: 差異化反思, name: 決策歷程, weight: 10}
+          - {group: 差異化反思, name: 限制辨識, weight: 10}
+          - {group: 差異化反思, name: 未來遷移, weight: 10}
     semester_weighting:
       # 授課者裁定的成績欄位配分
       平時: 40
@@ -225,8 +231,8 @@ class TestNegativeC5(unittest.TestCase):
     """C5 權重"""
 
     def test_profile_weights_not_100_fails(self):
-        bad = GOOD.replace("{name: 規格符合度, weight: 50}",
-                           "{name: 規格符合度, weight: 40}")
+        bad = GOOD.replace("{group: 共同專業能力, name: 規格符合度, weight: 35}",
+                           "{group: 共同專業能力, name: 規格符合度, weight: 25}")
         self.assertIn("E-CONTRACT-WEIGHT", codes(bad))
 
     def test_semester_weighting_mismatch_fails(self):
@@ -331,6 +337,31 @@ class TestNegativeC11(unittest.TestCase):
         bad = GOOD.replace("      grade_slot: 平時", "      grade_slot: 期中")
         self.assertIn("E-CONTRACT-ASSIGN", codes(bad))
 
+
+class TestNegativeC12(unittest.TestCase):
+    """C12 每份作業 rubric 的共同專業 70%＋差異化反思 30%"""
+
+    def test_missing_common_split_fails(self):
+        bad = GOOD.replace("      shared_professional_capability: 70\n", "")
+        self.assertIn("E-CONTRACT-RUBRIC-SPLIT", codes(bad))
+
+    def test_professional_subtotal_not_70_fails(self):
+        bad = GOOD.replace("{group: 共同專業能力, name: 規格符合度, weight: 35}",
+                           "{group: 差異化反思, name: 規格符合度, weight: 35}")
+        self.assertIn("E-CONTRACT-RUBRIC-SPLIT", codes(bad))
+
+    def test_reflection_subtotal_not_30_fails_even_when_total_is_100(self):
+        bad = GOOD.replace("{group: 共同專業能力, name: 規格符合度, weight: 35}",
+                           "{group: 共同專業能力, name: 規格符合度, weight: 45}")
+        bad = bad.replace("{group: 差異化反思, name: 未來遷移, weight: 10}",
+                          "{group: 差異化反思, name: 未來遷移, weight: 0}")
+        self.assertNotIn("E-CONTRACT-WEIGHT", codes(bad))
+        self.assertIn("E-CONTRACT-RUBRIC-SPLIT", codes(bad))
+
+    def test_dimension_without_group_fails(self):
+        bad = GOOD.replace("{group: 差異化反思, name: 未來遷移, weight: 10}",
+                           "{name: 未來遷移, weight: 10}")
+        self.assertIn("E-CONTRACT-RUBRIC-SPLIT", codes(bad))
 
 class TestNegativeC7(unittest.TestCase):
     def test_task_without_per_task_evidence_fails(self):

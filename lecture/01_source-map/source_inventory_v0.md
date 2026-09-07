@@ -1,7 +1,7 @@
 ---
-status: draft
-version: v0.2
-updated: 2026-09-06
+status: authoritative
+version: v1.0
+updated: 2026-09-07
 supersedes: none
 authoritative_outline: ../00_course-plan/18_week_authoritative_outline_v1.md
 ---
@@ -33,6 +33,21 @@ authoritative_outline: ../00_course-plan/18_week_authoritative_outline_v1.md
 | `色彩學/ColourAppearance.pdf`（409 頁） | 色貌、適應、觀察條件 | 2005 檔案；版本與書目資料需確認 | 待深讀 |
 | `色彩學/Ronnier-skill-main/references/` | 色度學、量測、色貌、術語陷阱的技術查核線索 | 全庫為未經授課教師審閱的第三方整理，只可作查核線索；不得作評量判準或研究依據，須回到 primary sources | 待選讀 |
 | `色彩學/AIx色彩.pdf`（161 頁） | AI 輔助色彩探索與判斷案例 | AI 不得取代傳播主體；需檢查版本、案例與著作權 | 待深讀 |
+
+## 已查核的外部權威來源
+
+以下來源已於 2026-09-07 回到發布機構頁面核對；週講義可以正式書目格式引用，
+不得把本表的內部可信度評語帶入學生端。
+
+| 來源 | 用途 | 週次 | 可信度／授權 | 狀態 |
+|---|---|---|---|---|
+| 經濟部產業人才能力鑑定推動網，色彩規劃管理師官方專區，https://ipd.nat.gov.tw/ipas/CPM/ | 115 年度簡章、考科、報名與測驗資訊 | W1、W2、W4、W5、W9 | 官方職能鑑定頁；日期與報名資訊每期重查 | 已查核入口 |
+| International Color Consortium. *ICC.1:2022—Image technology colour management: Architecture, profile format, and data structure*. https://www.color.org/specification/ICC.1-2022-05.pdf | profile、PCS、四種 rendering intent、色彩轉換 | W3、W7、W8 | ICC 官方規格，可連結；依規格版本引用 | 已查核 |
+| ISO/CIE 11664-6:2022. *Colorimetry—Part 6: CIEDE2000 Colour-Difference Formula*. https://www.cie.co.at/publications/colorimetry-part-6-ciede2000-colour-difference-formula-1 | ΔE00 名稱、版本與公式基準 | W3、W5、W6、W10、W15、W16 | CIE 官方標準頁；完整標準受著作權限制，不重製全文 | 已查核 |
+| ISO/CIE 11664-2:2022. *Colorimetry—Part 2: CIE Standard Illuminants*. https://www.cie.co.at/publications/colorimetry-part-2-cie-standard-illuminants-0 | D50、D65 與標準照明體定義 | W2、W5、W6、W10、W15 | CIE 官方標準頁；區分理論照明體與實體燈箱 | 已查核 |
+| CIE 248:2022. *The CIE 2016 Colour Appearance Model for Colour Management Systems: CIECAM16*. https://www.cie.co.at/publications/cie-2016-colour-appearance-model-colour-management-systems-ciecam16 | 色適應、觀看條件與色貌屬性 | W8、W11、W12 | CIE 官方技術報告頁 | 已查核 |
+| W3C. *Web Content Accessibility Guidelines (WCAG) 2.2*, SC 1.4.1、1.4.3、1.4.11. https://www.w3.org/TR/WCAG22/ | 僅以顏色傳達、文字與非文字對比 | W14 | W3C Recommendation；引用規範與 Understanding 文件 | 已查核 |
+| Mimaki Engineering. *UJF-3042FX Specifications*. https://taiwan.mimaki.com/product/inkjet/i-flat/ujf-3042fx/specification.html | 最大輸出範圍、媒材厚度、墨水與 UV 安全條件 | W13、W16 | 製造商官方頁；機型已停產，現場墨水與配件仍須逐次核對 | 已查核 |
 
 ## 第三優先：媒體物質性、製程與案例
 

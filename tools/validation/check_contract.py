@@ -30,6 +30,7 @@ C9  ASSIGN 的 issue_week／due_week 與 weekly_plan 的 issue／due 雙向一�
     且每份作業恰好發一次、收一次
 C10 交件事件數不超過 assignment_contract.max_submission_events（授課者裁示 D6）
 C11 同一 grade_slot 的 ASSIGN 權重合計等於 semester_weighting 中該欄位的分數
+C12 每份作業 rubric 固定為共同專業能力 70%＋差異化反思 30%，且兩組 profile 分組合計一致
 
 【檢不到、也不該假裝檢得到的】
 下列規則作用在 skill 的**執行期輸出**或**學生交件**上，不是 repo 檔案，
@@ -179,6 +180,39 @@ def audit(text):
             ln = text[:m.start()].count("\n") + 1
             v.append(V("E-CONTRACT-WEIGHT", ln,
                        f"rubric profile {pid} 權重合計 {sum(ws)}，應為 100"))
+
+    # C12 —— 授課者固定的每份作業 70/30 結構
+    shared = re.search(r"^      shared_professional_capability: (\d+)\s*$", text, re.M)
+    reflection = re.search(r"^      differentiated_reflection: (\d+)\s*$", text, re.M)
+    if not shared or not reflection:
+        v.append(V("E-CONTRACT-RUBRIC-SPLIT", 1,
+                   "rubric_dimensions.common_structure 缺共同專業能力或差異化反思配分"))
+    else:
+        expected = {"共同專業能力": int(shared.group(1)),
+                    "差異化反思": int(reflection.group(1))}
+        if sum(expected.values()) != 100:
+            v.append(V("E-CONTRACT-RUBRIC-SPLIT", 1,
+                       f"rubric 共同結構合計 {sum(expected.values())}，應為 100"))
+        for m in re.finditer(r"^      - id: (R-\w+)\n(?:.*\n)*?(?=^      - id: |^    \w|\Z)",
+                             text, re.M):
+            pid, block = m.group(1), m.group(0)
+            grouped = {"共同專業能力": 0, "差異化反思": 0}
+            entries = re.findall(r"\{group: ([^,}]+), name: [^,}]+, weight: (\d+)\}", block)
+            ln = text[:m.start()].count("\n") + 1
+            if not entries:
+                v.append(V("E-CONTRACT-RUBRIC-SPLIT", ln,
+                           f"rubric profile {pid} 缺 group 標記，無法驗證 70/30"))
+                continue
+            for group, weight in entries:
+                if group not in grouped:
+                    v.append(V("E-CONTRACT-RUBRIC-SPLIT", ln,
+                               f"rubric profile {pid} 含未知 group {group!r}"))
+                    continue
+                grouped[group] += int(weight)
+            for group, want in expected.items():
+                if grouped[group] != want:
+                    v.append(V("E-CONTRACT-RUBRIC-SPLIT", ln,
+                               f"rubric profile {pid} 的{group}合計 {grouped[group]}，應為 {want}"))
     # 逐行掃描而非一次比對整段：區塊內夾雜註解行，
     # 早期版本用 `((?:      \S+: \d+\n)+)` 要求下一行就是數字，
     # 被第一行註解擋掉導致整條規則從未生效——由植入測試第 6 項抓到。

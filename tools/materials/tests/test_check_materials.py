@@ -39,6 +39,26 @@ GOOD_LECTURE = """# W01 測試週｜講義
 
 一段敘述。這裡可以自由使用理解、應用、整合這些詞，因為不是判準。
 
+## 本週學習目標
+
+- 標出訊息、媒介與觀看條件
+
+## 知識群與關鍵詞
+
+- 色彩傳播：訊息、媒介、閱聽人
+
+## 課堂活動與時間配置
+
+- 20 分鐘觀察、30 分鐘比較、40 分鐘修正
+
+## 學習證據與評量角色
+
+- 觀察表供形成性回饋，不另計分
+
+## 學習工作量
+
+- 課內 90 分鐘；課外 30 分鐘整理
+
 ## 本週交付
 
 - 交出觀察條件紀錄，含光源、背景與觀察距離三欄
@@ -48,6 +68,16 @@ GOOD_LECTURE = """# W01 測試週｜講義
 
 - 缺任一欄位即未通過
 - 以口頭描述代替數值紀錄即未通過
+
+## 本週重點整理
+
+1. 色彩判斷必須帶觀看條件。
+2. 數值須可追溯。
+3. 訊息功能須有可觀察判準。
+
+## 下週銜接
+
+下週用同一份觀察表進行跨媒介比較。
 """
 
 
@@ -110,6 +140,20 @@ class TestNegativeSections(unittest.TestCase):
 
     def test_missing_lecture_file_fails(self):
         self.assertIn("E-MAT-MISSING", codes(lecture=None))
+
+    def test_every_required_section_is_checked(self):
+        for section in cm.REQUIRED_SECTIONS:
+            with self.subTest(section=section):
+                bad = GOOD_LECTURE.replace(section, "## 被移除的章節", 1)
+                self.assertIn("E-MAT-SECTION", codes(lecture=bad))
+
+
+class TestNegativeStudentFacingInternals(unittest.TestCase):
+    def test_every_internal_marker_is_rejected(self):
+        for marker in cm.FORBIDDEN_STUDENT_MARKERS:
+            with self.subTest(marker=marker):
+                bad = GOOD_LECTURE + f"\n教師備註：{marker}\n"
+                self.assertIn("E-MAT-INTERNAL", codes(lecture=bad))
 
 
 class TestNegativeVerbs(unittest.TestCase):

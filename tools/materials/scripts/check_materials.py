@@ -28,8 +28,30 @@ import sys
 
 WEEK_DIR_RE = re.compile(r"^W(\d{2})_")
 
-# 講義必備章節（缺一即該週未完成）
-REQUIRED_SECTIONS = ["## 這一週在解什麼問題", "## 本週交付", "## 失敗條件"]
+# 完整週講義必備章節（缺一即該週未完成）。精確標題讓跨週檢核不依賴模型猜測同義詞。
+REQUIRED_SECTIONS = [
+    "## 這一週在解什麼問題",
+    "## 本週學習目標",
+    "## 知識群與關鍵詞",
+    "## 課堂活動與時間配置",
+    "## 學習證據與評量角色",
+    "## 學習工作量",
+    "## 本週交付",
+    "## 失敗條件",
+    "## 本週重點整理",
+    "## 下週銜接",
+]
+
+# 學生端不得看到的教師端品質管理語言或路徑。
+FORBIDDEN_STUDENT_MARKERS = [
+    "狀態：草案",
+    "lecture/HANDOFF.md",
+    "COURSE-CONTRACT.yaml",
+    "XiaoZhu baseline",
+    "Persona review",
+    "Review ledger",
+    "7/34",
+]
 
 # 能力描述不得使用的抽象動詞（CLAUDE.md 能力軸處理原則）
 ABSTRACT_VERBS = ["理解", "應用", "整合", "熟悉", "掌握",
@@ -127,6 +149,16 @@ def check_required_sections(path, text):
     for sec in REQUIRED_SECTIONS:
         if sec not in text:
             v.append(V("E-MAT-SECTION", path, 1, f"講義缺必備章節 {sec!r}"))
+    return v
+
+
+def check_student_facing_leaks(path, text):
+    v = []
+    for i, raw in enumerate(text.split("\n"), 1):
+        for marker in FORBIDDEN_STUDENT_MARKERS:
+            if marker in raw:
+                v.append(V("E-MAT-INTERNAL", path, i,
+                           f"學生講義出現教師端內部標記或路徑 {marker!r}"))
     return v
 
 
@@ -320,6 +352,7 @@ def audit(root, contract_path):
             files += 1
             if fn == "講義.md":
                 violations += check_required_sections(path, text)
+                violations += check_student_facing_leaks(path, text)
                 violations += check_abstract_verbs(path, text)
                 violations += check_submission_declaration(path, text, wk, contract_sub)
                 violations += check_survey_not_graded(path, text)
